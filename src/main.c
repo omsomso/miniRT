@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/05/17 20:06:55 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/05/17 21:10:44 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	handle_keypress(int key, t_mlx *mlx)
 {
 	if (key == KEY_ESC)
 		quit(mlx);
+	return (0);
 }
 
 int	main(int argc, char **argv)

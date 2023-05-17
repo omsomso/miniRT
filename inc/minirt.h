@@ -1,3 +1,6 @@
+#ifndef MINIRT_H
+# define MINIRT_H
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -23,3 +26,5 @@ typedef struct s_mlx
 	void	*mlx;
 	void	*win;
 }	t_mlx;
+
+#endif
