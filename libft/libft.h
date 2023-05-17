@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12                               #+#    #+#             */
-/*   Updated: 2023/03/02                              ###   ########.fr       */
+/*   Updated: 2023/05/17                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ char	*ft_strjoin_fb(char *s1, char *s2);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_strtrim(char const *s1, char const *set);
+char	*ft_strtrim_ff(char *s1, char *set);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));

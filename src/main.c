@@ -22,6 +22,7 @@ int	handle_keypress(int key, t_mlx *mlx)
 {
 	if (key == KEY_ESC)
 		quit(mlx);
+	return (0);
 }
 
 int	main(int argc, char **argv)

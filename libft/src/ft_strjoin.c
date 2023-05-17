@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25                               #+#    #+#             */
-/*   Updated: 2023/03/02                              ###   ########.fr       */
+/*   Updated: 2023/05/17                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (join);
 }
 
+// ft_strjoin that frees s1
 char	*ft_strjoin_ff(char *s1, char *s2)
 {
 	size_t	i;
@@ -63,6 +64,7 @@ char	*ft_strjoin_ff(char *s1, char *s2)
 	return (join);
 }
 
+// ft_strjoin that frees s2
 char	*ft_strjoin_fs(char *s1, char *s2)
 {
 	size_t	i;
@@ -87,6 +89,7 @@ char	*ft_strjoin_fs(char *s1, char *s2)
 	return (join);
 }
 
+// ft_strjoin that frees s1 & s2
 char	*ft_strjoin_fb(char *s1, char *s2)
 {
 	size_t	i;
