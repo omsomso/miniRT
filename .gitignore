@@ -1,0 +1,6 @@
+minirt
+obj/
+.vscode/
+.DS_Store
+minishell.dSYM
+README.md
