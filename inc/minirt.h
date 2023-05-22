@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <math.h>
 #include "../libft/libft.h"
 #include "../mlx/mlx.h"
 
