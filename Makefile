@@ -32,12 +32,6 @@ all:		$(NAME)
 
 $(NAME): 	$(OBJ)
 			@$(CC) $(FLAGS) -o $@ $^ -L$(LIBDIR) -lft -I$(INCDIR) -I$(LIBMLXDIR) -L$(LIBMLXDIR) -lmlx -framework OpenGL -framework AppKit
-#			@$(CC) $(FLAGS) -o $@ $^ -I/Users/$(USER)/.brew/Cellar/readline/8.2.1/include -L/Users/$(USER)/.brew/Cellar/readline/8.2.1/lib -lreadline -L$(LIBDIR) -lft -I$(INCDIR)
-
-#On school computers run :
-# curl -fsSL https://rawgit.com/kube/42homebrew/master/install.sh | zsh
-# brew install readline
-#Use the second compile command
 
 run:		all
 			@echo "$$HEADER"
