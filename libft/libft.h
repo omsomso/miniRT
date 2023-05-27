@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 02:13:23 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/05/17 21:14:07 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/05/27 18:34:35 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,21 @@ int		ft_toupper(int c);
 
 char	*ft_itoa(int n);
 char	**ft_split(char const *s, char const c);
+char	**ft_split_inc(char const *s, char const c);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strrchr(const char *s, int c);
 char	*ft_strdup(const char *s);
 char	*ft_strjoin(char const *s1, char const *s2);
+// strjoin that frees s1
 char	*ft_strjoin_ff(char *s1, char *s2);
+// strjoin that frees s2
 char	*ft_strjoin_fs(char *s1, char *s2);
+// strjoin that frees both s1 & s2
 char	*ft_strjoin_fb(char *s1, char *s2);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_strtrim(char const *s1, char const *set);
+// strtrim that frees s1
 char	*ft_strtrim_ff(char *s1, char *set);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 
@@ -76,5 +81,14 @@ int		ft_putaddr(void *what);
 int		ft_add_chars(char c, long arg);
 int		ft_put_value(char c, long arg);
 int		ft_printf(const char *argv, ...);
+
+// frees a string array
+void	ft_ptrfree(char **s);
+// duplicates a string array
+char	**ft_ptrdup(char **s, int n);
+// duplicates a string array and frees the original
+char	**ft_ptrdup_free(char **s, int n);
+// counts the number of strings in a string array
+int		ft_ptrcount(char **s);
 
 #endif
