@@ -112,6 +112,7 @@ typedef struct s_data
 	int			win_height;
 }				t_data;
 
-int	parser(char *filename, t_object *objects);
+int		parser(char *filename, t_object *objects);
+void	double_free(char **s);
 
 #endif
