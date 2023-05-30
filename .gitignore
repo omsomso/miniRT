@@ -2,5 +2,5 @@ minirt
 obj/
 .vscode/
 .DS_Store
-minishell.dSYM
+minirt.dSYM/
 README.md
