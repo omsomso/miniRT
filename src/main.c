@@ -48,5 +48,6 @@ int	main(int argc, char **argv)
 	mlx_hook(mlx->win, EVENT_KEYPRESS, 0, &handle_keypress, mlx);
 	mlx_hook(mlx->win, EVENT_DESTROY, 0, &quit, mlx);
 	mlx_loop(mlx->mlx);
+	free_data(data);
 	return (0);
 }

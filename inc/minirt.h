@@ -113,6 +113,8 @@ typedef struct s_data
 }				t_data;
 
 int		parser(char *filename, t_object **objects, t_data *data);
+void	free_data(t_data *data);
+
 
 // Utils
 int		ft_isspace(char c);
