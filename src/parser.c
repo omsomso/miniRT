@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/05/31 09:57:55 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/05/31 11:23:57 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,15 @@ int	parse_a(char **s, t_data **data)
 int	parse_c(char **s, t_data **data)
 {
 	t_camera	*camera;
-	char		**split_pos;
-	char		**split_normals;
+	char		**split;
 
 	camera = malloc(sizeof(t_camera));
 	if (!camera || !s[1] || !s[2] || !s[3])
 		return (1);
-	split_pos = ft_split(s[1], ',');
-	camera->pos = get_vec(split_pos);
-	split_normals = ft_split(s[2], ',');
-	camera->normal_vec = get_vec(split_normals);
+	split = ft_split(s[1], ',');
+	camera->pos = get_vec(split);
+	split = ft_split(s[2], ',');
+	camera->normal_vec = get_vec(split);
 	camera->fov = ft_atoi(s[3]);
 	(*data)->camera = camera;
 	return (0);
@@ -83,21 +82,85 @@ int	parse_c(char **s, t_data **data)
 int	parse_l(char **s, t_data **data)
 {
 	t_light	*light;
-	char	**split_pos;
-	char	**split_color;
+	char	**split;
 
 	light = malloc(sizeof(t_light));
 	if (!light || !s[1] || !s[2] || !s[3])
 		return (1);
-	split_pos = ft_split(s[1], ',');
-	light->pos = get_vec(split_pos);
+	split = ft_split(s[1], ',');
+	light->pos = get_vec(split);
 	if (!light->pos)
 		return (1);
 	light->brightness = ft_atoi(s[2]);
-	split_color = ft_split(s[3], ',');
-	get_color(&(light->color), split_color);
+	split = ft_split(s[3], ',');
+	get_color(&(light->color), split);
 	(*data)->light = light;
 	return (0);
+}
+
+// Free Sphere Object
+void	free_sp(void *object)
+{
+	t_sphere	*sphere;
+
+	sphere = (t_sphere *)object;
+	free(sphere->center);
+	free(sphere);
+}
+
+// Free Plane Object
+void	free_pl(void *object)
+{
+	t_plane	*plane;
+
+	plane = (t_plane *)object;
+	free(plane->normal_vec);
+	free(plane->point);
+	free(plane);
+}
+
+// Free Cylinder Object
+void	free_cy(void *object)
+{
+	t_cylinder	*cylinder;
+
+	cylinder = (t_cylinder *)object;
+	free(cylinder->normal_vec);
+	free(cylinder->center);
+	free(cylinder);
+}
+
+// Object Deletion
+void	free_objects(t_object *objects_head)
+{
+	t_object	*current;
+
+	current = objects_head;
+	while (current)
+	{
+		current = objects_head->next;
+		if (objects_head->type == SPHERE)
+			free_sp(objects_head);
+		if (objects_head->type == PLANE)
+			free_pl(objects_head);
+		if (objects_head->type == CYLINDER)
+			free_cy(objects_head);
+	}
+	free(current);
+}
+
+// Free A, C and L
+void	free_acl(t_amb *ambient_light, t_camera *camera, t_light *light)
+{
+	free(ambient_light);
+	free(camera);
+	free(light);
+}
+
+void	free_data(t_data *data)
+{
+	free_objects(data->objects);
+	free_acl(data->ambient_light, data->camera, data->light);
 }
 
 // Object Creation
@@ -129,12 +192,10 @@ int	parse_sp(char **s, t_object **objects)
 	t_sphere	*sphere;
 	t_v3		*center;
 	char		**split;
-	t_object	*new_object;
 
 	sphere = malloc(sizeof(t_sphere));
 	center = malloc(sizeof(t_v3));
-	new_object = malloc(sizeof(t_object));
-	if (!sphere || !center || !new_object)
+	if (!sphere || !center)
 		return (1);
 	sphere->center = center;
 	split = ft_split(s[1], ',');
@@ -268,16 +329,17 @@ int	parser(char *filename, t_object **objects, t_data *data)
 		line = get_next_line(fd);
 	}
 
+	printf("Parsing Done!\n");
+
 	t_object *obj = data->objects;
 	while (obj != NULL)
 	{
 		if (obj->type == SPHERE)
 		{
 			t_sphere *sphere = (t_sphere*)obj->object;
-			printf("The sphere center's coordinates are: %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
+			printf("The sphere center's coordinates are: %f, %f, %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
 		}
 		obj = obj->next;
 	}
-	printf("Parsing Done!\n");
 	return (0);
 }
