@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17                               #+#    #+#             */
-/*   Updated: 2023/05/30 by fcullen                   ###   ########.fr       */
+/*   Updated: 2023/05/31 by fcullen                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,12 @@ int	main(int argc, char **argv)
 	mlx = malloc(sizeof(t_mlx));
 	data = malloc(sizeof(t_data));
 	data->objects = malloc(sizeof(t_object));
+	if (!data->objects)
+		return (1);
+	data->objects = NULL;
 	mlx->mlx = mlx_init();
 	mlx->win = mlx_new_window(mlx->mlx, 500, 500, "test");
-	parser(argv[1], data->objects, data);
+	parser(argv[1], &data->objects, data);
 	mlx_hook(mlx->win, EVENT_KEYPRESS, 0, &handle_keypress, mlx);
 	mlx_hook(mlx->win, EVENT_DESTROY, 0, &quit, mlx);
 	mlx_loop(mlx->mlx);

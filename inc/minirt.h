@@ -112,7 +112,7 @@ typedef struct s_data
 	int			win_height;
 }				t_data;
 
-int		parser(char *filename, t_object *objects, t_data *data);
+int		parser(char *filename, t_object **objects, t_data *data);
 
 // Utils
 int		ft_isspace(char c);
