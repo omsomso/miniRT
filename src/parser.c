@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/05/30 20:28:31 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/05/31 09:57:55 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ int	parse_l(char **s, t_data **data)
 	if (!light || !s[1] || !s[2] || !s[3])
 		return (1);
 	split_pos = ft_split(s[1], ',');
-	printf("%s\n", split_pos[0]);
 	light->pos = get_vec(split_pos);
 	if (!light->pos)
 		return (1);
@@ -101,6 +100,29 @@ int	parse_l(char **s, t_data **data)
 	return (0);
 }
 
+// Object Creation
+void	add_object(t_object **objects_head, void *object, t_type type)
+{
+	t_object	*current;
+	t_object	*new_object;
+
+	new_object = malloc(sizeof(t_object));
+	if (!new_object)
+		return ;
+	new_object->object = object;
+	new_object->type = type;
+	new_object->next = NULL;
+	if (*objects_head == NULL)
+		*objects_head = new_object;
+	else
+	{
+		current = *objects_head;
+		while (current->next != NULL)
+			current = current->next;
+		current->next = new_object;
+	}
+}
+
 // Sphere Parser
 int	parse_sp(char **s, t_object **objects)
 {
@@ -109,7 +131,6 @@ int	parse_sp(char **s, t_object **objects)
 	char		**split;
 	t_object	*new_object;
 
-	(void)objects;
 	sphere = malloc(sizeof(t_sphere));
 	center = malloc(sizeof(t_v3));
 	new_object = malloc(sizeof(t_object));
@@ -123,6 +144,7 @@ int	parse_sp(char **s, t_object **objects)
 	sphere->diameter = ft_atof(s[2]);
 	split = ft_split(s[3], ',');
 	get_color(&(sphere->color), split);
+	add_object(objects, sphere, SPHERE);
 	return (0);
 }
 
@@ -134,7 +156,6 @@ int	parse_pl(char **s, t_object **objects)
 	t_v3		*normal_vec;
 	char		**split;
 
-	(void)objects;
 	plane = malloc(sizeof(t_plane));
 	point = malloc(sizeof(t_v3));
 	normal_vec = malloc(sizeof(t_v3));
@@ -148,6 +169,7 @@ int	parse_pl(char **s, t_object **objects)
 		return (1);
 	split = ft_split(s[3], ',');
 	get_color(&(plane->color), split);
+	add_object(objects, plane, PLANE);
 	return (0);
 }
 
@@ -159,7 +181,6 @@ int	parse_cy(char **s, t_object **objects)
 	t_v3		*normal_vec;
 	char		**split;
 
-	(void)objects;
 	cylinder = malloc(sizeof(t_cylinder));
 	center = malloc(sizeof(t_v3));
 	normal_vec = malloc(sizeof(t_v3));
@@ -175,12 +196,13 @@ int	parse_cy(char **s, t_object **objects)
 	cylinder->height = ft_atoi(s[4]);
 	split = ft_split(s[5], ',');
 	get_color(&(cylinder->color), split);
+	add_object(objects, cylinder, CYLINDER);
 	return (0);
 }
 
 
 // Line Parser Function
-int	parse_line(char *line, t_object *objects, t_data *data)
+int	parse_line(char *line, t_object **objects, t_data *data)
 {
 	char	**split;
 	int		obj_count;
@@ -207,17 +229,17 @@ int	parse_line(char *line, t_object *objects, t_data *data)
 	}
 	else if (!ft_strncmp("sp", split[0], ft_strlen(split[0])))
 	{
-		if (parse_sp(split, &objects))
+		if (parse_sp(split, objects))
 			return (ft_ptrfree(split), 1);
 	}
 	else if (!ft_strncmp("pl", split[0], ft_strlen(split[0])))
 	{
-		if (parse_pl(split, &objects))
+		if (parse_pl(split, objects))
 			return (ft_ptrfree(split), 1);
 	}
 	else if (!ft_strncmp("cy", split[0], ft_strlen(split[0])))
 	{
-		if (parse_cy(split, &objects))
+		if (parse_cy(split, objects))
 			return (ft_ptrfree(split), 1);
 	}
 	return (0);
@@ -225,7 +247,7 @@ int	parse_line(char *line, t_object *objects, t_data *data)
 
 // Main Parser Function
 // needs check for A, C, L duplicates
-int	parser(char *filename, t_object *objects, t_data *data)
+int	parser(char *filename, t_object **objects, t_data *data)
 {
 	int		fd;
 	char	*line;
@@ -245,6 +267,17 @@ int	parser(char *filename, t_object *objects, t_data *data)
 		parse_line(line, objects, data);
 		line = get_next_line(fd);
 	}
-	printf("%f\n", data->light->pos->x);
+
+	t_object *obj = data->objects;
+	while (obj != NULL)
+	{
+		if (obj->type == SPHERE)
+		{
+			t_sphere *sphere = (t_sphere*)obj->object;
+			printf("The sphere center's coordinates are: %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
+		}
+		obj = obj->next;
+	}
+	printf("Parsing Done!\n");
 	return (0);
 }
