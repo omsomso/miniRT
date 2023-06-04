@@ -9,6 +9,9 @@
 #include "../libft/libft.h"
 #include "../mlx/mlx.h"
 
+# define WIN_HEIGHT 480
+# define WIN_WIDTH 640
+
 # define EVENT_KEYPRESS 2
 # define EVENT_KEYRELEASE 3
 # define EVENT_DESTROY 17
@@ -89,9 +92,9 @@ typedef struct s_amb
 
 typedef struct  s_camera
 {
-	t_v3	*pos;
-	t_v3	*normal_vec;
-	int		fov;
+	t_v3	*pos;			//position
+	t_v3	*normal_vec;	//orientation
+	int		fov;			//field of view
 }			t_camera;
 
 typedef struct s_light
@@ -108,6 +111,7 @@ typedef struct s_data
 	t_camera	*camera;
 	t_light		*light;
 	t_object	*objects;
+	t_v3		***rays;
 	int			win_width;
 	int			win_height;
 }				t_data;
