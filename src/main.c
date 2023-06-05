@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*                                                  +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17                               #+#    #+#             */
-/*   Updated: 2023/06/04                              ###   ########.fr       */
+/*   Updated: 2023/06/05 by fcullen                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ int	main(int argc, char **argv)
 	if (!data)
 		return (1);
 	init_window(data);
+	if (parser(argv[1], &data->objects, data))
+		return (1);
 	start_loop(data);
 	free_data(data);
 	return (0);
