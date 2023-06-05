@@ -6,28 +6,13 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/06/05 18:55:35 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/06/05 20:06:34 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
 // Mlx Functions
-// Initialise necessary mlx values
-void	mlxdata_init(t_data *data)
-{
-	t_mlxdata	*mlxdata;
-
-	data->mlx->ptr = mlx_init();
-	data->mlx->win = mlx_new_window(data->mlx->ptr, 1080, 720, "data");
-	data->mlxdata = malloc(sizeof(*mlxdata));
-	if (!data->mlxdata)
-		return ;
-	data->mlxdata->img = mlx_new_image(data->mlx->ptr, 1080, 720);
-	data->mlxdata->addr = mlx_get_data_addr(data->mlxdata->img,
-			&data->mlxdata->bits_per_pixel, &data->mlxdata->line_length,
-			&data->mlxdata->endian);
-}
 
 /*
 Ray Generation
@@ -138,6 +123,19 @@ void	set_pixel_color(t_data *data, int x, int y, int color)
 	*(unsigned int *) dst = color ;
 }
 
+int convert_tcolor_to_int(t_color color)
+{
+	int intcolor;
+
+	intcolor = 0;
+	// Bit shifting and bitwise OR operations to combine the RGB components
+	intcolor |= (color.r & 0xFF) << 16;
+	intcolor |= (color.g & 0xFF) << 8;
+	intcolor |= (color.b & 0xFF);
+
+	return (intcolor);
+}
+
 int	generate_rays(t_data *data)
 {
 	int			x;
@@ -168,7 +166,7 @@ int	generate_rays(t_data *data)
 			ray.origin = data->camera->pos;
 			ray.direction = normalize(ray_direction);
 			pixel_color = trace_ray(ray, data->objects, data->light, 0);
-			set_pixel_color(data, x, y, pixel_color);
+			set_pixel_color(data, x, y, convert_tcolor_to_int(pixel_color));
 		}
 	}
 }

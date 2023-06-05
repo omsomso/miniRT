@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/06/05 18:58:23 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/06/05 20:01:42 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@ void	init_window(t_data *data)
 {
 	data->mlx->mlx = mlx_init();
 	data->mlx->win = mlx_new_window(data->mlx->mlx, data->win_width, data->win_height, "miniRT");
+	data->mlxdata = malloc(sizeof(*mlxdata));
+	if (!data->mlxdata)
+		return ;
+	data->mlxdata->img = mlx_new_image(data->mlx->ptr, 1080, 720);
+	data->mlxdata->addr = mlx_get_data_addr(data->mlxdata->img,
+			&data->mlxdata->bits_per_pixel, &data->mlxdata->line_length,
+			&data->mlxdata->endian);
 }
 
 void	start_loop(t_data *data)
