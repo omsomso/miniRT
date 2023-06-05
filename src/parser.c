@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/05/31 11:23:57 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/06/05 20:56:49 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,7 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 
 	split = ft_split(line, ' ');
 	obj_count = 0;
-	(void)objects;
+	// (void)objects;
 	if (!split[0])
 		return (ft_ptrfree(split), -1);
 	if (!ft_strncmp("A", split[0], ft_strlen(split[0])))
@@ -317,6 +317,7 @@ int	parser(char *filename, t_object **objects, t_data *data)
 	if (fd < 0)
 		return (fd);
 	line = get_next_line(fd);
+	*objects = NULL;
 	if (!line)
 	{
 		write(1, "Scene file empty\n", 17);

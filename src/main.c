@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/06/05 20:01:42 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/06/05 21:12:36 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	quit(t_mlx *mlx)
 {
-	mlx_destroy_window(mlx->mlx, mlx->win);
+	mlx_destroy_window(mlx->ptr, mlx->win);
 	free(mlx);
 	exit(0);
 }
@@ -28,9 +28,9 @@ int	handle_keypress(int key, t_mlx *mlx)
 
 void	init_window(t_data *data)
 {
-	data->mlx->mlx = mlx_init();
-	data->mlx->win = mlx_new_window(data->mlx->mlx, data->win_width, data->win_height, "miniRT");
-	data->mlxdata = malloc(sizeof(*mlxdata));
+	data->mlx->ptr = mlx_init();
+	data->mlx->win = mlx_new_window(data->mlx->ptr, data->win_width, data->win_height, "miniRT");
+	data->mlxdata = malloc(sizeof(t_mlxdata));
 	if (!data->mlxdata)
 		return ;
 	data->mlxdata->img = mlx_new_image(data->mlx->ptr, 1080, 720);
@@ -43,7 +43,7 @@ void	start_loop(t_data *data)
 {
 	mlx_hook(data->mlx->win, EVENT_KEYPRESS, 0, &handle_keypress, data->mlx);
 	mlx_hook(data->mlx->win, EVENT_DESTROY, 0, &quit, data->mlx);
-	mlx_loop(data->mlx->mlx);
+	mlx_loop(data->mlx->ptr);
 }
 
 t_data	*init_data(void)
@@ -93,7 +93,10 @@ int	main(int argc, char **argv)
 	init_window(data);
 	if (parser(argv[1], &data->objects, data))
 		return (1);
+	printf("winwidth: %d\n", data->win_width);
+	generate_rays(data);
 	start_loop(data);
+	
 	free_data(data);
 	return (0);
 }

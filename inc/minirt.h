@@ -103,8 +103,8 @@ typedef struct s_amb
 
 typedef struct  s_camera
 {
-	t_v3	pos;			//position
-	t_v3	normal_vec;	//orientation
+	t_v3	*pos;			//position
+	t_v3	*normal_vec;	//orientation
 	int		fov;			//field of view
 }			t_camera;
 
@@ -143,6 +143,8 @@ typedef struct	s_matrix4
 // miniRT Functions
 int		parser(char *filename, t_object **objects, t_data *data);
 void	free_data(t_data *data);
+int		generate_rays(t_data *data);
+
 
 // Utility Functions
 int		ft_isspace(char c);

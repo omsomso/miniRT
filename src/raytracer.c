@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/06/05 20:06:34 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/06/05 21:15:55 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,14 @@ t_v3	cross_product(t_v3 a, t_v3 b)
 	return (result);
 }
 
-t_matrix4	camera_to_world_matrix(t_camera camera)
+t_matrix4	camera_to_world_matrix(t_camera *camera)
 {
 	t_v3 up;
 	t_v3 right;
 	t_v3 forward;
 	t_matrix4 cam_to_world;
 
-	forward = normalize(camera.normal_vec);
+	forward = normalize(*camera->normal_vec);
 	right = cross_product((t_v3){0, 1, 0}, forward);
 	up = cross_product(forward, right);
 
@@ -92,9 +92,9 @@ t_matrix4	camera_to_world_matrix(t_camera camera)
 	cam_to_world.m[2][2] = -forward.z;
 	cam_to_world.m[2][3] = 0.0;
 
-	cam_to_world.m[3][0] = camera.pos.x;
-	cam_to_world.m[3][1] = camera.pos.y;
-	cam_to_world.m[3][2] = camera.pos.z;
+	cam_to_world.m[3][0] = camera->pos->x;
+	cam_to_world.m[3][1] = camera->pos->y;
+	cam_to_world.m[3][2] = camera->pos->z;
 	cam_to_world.m[3][3] = 1.0;
 
 	return (cam_to_world);
@@ -149,24 +149,30 @@ int	generate_rays(t_data *data)
 	t_ray		ray;
 	t_color		pixel_color;
 
-	x = 0;
 	y = 0;
 	fov_tan = tan(deg_to_rad(data->camera->fov * 0.5));
 	aspect_ratio = (double)data->win_width / (double)data->win_height;
-	while (y++ < data->win_height)
+	while (y <= data->win_height)
 	{
-		while (x++ < data->win_width)
+		x = 0;
+		while (x <= data->win_width)
 		{
 			ndc_x = (2.0 * ((x + 0.5) / data->win_width) - 1.0)
 				* aspect_ratio * fov_tan;
 			ndc_y = (-1.0 * ((y +0.5) / data->win_height)) * fov_tan;
 			ray_direction = normalize((t_v3){ndc_x, ndc_y, 1.0});
-			cam_to_world = camera_to_world_matrix(*(data->camera));
+			cam_to_world = camera_to_world_matrix(data->camera);
 			ray_direction = multiply_matrix_vector(cam_to_world, ray_direction);
-			ray.origin = data->camera->pos;
+			ray.origin = *data->camera->pos;
 			ray.direction = normalize(ray_direction);
-			pixel_color = trace_ray(ray, data->objects, data->light, 0);
+			// pixel_color = trace_ray(ray, data->objects, data->light, 0);
+			pixel_color = (t_color){255, 200, 0};
 			set_pixel_color(data, x, y, convert_tcolor_to_int(pixel_color));
+			x++;
 		}
+		y++;
 	}
+	mlx_put_image_to_window(data->mlx->ptr,
+		data->mlx->win, data->mlxdata->img, 0, 0);
+	return (0);
 }
