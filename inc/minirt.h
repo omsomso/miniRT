@@ -26,12 +26,23 @@
 # define KEY_S	1
 # define KEY_D	2
 
+// Mlx Stuff
 typedef struct s_mlx
 {
-	void	*mlx;
+	void	*ptr;
 	void	*win;
 }			t_mlx;
 
+typedef struct s_mlxdata
+{
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}			t_mlxdata;
+
+// Parser Stuff
 typedef struct s_color
 {
 	int		r;
@@ -92,8 +103,8 @@ typedef struct s_amb
 
 typedef struct  s_camera
 {
-	t_v3	*pos;			//position
-	t_v3	*normal_vec;	//orientation
+	t_v3	pos;			//position
+	t_v3	normal_vec;	//orientation
 	int		fov;			//field of view
 }			t_camera;
 
@@ -107,6 +118,7 @@ typedef struct s_light
 typedef struct s_data
 {
 	t_mlx		*mlx;
+	t_mlxdata	*mlxdata;
 	t_amb		*ambient_light;
 	t_camera	*camera;
 	t_light		*light;
@@ -116,11 +128,23 @@ typedef struct s_data
 	int			win_height;
 }				t_data;
 
+// Ray Tracer Stuff
+typedef struct	s_ray
+{
+	t_v3	origin;
+	t_v3	direction;
+}			t_ray;
+
+typedef struct	s_matrix4
+{
+	double	m[4][4];
+}			t_matrix4;
+
+// miniRT Functions
 int		parser(char *filename, t_object **objects, t_data *data);
 void	free_data(t_data *data);
 
-
-// Utils
+// Utility Functions
 int		ft_isspace(char c);
 float	ft_atof(const char *s);
 
