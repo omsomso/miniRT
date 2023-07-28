@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/06/05 20:56:49 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/07/27 21:40:31 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ int	get_color(t_color *color, char **s)
 	ft_ptrfree(s);
 	return (0);
 }
-// Function Returns 3D Vector from char Array + Frees Array
+
+// Function Returns Pointer to 3D Vector from char Array + Frees Array
 t_v3	*get_vec(char **s)
 {
 	t_v3	*vector;
@@ -75,6 +76,7 @@ int	parse_c(char **s, t_data **data)
 	camera->normal_vec = get_vec(split);
 	camera->fov = ft_atoi(s[3]);
 	(*data)->camera = camera;
+	ft_ptrfree(s);
 	return (0);
 }
 
@@ -91,10 +93,11 @@ int	parse_l(char **s, t_data **data)
 	light->pos = get_vec(split);
 	if (!light->pos)
 		return (1);
-	light->brightness = ft_atoi(s[2]);
+	light->brightness = ft_atof(s[2]);
 	split = ft_split(s[3], ',');
 	get_color(&(light->color), split);
 	(*data)->light = light;
+	ft_ptrfree(s);
 	return (0);
 }
 
@@ -174,6 +177,8 @@ void	add_object(t_object **objects_head, void *object, t_type type)
 		return ;
 	new_object->object = object;
 	new_object->type = type;
+	new_object->ambient_coefficient = 0.2;
+	new_object->diffuse_coefficient = 0.9;
 	new_object->next = NULL;
 	if (*objects_head == NULL)
 		*objects_head = new_object;
@@ -332,13 +337,16 @@ int	parser(char *filename, t_object **objects, t_data *data)
 
 	printf("Parsing Done!\n");
 
+	printf("%f\n", data->light->brightness);
 	t_object *obj = data->objects;
 	while (obj != NULL)
 	{
 		if (obj->type == SPHERE)
 		{
 			t_sphere *sphere = (t_sphere*)obj->object;
-			printf("The sphere center's coordinates are: %f, %f, %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
+			// printf("The sphere center's coordinates are: %f, %f, %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
+			printf("Diameter = %f\n", sphere->diameter);
+			// printf("Sphere color.r = %f\n", sphere->color.r);
 		}
 		obj = obj->next;
 	}
