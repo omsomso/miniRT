@@ -6,11 +6,13 @@
 #include <stdlib.h>
 #include <math.h>
 #include <fcntl.h>
+#include <stdbool.h>
 #include "../libft/libft.h"
 #include "../mlx/mlx.h"
 
 # define WIN_HEIGHT 480
 # define WIN_WIDTH 640
+# define MAX_RECURSION_DEPTH 4
 
 # define EVENT_KEYPRESS 2
 # define EVENT_KEYRELEASE 3
@@ -45,9 +47,9 @@ typedef struct s_mlxdata
 // Parser Stuff
 typedef struct s_color
 {
-	int		r;
-	int		g;
-	int		b;
+	float	r;
+	float	g;
+	float	b;
 }			t_color;
 
 typedef struct s_v3
@@ -92,8 +94,18 @@ typedef struct s_object
 {
 	void			*object;
 	t_type			type;
+	double			ambient_coefficient;
+	double			diffuse_coefficient;
 	struct s_object	*next;
 }				t_object;
+
+typedef struct s_intersection
+{
+	t_v3		point;      // Intersection point in 3D space
+	t_v3		normal;     // Surface normal at the intersection point
+	t_object	*object;      // Object that was intersected
+	double		t;             // Parameter value along the ray where the intersection occurs
+}				t_intersection;
 
 typedef struct s_amb
 {
