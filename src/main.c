@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/06/05 21:12:36 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/07/31 19:39:01 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ int	main(int argc, char **argv)
 	init_window(data);
 	if (parser(argv[1], &data->objects, data))
 		return (1);
-	printf("winwidth: %d\n", data->win_width);
 	generate_rays(data);
 	start_loop(data);
 	

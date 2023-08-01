@@ -28,6 +28,8 @@
 # define KEY_S	1
 # define KEY_D	2
 
+#define EPSILON 1e-6
+
 // Mlx Stuff
 typedef struct s_mlx
 {
@@ -63,6 +65,7 @@ typedef struct	s_sphere
 {
 	t_v3		*center;
 	float		diameter;
+	float		radius;
 	t_color		color;
 }				t_sphere;
 
@@ -79,6 +82,7 @@ typedef struct  s_cylinder
 	t_v3		*center;
 	t_v3		*normal_vec;
 	float		diameter;
+	float		radius;
 	float		height;
 	t_color		color;
 }				t_cylinder;

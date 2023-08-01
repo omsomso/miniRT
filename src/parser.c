@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/07/27 21:40:31 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/07/31 19:39:13 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,7 @@ int	parse_sp(char **s, t_object **objects)
 	if (!sphere->center)
 		return (1);
 	sphere->diameter = ft_atof(s[2]);
+	sphere->radius = sphere->diameter / 2;
 	split = ft_split(s[3], ',');
 	get_color(&(sphere->color), split);
 	add_object(objects, sphere, SPHERE);
@@ -259,6 +260,7 @@ int	parse_cy(char **s, t_object **objects)
 	if (!cylinder->center || !cylinder->normal_vec)
 		return (1);
 	cylinder->diameter = ft_atoi(s[3]);
+	cylinder->radius = cylinder->diameter / 2;
 	cylinder->height = ft_atoi(s[4]);
 	split = ft_split(s[5], ',');
 	get_color(&(cylinder->color), split);
@@ -336,16 +338,15 @@ int	parser(char *filename, t_object **objects, t_data *data)
 	}
 
 	printf("Parsing Done!\n");
-
-	printf("%f\n", data->light->brightness);
+	printf("The camera center's coordinates are: %f, %f, %f\n", data->camera->pos->x, data->camera->pos->y, data->camera->pos->z);
 	t_object *obj = data->objects;
 	while (obj != NULL)
 	{
 		if (obj->type == SPHERE)
 		{
 			t_sphere *sphere = (t_sphere*)obj->object;
-			// printf("The sphere center's coordinates are: %f, %f, %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
-			printf("Diameter = %f\n", sphere->diameter);
+			printf("The sphere center's coordinates are: %f, %f, %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
+			// printf("Diameter = %f\n", sphere->diameter);
 			// printf("Sphere color.r = %f\n", sphere->color.r);
 		}
 		obj = obj->next;
