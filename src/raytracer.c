@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/01 18:44:04 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/02 16:40:13 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,30 +146,37 @@ bool v3_equal(t_v3 v1, t_v3 v2)
 	return fabs(v1.x - v2.x) < EPSILON && fabs(v1.y - v2.y) < EPSILON && fabs(v1.z - v2.z) < EPSILON;
 }
 
+t_v3 get_orthogonal(t_v3 v)
+{
+	if (v.x != 0 || v.y != 0)
+		return new_v3(-v.y, v.x, 0);
+	else
+		return new_v3(0, -v.z, 0);
+}
+
 t_matrix4 camera_to_world_matrix(t_camera *camera)
 {
 	t_v3 forward = normalize(*camera->normal_vec);
+	t_v3 up = new_v3(0, 1, 0); // Set a default up vector
 
-	print_point(forward);
-	// Set a default up vector
-	t_v3 up = new_v3(0, 1, 0);
-	
-	// If the forward vector is the same as the default up vector, change the up vector
-	if (v3_equal(forward, up) || v3_equal(forward, multiply_vector_scalar(up, -1)))
-		up = new_v3(1, 0, 0);
+	// If the forward vector is the same as the default up vector or its negative,
+	// choose a different vector as the up vector
+	if (fabs(dot_product(forward, up)) > 0.99) {
+		up = new_v3(0, 0, 1); // Use a different default up vector
+	}
 
-	t_v3 right = normalize(cross_product(up, forward));
+	t_v3 right = normalize(cross_product(up, forward)); // Compute right using cross product
 
 	// Recompute up to ensure it's orthogonal to forward and right
-	up = cross_product(forward, right);
+	up = normalize(cross_product(forward, right));
 
 	t_matrix4 cam_to_world = {{
-		{right.x, up.x, -forward.x, camera->pos->x},
-		{right.y, up.y, -forward.y, camera->pos->y},
-		{right.z, up.z, -forward.z, camera->pos->z},
-		{0.0, 0.0, 0.0, 1.0},
+		{right.x, right.y, right.z, 0},
+		{up.x, up.y, up.z, 0},
+		{-forward.x, -forward.y, -forward.z, 0},
+		{camera->pos->x, camera->pos->y, camera->pos->z, 1}
 	}};
-	return (cam_to_world);
+	return cam_to_world;
 }
 
 t_v3 multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector)
@@ -401,8 +408,6 @@ int intersect_cylinder(t_ray ray, t_cylinder *cylinder, t_intersection *intersec
 	}
 }
 
-
-
 int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
 {
 	t_v3 oc = subtract_vectors(*(sphere->center), ray.origin);
@@ -412,9 +417,7 @@ int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
 	float discriminant = b * b - 4 * a * c;
 
 	if (discriminant < 0)
-	{
 		return 0;
-	}
 	else
 	{
 		float t = (-b - sqrt(discriminant)) / (2.0 * a);
@@ -577,7 +580,6 @@ t_color trace_ray(t_ray ray, t_data *data, int depth)
 	{
 		// Calculate shading and lighting at the intersection point
 		pixel_color = calculate_shading(&intersection, data);
-		// pixel_color = visualize_normals(&intersection);
 	}
 	else
 		pixel_color = calculate_background_color(*data->ambient_light);
@@ -585,15 +587,24 @@ t_color trace_ray(t_ray ray, t_data *data, int depth)
 	return (pixel_color);
 }
 
-t_v3 multiply_matrix_point(const t_matrix4 matrix, const t_v3 point)
+t_v3	multiply_matrix_point(const t_matrix4 matrix, const t_v3 point)
 {
-	t_v3 result;
+	t_v3	result;
 
 	result.x = matrix.m[0][0] * point.x + matrix.m[0][1] * point.y + matrix.m[0][2] * point.z + matrix.m[0][3];
 	result.y = matrix.m[1][0] * point.x + matrix.m[1][1] * point.y + matrix.m[1][2] * point.z + matrix.m[1][3];
 	result.z = matrix.m[2][0] * point.x + matrix.m[2][1] * point.y + matrix.m[2][2] * point.z + matrix.m[2][3];
+	return (result);
+}
 
-	return result;
+void print_matrix(t_matrix4 matrix)
+{
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			printf("%f ", matrix.m[i][j]);
+		}
+		printf("\n");
+	}
 }
 
 int generate_rays(t_data *data)
@@ -605,7 +616,6 @@ int generate_rays(t_data *data)
 	double fov_tan;
 	double aspect_ratio;
 	t_matrix4 cam_to_world;
-	t_v3 ray_direction;
 	t_ray ray;
 	t_color pixel_color;
 
@@ -613,34 +623,21 @@ int generate_rays(t_data *data)
 	fov_tan = tan(deg_to_rad(data->camera->fov * 0.5));
 	aspect_ratio = (double)data->win_width / (double)data->win_height;
 	cam_to_world = camera_to_world_matrix(data->camera);
-
-	t_v3 forward = normalize(*data->camera->normal_vec);
-	t_v3 default_up = new_v3(0, 1, 0);
-	t_v3 up;
-	if (v3_equal(forward, default_up) || v3_equal(forward, multiply_vector_scalar(default_up, -1))) {
-		up = new_v3(1, 0, 0);
-	} else {
-		up = default_up;
-	}
-
-	t_v3 right = normalize(cross_product(up, forward));
-	up = cross_product(forward, right);
+	print_matrix(cam_to_world);
 
 	while (y < data->win_height)
 	{
 		x = 0;
 		while (x < data->win_width)
 		{
-			ndc_x = ((x + 0.5) / data->win_width) * 2.0 - 1.0;
-			ndc_x *= aspect_ratio * fov_tan;
+			ndc_x = (2.0 * (x + 0.5) / data->win_width - 1.0) * aspect_ratio * fov_tan;
+			ndc_y = (1.0 - 2.0 * (y + 0.5) / data->win_height) * fov_tan;
 
-			ndc_y = 1.0 - ((y + 0.5) / data->win_height) * 2.0;
-			ndc_y *= fov_tan;
+			t_v3 pixel_pos_cam_space = new_v3(ndc_x, ndc_y, -1);
+			t_v3 pixel_pos_world_space = multiply_matrix_point(cam_to_world, pixel_pos_cam_space);
+			ray.direction = normalize(subtract_vectors(pixel_pos_world_space, *data->camera->pos));
 
-			t_v3 pixel_pos = subtract_vectors(add_vectors(multiply_vector_scalar(right, ndc_x), multiply_vector_scalar(up, ndc_y)), forward);
-			ray_direction = multiply_matrix_vector(cam_to_world, pixel_pos);
 			ray.origin = *data->camera->pos;
-			ray.direction = normalize(ray_direction);
 			pixel_color = trace_ray(ray, data, 3);
 			set_pixel_color(data, x, y, convert_tcolor_to_int(pixel_color));
 			x++;
