@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/02 16:40:13 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/07 11:46:23 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,31 +154,6 @@ t_v3 get_orthogonal(t_v3 v)
 		return new_v3(0, -v.z, 0);
 }
 
-t_matrix4 camera_to_world_matrix(t_camera *camera)
-{
-	t_v3 forward = normalize(*camera->normal_vec);
-	t_v3 up = new_v3(0, 1, 0); // Set a default up vector
-
-	// If the forward vector is the same as the default up vector or its negative,
-	// choose a different vector as the up vector
-	if (fabs(dot_product(forward, up)) > 0.99) {
-		up = new_v3(0, 0, 1); // Use a different default up vector
-	}
-
-	t_v3 right = normalize(cross_product(up, forward)); // Compute right using cross product
-
-	// Recompute up to ensure it's orthogonal to forward and right
-	up = normalize(cross_product(forward, right));
-
-	t_matrix4 cam_to_world = {{
-		{right.x, right.y, right.z, 0},
-		{up.x, up.y, up.z, 0},
-		{-forward.x, -forward.y, -forward.z, 0},
-		{camera->pos->x, camera->pos->y, camera->pos->z, 1}
-	}};
-	return cam_to_world;
-}
-
 t_v3 multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector)
 {
 	t_v3 result;
@@ -189,7 +164,6 @@ t_v3 multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector)
 	
 	return result;
 }
-
 
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface)
 {
@@ -420,13 +394,20 @@ int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
 		return 0;
 	else
 	{
-		float t = (-b - sqrt(discriminant)) / (2.0 * a);
+		float t1 = (-b - sqrt(discriminant)) / (2.0 * a);
+		float t2 = (-b + sqrt(discriminant)) / (2.0 * a);
+
+		// If the closest intersection point is behind the ray's origin, consider the further one
+		float t = (t1 >= 0) ? t1 : t2;
+
+		if (t < 0)
+			return 0;
 		intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
 
 		// Calculate the normal vector at the intersection point
 		t_v3 intersection_to_center = subtract_vectors(intersection->point, *(sphere->center));
 		intersection->normal = normalize(intersection_to_center);
-
+		intersection->object = &sphere;
 		intersection->t = t;
 		return 1;
 	}
@@ -464,13 +445,17 @@ int	find_closest_intersection(t_ray ray, t_object *objects, t_intersection *clos
 	return (found_intersection);
 }
 
-int is_light_obstructed(t_ray shadow_ray, t_object *objects, double light_distance)
+int is_light_obstructed(t_ray shadow_ray, t_object *objects, double light_distance, t_intersection *intersection)
 {
-	t_intersection intersection;
+	t_intersection closest_intersection;
 
 	while (objects != NULL)
 	{
-		if (intersect(shadow_ray, objects->object, objects->type, &intersection) && intersection.t < light_distance && intersection.t > 0) {
+		if (intersect(shadow_ray, objects->object, objects->type, &closest_intersection) &&
+			closest_intersection.t < light_distance && closest_intersection.t > 0)
+		{
+			// An object is obstructing the light, update the intersection variable
+			*intersection = closest_intersection;
 			return 1; // the light is obstructed
 		}
 		objects = objects->next;
@@ -478,23 +463,28 @@ int is_light_obstructed(t_ray shadow_ray, t_object *objects, double light_distan
 	return 0; // the light is not obstructed
 }
 
-
-int	is_point_in_shadow(t_v3 point, t_v3 light_dir, double light_dist, t_data *data)
+int is_point_in_shadow(t_v3 point, t_v3 light_dir, double light_dist, t_data *data)
 {
-	t_ray			shadow_ray;
-	t_intersection	intersection;
+    t_ray shadow_ray;
+    t_intersection intersection;
 
-	// Create a shadow ray starting from the point and heading towards the light source
-	t_v3 epsilon_offset = multiply_vector_scalar(light_dir, 0.001);
-	shadow_ray.origin = subtract_vectors(point, epsilon_offset);
-	shadow_ray.direction = light_dir;
+    // Create a shadow ray starting from the point and heading towards the light source
+    t_v3 epsilon_offset = multiply_vector_scalar(light_dir, 0.001);
+    shadow_ray.origin = subtract_vectors(point, epsilon_offset);
+    shadow_ray.direction = light_dir;
 
-	// Check if the shadow ray intersects with any object before reaching the light source
-	if (is_light_obstructed(shadow_ray, data->objects, light_dist) &&
-		intersection.t < light_dist)
-		return (1);
-	else
-		return (0);
+    // Check if the shadow ray intersects with any object before reaching the light source
+    int is_shadowed = is_light_obstructed(shadow_ray, data->objects, light_dist, &intersection);
+    if (is_shadowed && intersection.t < light_dist)
+    {
+        // The point is in shadow, return 1
+        return 1;
+    }
+    else
+    {
+        // The point is not in shadow, return 0
+        return 0;
+    }
 }
 
 t_color calculate_diffuse_color(t_intersection *intersection, t_light *light, t_data *data)
@@ -554,8 +544,6 @@ t_color calculate_ambient_color(t_intersection *intersection, t_data *data)
 	return ambient_color;
 }
 
-
-
 t_color calculate_shading(t_intersection *intersection, t_data *data)
 {
 	t_color color = {0, 0, 0};
@@ -568,7 +556,6 @@ t_color calculate_shading(t_intersection *intersection, t_data *data)
 
 	return color;
 }
-
 
 t_color trace_ray(t_ray ray, t_data *data, int depth)
 {
@@ -587,16 +574,6 @@ t_color trace_ray(t_ray ray, t_data *data, int depth)
 	return (pixel_color);
 }
 
-t_v3	multiply_matrix_point(const t_matrix4 matrix, const t_v3 point)
-{
-	t_v3	result;
-
-	result.x = matrix.m[0][0] * point.x + matrix.m[0][1] * point.y + matrix.m[0][2] * point.z + matrix.m[0][3];
-	result.y = matrix.m[1][0] * point.x + matrix.m[1][1] * point.y + matrix.m[1][2] * point.z + matrix.m[1][3];
-	result.z = matrix.m[2][0] * point.x + matrix.m[2][1] * point.y + matrix.m[2][2] * point.z + matrix.m[2][3];
-	return (result);
-}
-
 void print_matrix(t_matrix4 matrix)
 {
 	for (int i = 0; i < 4; i++) {
@@ -607,44 +584,88 @@ void print_matrix(t_matrix4 matrix)
 	}
 }
 
+t_matrix4 camera_to_world_matrix(t_camera *camera)
+{
+	t_v3 forward = *camera->normal_vec;
+	t_v3 up = new_v3(0, 1, 0); // Set a default up vector
+
+	// If the forward vector is the same as the default up vector or its negative,
+	// choose a different vector as the up vector
+	if (fabs(dot_product(forward, up)) > 0.99) {
+		up = new_v3(0, 0, 1); // Use a different default up vector
+	}
+
+	t_v3 right = cross_product(up, forward); // Compute right using cross product
+
+	// Recompute up to ensure it's orthogonal to forward and right
+	up = cross_product(forward, right);
+
+	t_matrix4 cam_to_world = {{
+		{right.x, right.y, right.z, 0},
+		{up.x, up.y, up.z, 0},
+		{forward.x, forward.y, forward.z, 0},
+		{camera->pos->x, camera->pos->y, camera->pos->z, 1}
+	}};
+	return cam_to_world;
+}
+
+t_v3	multiply_matrix_point(const t_matrix4 matrix, const t_v3 point)
+{
+	t_v3	result;
+
+	result.x = matrix.m[0][0] * point.x + matrix.m[0][1] * point.y + matrix.m[0][2] * point.z + matrix.m[0][3];
+	result.y = matrix.m[1][0] * point.x + matrix.m[1][1] * point.y + matrix.m[1][2] * point.z + matrix.m[1][3];
+	result.z = matrix.m[2][0] * point.x + matrix.m[2][1] * point.y + matrix.m[2][2] * point.z + matrix.m[2][3];
+	return (result);
+}
+
 int generate_rays(t_data *data)
 {
-	int x;
-	int y;
-	double ndc_x;
-	double ndc_y;
-	double fov_tan;
-	double aspect_ratio;
-	t_matrix4 cam_to_world;
-	t_ray ray;
-	t_color pixel_color;
+	// Compute camera's basis vectors
+	t_v3 forward = normalize(*data->camera->normal_vec);
+	t_v3 default_up = {0, 1, 0};
+	t_v3 up;
+	
+	if (fabs(dot_product(forward, default_up)) > 0.99)
+		up = (t_v3){0, 0, 1};
+	else
+		up = default_up;
 
-	y = 0;
-	fov_tan = tan(deg_to_rad(data->camera->fov * 0.5));
-	aspect_ratio = (double)data->win_width / (double)data->win_height;
-	cam_to_world = camera_to_world_matrix(data->camera);
-	print_matrix(cam_to_world);
+	t_v3 right = cross_product(up, forward);
+	up = cross_product(forward, right);
 
-	while (y < data->win_height)
+	// Prepare values for ray generation
+	double aspect_ratio = (double)data->win_width / (double)data->win_height;
+	double fov_tan = tan(deg_to_rad(data->camera->fov * 0.5));
+
+	// Generate rays for every pixel
+	for (int y = 0; y < data->win_height; y++)
 	{
-		x = 0;
-		while (x < data->win_width)
+		for (int x = 0; x < data->win_width; x++)
 		{
-			ndc_x = (2.0 * (x + 0.5) / data->win_width - 1.0) * aspect_ratio * fov_tan;
-			ndc_y = (1.0 - 2.0 * (y + 0.5) / data->win_height) * fov_tan;
+			double ndc_x = (2.0 * (x + 0.5) / data->win_width - 1.0) * aspect_ratio * fov_tan;
+			double ndc_y = (1.0 - 2.0 * (y + 0.5) / data->win_height) * fov_tan;
 
-			t_v3 pixel_pos_cam_space = new_v3(ndc_x, ndc_y, -1);
-			t_v3 pixel_pos_world_space = multiply_matrix_point(cam_to_world, pixel_pos_cam_space);
-			ray.direction = normalize(subtract_vectors(pixel_pos_world_space, *data->camera->pos));
+			t_v3 pixel_world_space = {
+				data->camera->pos->x + ndc_x * right.x + ndc_y * up.x - forward.x,
+				data->camera->pos->y + ndc_x * right.y + ndc_y * up.y - forward.y,
+				data->camera->pos->z + ndc_x * right.z + ndc_y * up.z - forward.z
+			};
+			
+			t_v3 ray_direction = subtract_vectors(pixel_world_space, *data->camera->pos);
+			ray_direction = normalize(ray_direction);
+			
+			// Create the ray and trace it
+			t_ray ray = { .origin = *data->camera->pos, .direction = ray_direction };
+			t_color pixel_color = trace_ray(ray, data, MAX_RECURSION_DEPTH);
 
-			ray.origin = *data->camera->pos;
-			pixel_color = trace_ray(ray, data, 3);
+			// Set the color of the pixel on the screen
 			set_pixel_color(data, x, y, convert_tcolor_to_int(pixel_color));
-			x++;
 		}
-		y++;
 	}
-	mlx_put_image_to_window(data->mlx->ptr,
-							data->mlx->win, data->mlxdata->img, 0, 0);
-	return (0);
+
+	// Display the rendered image
+	mlx_put_image_to_window(data->mlx->ptr, data->mlx->win, data->mlxdata->img, 0, 0);
+	return 0;
 }
+
