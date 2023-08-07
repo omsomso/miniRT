@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/07 11:46:23 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/07 11:58:07 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -405,8 +405,8 @@ int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
 		intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
 
 		// Calculate the normal vector at the intersection point
-		t_v3 intersection_to_center = subtract_vectors(intersection->point, *(sphere->center));
-		intersection->normal = normalize(intersection_to_center);
+		t_v3 center_to_intersection = subtract_vectors(intersection->point, *(sphere->center));
+		intersection->normal = normalize(center_to_intersection);
 		intersection->object = &sphere;
 		intersection->t = t;
 		return 1;
