@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/07 11:58:07 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/08 17:17:25 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,87 +20,6 @@ void print_color(t_color color)
 void print_point(t_v3 p)
 {
 	printf("Point: x=%f, y=%f, z=%f\n", p.x, p.y, p.z);
-}
-
-float	deg_to_rad(float deg)
-{
-	return ((deg * M_PI) / 180);
-}
-
-t_v3 add_vectors(t_v3 a, t_v3 b)
-{
-	t_v3	result;
-
-	result.x = a.x + b.x;
-	result.y = a.y + b.y;
-	result.z = a.z + b.z;
-	return (result);
-}
-
-t_v3 subtract_vectors(t_v3 a, t_v3 b)
-{
-	t_v3	result;
-
-	result.x = b.x - a.x;
-	result.y = b.y - a.y;
-	result.z = b.z - a.z;
-	return (result);
-}
-
-t_v3 multiply_vector_scalar(t_v3 a, double s)
-{
-	t_v3 result;
-	result.x = a.x * s;
-	result.y = a.y * s;
-	result.z = a.z * s;
-	return (result);
-}
-
-t_v3	normalize(t_v3	a)
-{
-	double	length;
-
-	length = sqrt(a.x * a.x + a.y
-			* a.y + a.z * a.z);
-	if (length != 0.0)
-	{
-		a.x /= length;
-		a.y /= length;
-		a.z /= length;
-	}
-	return (a);
-}
-
-float	distance_to_point(t_v3 a, t_v3 b)
-{
-	float dx = b.x - a.x;
-	float dy = b.y - a.y;
-	float dz = b.z - a.z;
-	return (sqrt(dx * dx + dy * dy + dz * dz));
-}
-
-float	vector_length(t_v3	a)
-{
-	float	length;
-
-	length = sqrt(a.x * a.x + a.y
-			* a.y + a.z * a.z);
-	return (length);
-}
-
-t_v3	cross_product(t_v3 a, t_v3 b)
-{
-	t_v3	result;
-
-	result.x = a.y * b.z - a.z * b.y;
-	result.y = a.z * b.x - a.x * b.z;
-	result.z = a.x * b.y - a.y * b.x;
-	return (result);
-}
-
-float	dot_product(t_v3 a, t_v3 b)
-{
-	return ((a.x * b.x) + (a.y * b.y) + (a.z * b.z));
 }
 
 t_color add_colors(t_color color1, t_color color2)
@@ -130,47 +49,6 @@ t_color multiply_color_scalar(t_color color, float s)
 	return (result);
 }
 
-t_v3 new_v3(float x, float y, float z)
-{
-	t_v3 new_vector;
-
-	new_vector.x = x;
-	new_vector.y = y;
-	new_vector.z = z;
-	return (new_vector);
-}
-
-// Function to check if two vectors are equal
-bool v3_equal(t_v3 v1, t_v3 v2)
-{
-	return fabs(v1.x - v2.x) < EPSILON && fabs(v1.y - v2.y) < EPSILON && fabs(v1.z - v2.z) < EPSILON;
-}
-
-t_v3 get_orthogonal(t_v3 v)
-{
-	if (v.x != 0 || v.y != 0)
-		return new_v3(-v.y, v.x, 0);
-	else
-		return new_v3(0, -v.z, 0);
-}
-
-t_v3 multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector)
-{
-	t_v3 result;
-
-	result.x = matrix.m[0][0] * vector.x + matrix.m[0][1] * vector.y + matrix.m[0][2] * vector.z;
-	result.y = matrix.m[1][0] * vector.x + matrix.m[1][1] * vector.y + matrix.m[1][2] * vector.z;
-	result.z = matrix.m[2][0] * vector.x + matrix.m[2][1] * vector.y + matrix.m[2][2] * vector.z;
-	
-	return result;
-}
-
-t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface)
-{
-	t_v3 surface_to_center = subtract_vectors(sphere_center, point_on_surface);
-	t_v3 normal_vector = normalize(surface_to_center);
-	return (normal_vector);
-}
 
 int intersect_plane(t_ray ray, t_plane *plane, t_intersection *intersection)
 {
@@ -385,7 +263,7 @@ int intersect_cylinder(t_ray ray, t_cylinder *cylinder, t_intersection *intersec
 int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
 {
 	t_v3 oc = subtract_vectors(*(sphere->center), ray.origin);
-	float a = dot_product(ray.direction, ray.direction);
+	float a = dot_product(ray.direction, ray.direction); // a is 1 for normalized vectors
 	float b = 2.0 * dot_product(oc, ray.direction);
 	float c = dot_product(oc, oc) - (sphere->radius * sphere->radius);
 	float discriminant = b * b - 4 * a * c;
@@ -397,21 +275,23 @@ int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
 		float t1 = (-b - sqrt(discriminant)) / (2.0 * a);
 		float t2 = (-b + sqrt(discriminant)) / (2.0 * a);
 
-		// If the closest intersection point is behind the ray's origin, consider the further one
-		float t = (t1 >= 0) ? t1 : t2;
+		float t;
+		t = fmin(t1, t2);
+		if (t < 0) // If the smallest t is negative, choose the other one.
+			t = fmax(t1, t2);
 
-		if (t < 0)
+		if (t < 0) // If both t values are negative, there's no valid intersection.
 			return 0;
-		intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
 
-		// Calculate the normal vector at the intersection point
-		t_v3 center_to_intersection = subtract_vectors(intersection->point, *(sphere->center));
-		intersection->normal = normalize(center_to_intersection);
-		intersection->object = &sphere;
+		intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
+		t_v3 normal = subtract_vectors(intersection->point, *(sphere->center));
+		intersection->normal = normalize(normal);
+		intersection->object = (t_object *)sphere;
 		intersection->t = t;
 		return 1;
 	}
 }
+
 
 int intersect(t_ray ray, void *object, t_type type, t_intersection *intersection)
 {
@@ -465,26 +345,26 @@ int is_light_obstructed(t_ray shadow_ray, t_object *objects, double light_distan
 
 int is_point_in_shadow(t_v3 point, t_v3 light_dir, double light_dist, t_data *data)
 {
-    t_ray shadow_ray;
-    t_intersection intersection;
+	t_ray shadow_ray;
+	t_intersection intersection;
 
-    // Create a shadow ray starting from the point and heading towards the light source
-    t_v3 epsilon_offset = multiply_vector_scalar(light_dir, 0.001);
-    shadow_ray.origin = subtract_vectors(point, epsilon_offset);
-    shadow_ray.direction = light_dir;
+	// Create a shadow ray starting from the point and heading towards the light source
+	light_dir = multiply_vector_scalar(light_dir, -1);
+	t_v3 epsilon_offset = multiply_vector_scalar(light_dir, 0.0001);
+	shadow_ray.origin = add_vectors(point, epsilon_offset);
+	shadow_ray.direction = normalize(light_dir);
 
-    // Check if the shadow ray intersects with any object before reaching the light source
-    int is_shadowed = is_light_obstructed(shadow_ray, data->objects, light_dist, &intersection);
-    if (is_shadowed && intersection.t < light_dist)
-    {
-        // The point is in shadow, return 1
-        return 1;
-    }
-    else
-    {
-        // The point is not in shadow, return 0
-        return 0;
-    }
+	// Check if the shadow ray intersects with any object before reaching the light source
+	if (is_light_obstructed(shadow_ray, data->objects, light_dist, &intersection))
+	{
+		// The point is in shadow, return 1
+		return 1;
+	}
+	else
+	{
+		// The point is not in shadow, return 0
+		return 0;
+	}
 }
 
 t_color calculate_diffuse_color(t_intersection *intersection, t_light *light, t_data *data)
@@ -496,7 +376,7 @@ t_color calculate_diffuse_color(t_intersection *intersection, t_light *light, t_
 
 	t_color light_color = light->color;
 	t_color object_color = get_object_color(intersection);
-
+	
 	// Scale down colors to [0, 1]
 	t_color scaled_light_color = {light_color.r / 255.0f, light_color.g / 255.0f, light_color.b / 255.0f};
 	t_color scaled_object_color = {object_color.r / 255.0f, object_color.g / 255.0f, object_color.b / 255.0f};
@@ -519,8 +399,7 @@ t_color calculate_diffuse_color(t_intersection *intersection, t_light *light, t_
 		// Add the diffuse contribution to the diffuse color
 		diffuse_color = add_colors(diffuse_color, diffuse_contribution);
 	}
-
-	return diffuse_color;
+	return (diffuse_color);
 }
 
 t_color calculate_ambient_color(t_intersection *intersection, t_data *data)
@@ -554,7 +433,7 @@ t_color calculate_shading(t_intersection *intersection, t_data *data)
 
 	color = add_colors(ambient_color, diffuse_color);
 
-	return color;
+	return (color);
 }
 
 t_color trace_ray(t_ray ray, t_data *data, int depth)
@@ -567,6 +446,7 @@ t_color trace_ray(t_ray ray, t_data *data, int depth)
 	{
 		// Calculate shading and lighting at the intersection point
 		pixel_color = calculate_shading(&intersection, data);
+		// pixel_color = visualize_normals(&intersection);
 	}
 	else
 		pixel_color = calculate_background_color(*data->ambient_light);
@@ -584,40 +464,81 @@ void print_matrix(t_matrix4 matrix)
 	}
 }
 
-t_matrix4 camera_to_world_matrix(t_camera *camera)
-{
-	t_v3 forward = *camera->normal_vec;
-	t_v3 up = new_v3(0, 1, 0); // Set a default up vector
+// t_matrix4 camera_to_world_matrix(t_camera *camera)
+// {
+// 	t_v3 forward = *camera->normal_vec;
+// 	t_v3 up = new_v3(0, 1, 0); // Set a default up vector
 
-	// If the forward vector is the same as the default up vector or its negative,
-	// choose a different vector as the up vector
-	if (fabs(dot_product(forward, up)) > 0.99) {
-		up = new_v3(0, 0, 1); // Use a different default up vector
-	}
+// 	// If the forward vector is the same as the default up vector or its negative,
+// 	// choose a different vector as the up vector
+// 	if (fabs(dot_product(forward, up)) > 0.99) {
+// 		up = new_v3(0, 0, 1); // Use a different default up vector
+// 	}
 
-	t_v3 right = cross_product(up, forward); // Compute right using cross product
+// 	t_v3 right = cross_product(up, forward); // Compute right using cross product
 
-	// Recompute up to ensure it's orthogonal to forward and right
-	up = cross_product(forward, right);
+// 	// Recompute up to ensure it's orthogonal to forward and right
+// 	up = cross_product(forward, right);
 
-	t_matrix4 cam_to_world = {{
-		{right.x, right.y, right.z, 0},
-		{up.x, up.y, up.z, 0},
-		{forward.x, forward.y, forward.z, 0},
-		{camera->pos->x, camera->pos->y, camera->pos->z, 1}
-	}};
-	return cam_to_world;
+// 	t_matrix4 cam_to_world = {{
+// 		{right.x, right.y, right.z, 0},
+// 		{up.x, up.y, up.z, 0},
+// 		{forward.x, forward.y, forward.z, 0},
+// 		{camera->pos->x, camera->pos->y, camera->pos->z, 1}
+// 	}};
+// 	return cam_to_world;
+// }
+
+// t_v3	multiply_matrix_point(const t_matrix4 matrix, const t_v3 point)
+// {
+// 	t_v3	result;
+
+// 	result.x = matrix.m[0][0] * point.x + matrix.m[0][1] * point.y + matrix.m[0][2] * point.z + matrix.m[0][3];
+// 	result.y = matrix.m[1][0] * point.x + matrix.m[1][1] * point.y + matrix.m[1][2] * point.z + matrix.m[1][3];
+// 	result.z = matrix.m[2][0] * point.x + matrix.m[2][1] * point.y + matrix.m[2][2] * point.z + matrix.m[2][3];
+// 	return (result);
+// }
+
+t_v3 world_to_screen(t_v3 point, t_data *data) {
+    float fov_tan = tan(deg_to_rad(data->camera->fov * 0.5));
+    float aspect_ratio = (float)data->win_width / (float)data->win_height;
+
+    // Assume the camera looks down the negative z-axis by default
+    float screen_x = data->win_width * (point.x / (point.z * fov_tan * aspect_ratio) + 1) * 0.5;
+    float screen_y = data->win_height * (1 - point.y / (point.z * fov_tan)) * 0.5;
+
+    return (t_v3){screen_x, screen_y, 0};
 }
 
-t_v3	multiply_matrix_point(const t_matrix4 matrix, const t_v3 point)
-{
-	t_v3	result;
+void draw_line(t_data *data, int x, int y, t_v3 shadow_ray_direction, t_color color) {
+    int offset = 10;  // This defines how long the shadow ray visualization will be on the image
+    int end_x = x + offset * shadow_ray_direction.x;
+    int end_y = y + offset * shadow_ray_direction.y;
 
-	result.x = matrix.m[0][0] * point.x + matrix.m[0][1] * point.y + matrix.m[0][2] * point.z + matrix.m[0][3];
-	result.y = matrix.m[1][0] * point.x + matrix.m[1][1] * point.y + matrix.m[1][2] * point.z + matrix.m[1][3];
-	result.z = matrix.m[2][0] * point.x + matrix.m[2][1] * point.y + matrix.m[2][2] * point.z + matrix.m[2][3];
-	return (result);
+    int dx = end_x - x;
+    int dy = end_y - y;
+
+    int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+    float x_increment = dx / (float)steps;
+    float y_increment = dy / (float)steps;
+
+    float current_x = x;
+    float current_y = y;
+
+    for (int i = 0; i <= steps; i++) {
+        int px = round(current_x);
+        int py = round(current_y);
+
+        if (px >= 0 && px < data->win_width && py >= 0 && py < data->win_height) {
+            set_pixel_color(data, px, py, convert_tcolor_to_int(color));
+        }
+
+        current_x += x_increment;
+        current_y += y_increment;
+    }
 }
+
+
 
 int generate_rays(t_data *data)
 {
@@ -646,24 +567,21 @@ int generate_rays(t_data *data)
 			double ndc_x = (2.0 * (x + 0.5) / data->win_width - 1.0) * aspect_ratio * fov_tan;
 			double ndc_y = (1.0 - 2.0 * (y + 0.5) / data->win_height) * fov_tan;
 
-			t_v3 pixel_world_space = {
-				data->camera->pos->x + ndc_x * right.x + ndc_y * up.x - forward.x,
-				data->camera->pos->y + ndc_x * right.y + ndc_y * up.y - forward.y,
-				data->camera->pos->z + ndc_x * right.z + ndc_y * up.z - forward.z
+			t_v3 pixel_relative_to_camera = {
+				ndc_x * right.x + ndc_y * up.x + forward.x,
+				ndc_x * right.y + ndc_y * up.y + forward.y,
+				ndc_x * right.z + ndc_y * up.z + forward.z
 			};
 			
-			t_v3 ray_direction = subtract_vectors(pixel_world_space, *data->camera->pos);
-			ray_direction = normalize(ray_direction);
+			t_v3 ray_direction = normalize(pixel_relative_to_camera);
 			
 			// Create the ray and trace it
 			t_ray ray = { .origin = *data->camera->pos, .direction = ray_direction };
 			t_color pixel_color = trace_ray(ray, data, MAX_RECURSION_DEPTH);
-
 			// Set the color of the pixel on the screen
 			set_pixel_color(data, x, y, convert_tcolor_to_int(pixel_color));
 		}
 	}
-
 	// Display the rendered image
 	mlx_put_image_to_window(data->mlx->ptr, data->mlx->win, data->mlxdata->img, 0, 0);
 	return 0;

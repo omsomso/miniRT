@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/04 21:45:24 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/07 14:00:59 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,7 @@ void	add_object(t_object **objects_head, void *object, t_type type)
 	new_object->ambient_coefficient = 0.2;
 	new_object->diffuse_coefficient = 0.9;
 	new_object->next = NULL;
+	new_object->distance = INFINITY;
 	if (*objects_head == NULL)
 		*objects_head = new_object;
 	else
@@ -313,6 +314,111 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 	return (0);
 }
 
+// Merge sort objects by distance
+t_object* sorted_merge(t_object* a, t_object* b)
+{
+	t_object* result = NULL;
+
+	if (!a)
+		return b;
+	else if (!b)
+		return a;
+
+	// Pick the smaller distance and recur
+	if (a->distance <= b->distance)
+	{
+		result = a;
+		result->next = sorted_merge(a->next, b);
+	}
+	else
+	{
+		result = b;
+		result->next = sorted_merge(a, b->next);
+	}
+	return result;
+}
+
+void front_back_split(t_object* source, t_object** front_ref, t_object** back_ref)
+{
+	t_object* fast;
+	t_object* slow;
+
+	if (source == NULL || source->next == NULL)
+	{
+		*front_ref = source;
+		*back_ref = NULL;
+	}
+	else
+	{
+		slow = source;
+		fast = source->next;
+
+		while (fast != NULL)
+		{
+			fast = fast->next;
+			if (fast)
+			{
+				slow = slow->next;
+				fast = fast->next;
+			}
+		}
+
+		*front_ref = source;
+		*back_ref = slow->next;
+		slow->next = NULL;
+	}
+}
+
+t_object* merge_sort(t_object* head) {
+    if (!head || !head->next) return head;
+
+    t_object* a;
+    t_object* b;
+    front_back_split(head, &a, &b);
+
+    a = merge_sort(a);
+    b = merge_sort(b);
+
+    return sorted_merge(a, b);
+}
+
+
+double compute_distance(t_v3 origin, t_object *obj)
+{
+	t_v3 *object_point;
+
+	switch (obj->type)
+	{
+	case SPHERE:
+		object_point = ((t_sphere *)obj->object)->center;
+		break;
+	case PLANE:
+		object_point = ((t_plane *)obj->object)->point;
+		break;
+	case CYLINDER:
+		object_point = ((t_cylinder *)obj->object)->center;
+		break;
+	default:
+		return INFINITY;
+	}
+
+	return distance_to_point(origin, *object_point);
+}
+
+void sort_objects_by_distance(t_v3 origin, t_object **head)
+{
+	t_object *temp = *head;
+
+	// Compute the distances for each object in the list
+	while (temp)
+	{
+		temp->distance = compute_distance(origin, temp);
+		temp = temp->next;
+	}
+	// Use merge sort to sort the list based on the computed distances
+	*head = merge_sort(*head);
+}
+
 // Main Parser Function
 // needs check for A, C, L duplicates
 int	parser(char *filename, t_object **objects, t_data *data)
@@ -337,6 +443,7 @@ int	parser(char *filename, t_object **objects, t_data *data)
 		line = get_next_line(fd);
 	}
 
+	sort_objects_by_distance(*data->camera->pos, &(*objects));
 	printf("Parsing Done!\n");
 	printf("The camera center's coordinates are: %f, %f, %f\n", data->camera->pos->x, data->camera->pos->y, data->camera->pos->z);
 	printf("The camera orientation is: %f, %f, %f\n", data->camera->normal_vec->x, data->camera->normal_vec->y, data->camera->normal_vec->z);

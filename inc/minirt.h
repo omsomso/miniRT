@@ -101,6 +101,7 @@ typedef struct s_object
 	double			ambient_coefficient;
 	double			diffuse_coefficient;
 	struct s_object	*next;
+	double			distance;
 }				t_object;
 
 typedef struct s_intersection
@@ -165,5 +166,22 @@ int		generate_rays(t_data *data);
 // Utility Functions
 int		ft_isspace(char c);
 float	ft_atof(const char *s);
+
+// Math Functions
+t_v3	add_vectors(t_v3 a, t_v3 b);
+t_v3	subtract_vectors(t_v3 a, t_v3 b);
+t_v3	multiply_vector_scalar(t_v3 a, double s);
+t_v3	normalize(t_v3	a);
+float	distance_to_point(t_v3 a, t_v3 b);
+float	vector_length(t_v3	a);
+t_v3	cross_product(t_v3 a, t_v3 b);
+float	dot_product(t_v3 a, t_v3 b);
+float	deg_to_rad(float deg);
+t_v3	new_v3(float x, float y, float z);
+bool	v3_equal(t_v3 v1, t_v3 v2);
+t_v3	get_orthogonal(t_v3 v);
+t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
+t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
+
 
 #endif
