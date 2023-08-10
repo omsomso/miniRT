@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/10 12:59:12 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/10 15:18:20 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,93 +192,83 @@ int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
 
 int intersect_cylinder(t_ray ray, t_cylinder *cylinder, t_intersection *intersection)
 {
-    t_v3 OC = subtract_vectors(*(cylinder->center), ray.origin);
-    float dir_dot_norm = dot_product(ray.direction, *(cylinder->normal_vec));
-    float OC_dot_norm = dot_product(OC, *(cylinder->normal_vec));
+	t_v3 OC = subtract_vectors(*(cylinder->center), ray.origin);
+	float dir_dot_norm = dot_product(ray.direction, *(cylinder->normal_vec));
+	float OC_dot_norm = dot_product(OC, *(cylinder->normal_vec));
 
-    // Compute the A, B, and C coefficients for the quadratic equation
-    float A = dot_product(ray.direction, ray.direction) - dir_dot_norm * dir_dot_norm;
-    float B = 2 * (dot_product(ray.direction, OC) - dir_dot_norm * OC_dot_norm);
-    float C = dot_product(OC, OC) - OC_dot_norm * OC_dot_norm - cylinder->radius * cylinder->radius;
+	// Compute the A, B, and C coefficients for the quadratic equation
+	float A = dot_product(ray.direction, ray.direction) - dir_dot_norm * dir_dot_norm;
+	float B = 2 * (dot_product(ray.direction, OC) - dir_dot_norm * OC_dot_norm);
+	float C = dot_product(OC, OC) - OC_dot_norm * OC_dot_norm - cylinder->radius * cylinder->radius;
 
-    float discriminant = B * B - 4 * A * C;
+	float discriminant = B * B - 4 * A * C;
 
-    float t_body = INFINITY; // Placeholder for the best intersection with the cylinder's body
+	float t_body = INFINITY; // Placeholder for the best intersection with the cylinder's body
 
-    if (discriminant >= 0) 
-    {
-        float t_values[2] = {(-B - sqrt(discriminant)) / (2 * A), (-B + sqrt(discriminant)) / (2 * A)};
-        int i = 0;
-        while (i < 2)
-        {
-            float t = t_values[i];
-            t_v3 P = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
-            float y = dot_product(subtract_vectors(*(cylinder->center), P), *(cylinder->normal_vec));
+	if (discriminant >= 0) 
+	{
+		float t_values[2] = {(-B - sqrt(discriminant)) / (2 * A), (-B + sqrt(discriminant)) / (2 * A)};
+		int i = 0;
+		while (i < 2)
+		{
+			float t = t_values[i];
+			t_v3 P = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
+			float y = dot_product(subtract_vectors(*(cylinder->center), P), *(cylinder->normal_vec));
 
-            if (y > -cylinder->height/2 && y < cylinder->height/2 && t < t_body && t > 0)
-            {
-                t_body = t;
-            }
-            i++;
-        }
-    }
-
-    // Check intersections with the cylinder's caps
-    float t_caps = INFINITY; // Placeholder for the best intersection with the cylinder's caps
-    float cap_offsets[2] = {-cylinder->height/2, cylinder->height/2};
-    int j = 0;
-    while (j < 2)
-    {
-        float cap_offset = cap_offsets[j];
-        float t_cap = (cap_offset - OC_dot_norm) / dir_dot_norm;
-        if(t_cap > 0)
-        {
-            t_v3 P = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t_cap));
-            t_v3 to_center = subtract_vectors(*(cylinder->center), P);
-            to_center = subtract_vectors(to_center, multiply_vector_scalar(*(cylinder->normal_vec), dot_product(to_center, *(cylinder->normal_vec))));
-
-            if (dot_product(to_center, to_center) <= cylinder->radius * cylinder->radius && t_cap < t_caps)
-            {
-                t_caps = t_cap;
-            }
-        }
-        j++;
-    }
-
-    // Determine the best intersection between the body and the caps
-    if(t_body < INFINITY || t_caps < INFINITY)
-    {
-		float t_final;
-		if (t_body < INFINITY && (t_body < t_caps || t_caps == INFINITY)) {
-			t_final = t_body;
-		} else if (t_caps < INFINITY) {
-			t_final = t_caps;
-		} else {
-			return 0;  // No valid intersection
+			if (y > -cylinder->height/2 && y < cylinder->height/2 && t < t_body && t > 0)
+			{
+				t_body = t;
+			}
+			i++;
 		}
+	}
+	// Check intersections with the cylinder's caps
+	float t_caps = INFINITY; // Placeholder for the best intersection with the cylinder's caps
+	float cap_offsets[2] = {-cylinder->height/2, cylinder->height/2};
+	int j = 0;
+	while (j < 2)
+	{
+		float cap_offset = cap_offsets[j];
+		float t_cap = (cap_offset - OC_dot_norm) / dir_dot_norm;
+		if(t_cap > 0)
+		{
+			t_v3 P = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t_cap));
+			t_v3 to_center = subtract_vectors(*(cylinder->center), P);
+			to_center = subtract_vectors(to_center, multiply_vector_scalar(*(cylinder->normal_vec), dot_product(to_center, *(cylinder->normal_vec))));
 
-        intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t_final));
-        if(t_final == t_body)
+			if (dot_product(to_center, to_center) <= cylinder->radius * cylinder->radius && t_cap < t_caps)
+			{
+				t_caps = t_cap;
+			}
+		}
+		j++;
+	}
+	// Determine the best intersection between the body and the caps
+	if(t_body < INFINITY || t_caps < INFINITY)
+	{
+		float t_final;
+		if (t_body < INFINITY && (t_body < t_caps || t_caps == INFINITY))
+			t_final = t_body;
+		else if (t_caps < INFINITY)
+			t_final = t_caps;
+		else
+			return 0;  // No valid intersection
+		intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t_final));
+		if(t_final == t_body)
 		{
 		t_v3 vector_to_intersection = subtract_vectors(intersection->point, *(cylinder->center));
 		t_v3 projected_vector = multiply_vector_scalar(*(cylinder->normal_vec), dot_product(vector_to_intersection, *(cylinder->normal_vec)));
 		t_v3 normal = subtract_vectors(vector_to_intersection, projected_vector);
 		intersection->normal = normalize(multiply_vector_scalar(normal, -1));
-
-			// intersection->normal = normalize(normal);
 		}
 		else
-		{
 			intersection->normal = (t_final == t_caps && OC_dot_norm > 0) ? multiply_vector_scalar(*(cylinder->normal_vec), -1) :  *(cylinder->normal_vec);
-		}
+		intersection->t = t_final;
+		return 1;
+	}
 
-        intersection->t = t_final;
-        return 1;
-    }
-
-    return 0;
+	return 0;
 }
-
 
 int intersect(t_ray ray, void *object, t_type type, t_intersection *intersection)
 {
@@ -419,7 +409,6 @@ t_color calculate_shading(t_intersection *intersection, t_data *data)
 	t_color diffuse_color = calculate_diffuse_color(intersection, light, data);
 
 	color = add_colors(ambient_color, diffuse_color);
-
 	return (color);
 }
 
