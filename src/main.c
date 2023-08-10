@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/07/31 19:39:01 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/10 17:02:09 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,24 @@ int	quit(t_mlx *mlx)
 	exit(0);
 }
 
-int	handle_keypress(int key, t_mlx *mlx)
+int	handle_keypress(int key, t_data *data)
 {
 	if (key == KEY_ESC)
-		quit(mlx);
+		quit(data->mlx);
+	if (key == 124)
+		data->camera->pos->x -= 0.2;
+	if (key == 123)
+		data->camera->pos->x += 0.2;
+	if (key == 43)
+		data->camera->pos->y -= 0.2;
+	if (key == 47)
+		data->camera->pos->y += 0.2;
+	if (key == 126)
+		data->camera->pos->z += 0.1;
+	if (key == 125)
+		data->camera->pos->z -= 0.1;
+	generate_rays(data);
+	printf("%d\n", key);
 	return (0);
 }
 
@@ -41,7 +55,7 @@ void	init_window(t_data *data)
 
 void	start_loop(t_data *data)
 {
-	mlx_hook(data->mlx->win, EVENT_KEYPRESS, 0, &handle_keypress, data->mlx);
+	mlx_hook(data->mlx->win, EVENT_KEYPRESS, 0, &handle_keypress, data);
 	mlx_hook(data->mlx->win, EVENT_DESTROY, 0, &quit, data->mlx);
 	mlx_loop(data->mlx->ptr);
 }
@@ -94,6 +108,7 @@ int	main(int argc, char **argv)
 	if (parser(argv[1], &data->objects, data))
 		return (1);
 	generate_rays(data);
+	printf("%f\n", data->camera->pos->x);
 	start_loop(data);
 	
 	free_data(data);

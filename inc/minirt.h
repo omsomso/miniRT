@@ -161,6 +161,7 @@ typedef struct	s_matrix4
 int		parser(char *filename, t_object **objects, t_data *data);
 void	free_data(t_data *data);
 int		generate_rays(t_data *data);
+void	set_pixel_color(t_data *data, int x, int y, int color);
 
 
 // Utility Functions
