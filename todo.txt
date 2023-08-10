@@ -7,5 +7,7 @@ Input handling:
 	• Check FOV is between 0-180 or use % to force
 	• Check camera orientation is normalized or force normalization
 	• Make sure only spaces are used to separate things in file (or handle other whitespaces)
+	• Make sure objects are complete before their parsing is finished (could lead to segfault if not)
+	
 
 Norm...
