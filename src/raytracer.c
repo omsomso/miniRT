@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/08 17:17:25 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/10 12:59:12 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,19 @@ void print_color(t_color color)
 	printf("Color: R=%f, G=%f, B=%f\n", color.r, color.g, color.b);
 }
 
-void print_point(t_v3 p)
+void print_v(t_v3 p)
 {
 	printf("Point: x=%f, y=%f, z=%f\n", p.x, p.y, p.z);
+}
+
+void print_m(t_matrix4 matrix)
+{
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			printf("%f ", matrix.m[i][j]);
+		}
+		printf("\n");
+	}
 }
 
 t_color add_colors(t_color color1, t_color color2)
@@ -47,26 +57,6 @@ t_color multiply_color_scalar(t_color color, float s)
 	result.g = color.g * s;
 	result.b = color.b * s;
 	return (result);
-}
-
-
-int intersect_plane(t_ray ray, t_plane *plane, t_intersection *intersection)
-{
-	float denominator = dot_product(ray.direction, *(plane->normal_vec));
-
-	if (fabs(denominator) > 0.0001f) 
-	{
-		t_v3 oc = subtract_vectors(ray.origin, *(plane->point));
-		float t = -dot_product(oc, *(plane->normal_vec)) / denominator;
-		if (t >= 0.0f)
-		{
-			intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
-			intersection->normal = normalize(*(plane->normal_vec));
-			intersection->t = t;
-			return 1;
-		}
-	}
-	return 0;
 }
 
 void	set_pixel_color(t_data *data, int x, int y, int color)
@@ -149,115 +139,23 @@ t_color get_object_color(t_intersection *intersection)
 	return object_color;
 }
 
-// int intersect_cylinder(t_ray ray, t_cylinder *cylinder, t_intersection *intersection)
-// {
-// 	t_v3 oc = subtract_vectors(*(cylinder->center), ray.origin);
-// 	t_v3 dir = ray.direction;
-// 	dir.y = 0;
-// 	oc.y = 0;
-
-// 	float a = dot_product(dir, dir);
-// 	float b = 2.0 * dot_product(oc, dir);
-// 	float c = dot_product(oc, oc) - (cylinder->radius * cylinder->radius);
-// 	float discriminant = b * b - 4 * a * c;
-
-// 	if (discriminant < 0)
-// 	{
-// 		return 0;
-// 	}
-// 	else
-// 	{
-// 		float t1 = (-b - sqrt(discriminant)) / (2.0 * a);
-// 		float t2 = (-b + sqrt(discriminant)) / (2.0 * a);
-		
-// 		t_v3 point1 = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t1));
-// 		t_v3 point2 = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t2));
-
-// 		if (point1.y < cylinder->center->y || point1.y > cylinder->center->y + cylinder->height)
-// 			t1 = INFINITY;
-// 		if (point2.y < cylinder->center->y || point2.y > cylinder->center->y + cylinder->height)
-// 			t2 = INFINITY;
-
-// 		if (t1 == INFINITY && t2 == INFINITY)
-// 			return 0; // both intersections are out of bounds
-
-// 		float t = (t1 < t2) ? t1 : t2;
-// 		intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
-
-// 		// Calculate the normal vector at the intersection point
-// 		t_v3 intersection_to_center = subtract_vectors(intersection->point, *(cylinder->center));
-// 		intersection->normal = normalize(intersection_to_center);
-
-// 		intersection->t = t;
-// 		return 1;
-// 	}
-// }
-
-int intersect_cylinder(t_ray ray, t_cylinder *cylinder, t_intersection *intersection)
+int intersect_plane(t_ray ray, t_plane *plane, t_intersection *intersection)
 {
-	t_v3 oc = subtract_vectors(ray.origin, *(cylinder->center));
+	float denominator = dot_product(ray.direction, *(plane->normal_vec));
 
-	float a = dot_product(ray.direction, ray.direction) - pow(dot_product(ray.direction, *(cylinder->normal_vec)), 2);
-	float b = 2 * (dot_product(ray.direction, oc) - (dot_product(ray.direction, *(cylinder->normal_vec)) * dot_product(oc, *(cylinder->normal_vec))));
-	float c = dot_product(oc, oc) - pow(dot_product(oc, *(cylinder->normal_vec)), 2) - pow(cylinder->radius, 2);
-	
-	float discriminant = b * b - 4 * a * c;
-
-	if (discriminant < 0)
+	if (fabs(denominator) > 0.0001f) 
 	{
-		return 0; // no intersection with the cylinder
+		t_v3 oc = subtract_vectors(ray.origin, *(plane->point));
+		float t = dot_product(oc, *(plane->normal_vec)) / denominator;
+		if (t >= 0.0f)
+		{
+			intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
+			intersection->normal = multiply_vector_scalar(*(plane->normal_vec), -1);
+			intersection->t = t;
+			return 1;
+		}
 	}
-	else
-	{
-		float t1 = (-b - sqrt(discriminant)) / (2.0 * a);
-		float t2 = (-b + sqrt(discriminant)) / (2.0 * a);
-
-		float t = fmin(t1, t2);
-		float t_max = fmax(t1, t2);
-
-		// calculate y-coordinates for cylinder's caps
-		float y_min = cylinder->center->y - cylinder->height / 2;
-		float y_max = cylinder->center->y + cylinder->height / 2;
-
-		// calculate y-coordinate for intersection point
-		float y_intersection = ray.origin.y + t * ray.direction.y;
-
-		if (y_intersection < y_min || y_intersection > y_max) 
-		{
-			y_intersection = ray.origin.y + t_max * ray.direction.y;
-			if (y_intersection < y_min || y_intersection > y_max)
-			{
-				return 0; // intersection is outside the caps
-			}
-			else
-			{
-				t = t_max;
-			}
-		}
-
-		intersection->t = t;
-		intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
-
-		// the normal at the intersection point depends on whether the intersection is on the cap or the body
-		if (fabs(y_intersection - y_min) < 0.0001 || fabs(y_intersection - y_max) < 0.0001)
-		{
-			// the intersection is on the cap
-			intersection->normal = *(cylinder->normal_vec);
-			if (dot_product(ray.direction, intersection->normal) > 0)
-			{
-				intersection->normal = multiply_vector_scalar(intersection->normal, -1); // invert the normal if it points in the same direction as the ray
-			}
-		}
-		else
-		{
-			// the intersection is on the body
-			t_v3 m = add_vectors(oc, multiply_vector_scalar(ray.direction, t));
-			intersection->normal = subtract_vectors(m, multiply_vector_scalar(*(cylinder->normal_vec), dot_product(m, *(cylinder->normal_vec))));
-			intersection->normal = normalize(intersection->normal);
-		}
-
-		return 1; // there is an intersection with the cylinder
-	}
+	return 0;
 }
 
 int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
@@ -284,12 +182,101 @@ int intersect_sphere(t_ray ray, t_sphere *sphere, t_intersection *intersection)
 			return 0;
 
 		intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
-		t_v3 normal = subtract_vectors(intersection->point, *(sphere->center));
-		intersection->normal = normalize(normal);
+		intersection->normal = normalize(subtract_vectors(intersection->point, *(sphere->center)));
 		intersection->object = (t_object *)sphere;
 		intersection->t = t;
 		return 1;
 	}
+}
+
+
+int intersect_cylinder(t_ray ray, t_cylinder *cylinder, t_intersection *intersection)
+{
+    t_v3 OC = subtract_vectors(*(cylinder->center), ray.origin);
+    float dir_dot_norm = dot_product(ray.direction, *(cylinder->normal_vec));
+    float OC_dot_norm = dot_product(OC, *(cylinder->normal_vec));
+
+    // Compute the A, B, and C coefficients for the quadratic equation
+    float A = dot_product(ray.direction, ray.direction) - dir_dot_norm * dir_dot_norm;
+    float B = 2 * (dot_product(ray.direction, OC) - dir_dot_norm * OC_dot_norm);
+    float C = dot_product(OC, OC) - OC_dot_norm * OC_dot_norm - cylinder->radius * cylinder->radius;
+
+    float discriminant = B * B - 4 * A * C;
+
+    float t_body = INFINITY; // Placeholder for the best intersection with the cylinder's body
+
+    if (discriminant >= 0) 
+    {
+        float t_values[2] = {(-B - sqrt(discriminant)) / (2 * A), (-B + sqrt(discriminant)) / (2 * A)};
+        int i = 0;
+        while (i < 2)
+        {
+            float t = t_values[i];
+            t_v3 P = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t));
+            float y = dot_product(subtract_vectors(*(cylinder->center), P), *(cylinder->normal_vec));
+
+            if (y > -cylinder->height/2 && y < cylinder->height/2 && t < t_body && t > 0)
+            {
+                t_body = t;
+            }
+            i++;
+        }
+    }
+
+    // Check intersections with the cylinder's caps
+    float t_caps = INFINITY; // Placeholder for the best intersection with the cylinder's caps
+    float cap_offsets[2] = {-cylinder->height/2, cylinder->height/2};
+    int j = 0;
+    while (j < 2)
+    {
+        float cap_offset = cap_offsets[j];
+        float t_cap = (cap_offset - OC_dot_norm) / dir_dot_norm;
+        if(t_cap > 0)
+        {
+            t_v3 P = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t_cap));
+            t_v3 to_center = subtract_vectors(*(cylinder->center), P);
+            to_center = subtract_vectors(to_center, multiply_vector_scalar(*(cylinder->normal_vec), dot_product(to_center, *(cylinder->normal_vec))));
+
+            if (dot_product(to_center, to_center) <= cylinder->radius * cylinder->radius && t_cap < t_caps)
+            {
+                t_caps = t_cap;
+            }
+        }
+        j++;
+    }
+
+    // Determine the best intersection between the body and the caps
+    if(t_body < INFINITY || t_caps < INFINITY)
+    {
+		float t_final;
+		if (t_body < INFINITY && (t_body < t_caps || t_caps == INFINITY)) {
+			t_final = t_body;
+		} else if (t_caps < INFINITY) {
+			t_final = t_caps;
+		} else {
+			return 0;  // No valid intersection
+		}
+
+        intersection->point = add_vectors(ray.origin, multiply_vector_scalar(ray.direction, t_final));
+        if(t_final == t_body)
+		{
+		t_v3 vector_to_intersection = subtract_vectors(intersection->point, *(cylinder->center));
+		t_v3 projected_vector = multiply_vector_scalar(*(cylinder->normal_vec), dot_product(vector_to_intersection, *(cylinder->normal_vec)));
+		t_v3 normal = subtract_vectors(vector_to_intersection, projected_vector);
+		intersection->normal = normalize(multiply_vector_scalar(normal, -1));
+
+			// intersection->normal = normalize(normal);
+		}
+		else
+		{
+			intersection->normal = (t_final == t_caps && OC_dot_norm > 0) ? multiply_vector_scalar(*(cylinder->normal_vec), -1) :  *(cylinder->normal_vec);
+		}
+
+        intersection->t = t_final;
+        return 1;
+    }
+
+    return 0;
 }
 
 
@@ -446,99 +433,12 @@ t_color trace_ray(t_ray ray, t_data *data, int depth)
 	{
 		// Calculate shading and lighting at the intersection point
 		pixel_color = calculate_shading(&intersection, data);
-		// pixel_color = visualize_normals(&intersection);
 	}
 	else
 		pixel_color = calculate_background_color(*data->ambient_light);
 	pixel_color = normalize_color(pixel_color);  // Normalize color here
 	return (pixel_color);
 }
-
-void print_matrix(t_matrix4 matrix)
-{
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			printf("%f ", matrix.m[i][j]);
-		}
-		printf("\n");
-	}
-}
-
-// t_matrix4 camera_to_world_matrix(t_camera *camera)
-// {
-// 	t_v3 forward = *camera->normal_vec;
-// 	t_v3 up = new_v3(0, 1, 0); // Set a default up vector
-
-// 	// If the forward vector is the same as the default up vector or its negative,
-// 	// choose a different vector as the up vector
-// 	if (fabs(dot_product(forward, up)) > 0.99) {
-// 		up = new_v3(0, 0, 1); // Use a different default up vector
-// 	}
-
-// 	t_v3 right = cross_product(up, forward); // Compute right using cross product
-
-// 	// Recompute up to ensure it's orthogonal to forward and right
-// 	up = cross_product(forward, right);
-
-// 	t_matrix4 cam_to_world = {{
-// 		{right.x, right.y, right.z, 0},
-// 		{up.x, up.y, up.z, 0},
-// 		{forward.x, forward.y, forward.z, 0},
-// 		{camera->pos->x, camera->pos->y, camera->pos->z, 1}
-// 	}};
-// 	return cam_to_world;
-// }
-
-// t_v3	multiply_matrix_point(const t_matrix4 matrix, const t_v3 point)
-// {
-// 	t_v3	result;
-
-// 	result.x = matrix.m[0][0] * point.x + matrix.m[0][1] * point.y + matrix.m[0][2] * point.z + matrix.m[0][3];
-// 	result.y = matrix.m[1][0] * point.x + matrix.m[1][1] * point.y + matrix.m[1][2] * point.z + matrix.m[1][3];
-// 	result.z = matrix.m[2][0] * point.x + matrix.m[2][1] * point.y + matrix.m[2][2] * point.z + matrix.m[2][3];
-// 	return (result);
-// }
-
-t_v3 world_to_screen(t_v3 point, t_data *data) {
-    float fov_tan = tan(deg_to_rad(data->camera->fov * 0.5));
-    float aspect_ratio = (float)data->win_width / (float)data->win_height;
-
-    // Assume the camera looks down the negative z-axis by default
-    float screen_x = data->win_width * (point.x / (point.z * fov_tan * aspect_ratio) + 1) * 0.5;
-    float screen_y = data->win_height * (1 - point.y / (point.z * fov_tan)) * 0.5;
-
-    return (t_v3){screen_x, screen_y, 0};
-}
-
-void draw_line(t_data *data, int x, int y, t_v3 shadow_ray_direction, t_color color) {
-    int offset = 10;  // This defines how long the shadow ray visualization will be on the image
-    int end_x = x + offset * shadow_ray_direction.x;
-    int end_y = y + offset * shadow_ray_direction.y;
-
-    int dx = end_x - x;
-    int dy = end_y - y;
-
-    int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
-    float x_increment = dx / (float)steps;
-    float y_increment = dy / (float)steps;
-
-    float current_x = x;
-    float current_y = y;
-
-    for (int i = 0; i <= steps; i++) {
-        int px = round(current_x);
-        int py = round(current_y);
-
-        if (px >= 0 && px < data->win_width && py >= 0 && py < data->win_height) {
-            set_pixel_color(data, px, py, convert_tcolor_to_int(color));
-        }
-
-        current_x += x_increment;
-        current_y += y_increment;
-    }
-}
-
-
 
 int generate_rays(t_data *data)
 {

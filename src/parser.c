@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/07 14:00:59 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/09 17:26:36 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,6 +258,7 @@ int	parse_cy(char **s, t_object **objects)
 	cylinder->center = get_vec(split);
 	split = ft_split(s[2], ',');
 	cylinder->normal_vec = get_vec(split);
+	printf("%f, %f, %f\n", cylinder->normal_vec->x,cylinder->normal_vec->y, cylinder->normal_vec->z);
 	if (!cylinder->center || !cylinder->normal_vec)
 		return (1);
 	cylinder->diameter = ft_atoi(s[3]);
@@ -278,7 +279,6 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 
 	split = ft_split(line, ' ');
 	obj_count = 0;
-	// (void)objects;
 	if (!split[0])
 		return (ft_ptrfree(split), -1);
 	if (!ft_strncmp("A", split[0], ft_strlen(split[0])))
@@ -454,6 +454,13 @@ int	parser(char *filename, t_object **objects, t_data *data)
 		{
 			t_sphere *sphere = (t_sphere*)obj->object;
 			printf("The sphere center's coordinates are: %f, %f, %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
+			// printf("Diameter = %f\n", sphere->diameter);
+			// printf("Sphere color.r = %f\n", sphere->color.r);
+		}
+		else if (obj->type == PLANE)
+		{
+			t_sphere *plane = (t_sphere*)obj->object;
+			printf("The plane's coordinates are: %f, %f, %f\n", plane->center->x, plane->center->y, plane->center->z);
 			// printf("Diameter = %f\n", sphere->diameter);
 			// printf("Sphere color.r = %f\n", sphere->color.r);
 		}
