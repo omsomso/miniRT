@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/10 17:02:09 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/17 12:28:16 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	handle_keypress(int key, t_data *data)
 	if (key == 125)
 		data->camera->pos->z -= 0.1;
 	generate_rays(data);
-	printf("%d\n", key);
+	// printf("%d\n", key);
 	return (0);
 }
 
@@ -110,7 +110,6 @@ int	main(int argc, char **argv)
 	generate_rays(data);
 	printf("%f\n", data->camera->pos->x);
 	start_loop(data);
-	
 	free_data(data);
 	return (0);
 }

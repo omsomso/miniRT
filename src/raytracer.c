@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/10 15:18:20 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/17 19:39:06 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -400,16 +400,49 @@ t_color calculate_ambient_color(t_intersection *intersection, t_data *data)
 	return ambient_color;
 }
 
-t_color calculate_shading(t_intersection *intersection, t_data *data)
+t_v3 reflect(t_v3 incident_dir, t_v3 normal)
 {
-	t_color color = {0, 0, 0};
-	t_light *light = data->light;
+	double dot_product_value = dot_product(incident_dir, normal);
+	t_v3 reflection = subtract_vectors(incident_dir, multiply_vector_scalar(normal, 2.0 * dot_product_value));
+	return reflection;
+}
 
-	t_color ambient_color = calculate_ambient_color(intersection, data);
-	t_color diffuse_color = calculate_diffuse_color(intersection, light, data);
+t_color calculate_specular_color(t_intersection *intersection, t_light *light, t_v3 camera_position, double specular_exponent)
+{
+	t_v3 light_dir = normalize(subtract_vectors(*light->pos, intersection->point));
+	t_v3 reflect_dir = normalize(reflect(multiply_vector_scalar(light_dir, -1.0), intersection->normal)); // Calculate reflection direction
+	t_v3 view_dir = normalize(subtract_vectors(camera_position, intersection->point)); // Calculate view direction
 
-	color = add_colors(ambient_color, diffuse_color);
-	return (color);
+	double specular_intensity = pow(fmax(dot_product(view_dir, reflect_dir), 0.0), specular_exponent);
+
+	// Calculate and scale the specular color contribution
+	t_color specular_color = light->color;
+	specular_color.r *= specular_intensity * light->brightness;
+	specular_color.g *= specular_intensity * light->brightness;
+	specular_color.b *= specular_intensity * light->brightness;
+
+	return specular_color;
+}
+
+t_color calculate_shading(t_intersection *intersection, t_data *data, t_v3 camera_position, double specular_exponent)
+{
+	t_color ambient_color;
+	t_color diffuse_color;
+	t_color specular_color;
+
+	ambient_color = calculate_ambient_color(intersection, data);
+	diffuse_color = calculate_diffuse_color(intersection, data->light, data);
+	specular_color = calculate_specular_color(intersection, data->light, camera_position, specular_exponent);
+
+	// Combine ambient, diffuse, and specular colors
+	t_color total_color = add_colors(add_colors(ambient_color, diffuse_color), specular_color);
+
+	// Ensure color components are within [0, 255] range
+	total_color.r = fmin(fmax(total_color.r, 0.0), 255.0);
+	total_color.g = fmin(fmax(total_color.g, 0.0), 255.0);
+	total_color.b = fmin(fmax(total_color.b, 0.0), 255.0);
+
+	return total_color;
 }
 
 t_color trace_ray(t_ray ray, t_data *data, int depth)
@@ -421,7 +454,7 @@ t_color trace_ray(t_ray ray, t_data *data, int depth)
 	if (find_closest_intersection(ray, data->objects, &intersection))
 	{
 		// Calculate shading and lighting at the intersection point
-		pixel_color = calculate_shading(&intersection, data);
+		pixel_color = calculate_shading(&intersection, data, *data->camera->pos, 100);
 	}
 	else
 		pixel_color = calculate_background_color(*data->ambient_light);

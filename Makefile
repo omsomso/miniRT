@@ -32,7 +32,8 @@ all:		$(NAME)
 
 $(NAME): 	$(OBJ)
 			@$(CC) $(FLAGS) -o $@ $^ -L$(LIBDIR) -lft -I$(INCDIR) -I$(LIBMLXDIR) -L$(LIBMLXDIR) -lmlx -framework OpenGL -framework AppKit
-
+			@echo "$$HEADER"
+			
 run:		all
 			@echo "$$HEADER"
 			@./minirt scenes/test01-sphere.rt

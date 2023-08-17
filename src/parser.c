@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/09 17:26:36 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/17 15:14:54 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ void	free_data(t_data *data)
 }
 
 // Object Creation
-void	add_object(t_object **objects_head, void *object, t_type type)
+void	add_object(t_object **objects_head, void *object, t_type type, char **s)
 {
 	t_object	*current;
 	t_object	*new_object;
@@ -181,8 +181,22 @@ void	add_object(t_object **objects_head, void *object, t_type type)
 	new_object->diffuse_coefficient = 0.9;
 	new_object->next = NULL;
 	new_object->distance = INFINITY;
+	new_object->mirror = false;
+
+	if (!s[4])
+	{
+		new_object->check = false;
+		new_object->mirror = false;
+	}
+	else if (s[4] && ft_atoi(s[4]) == 1)
+	{
+		new_object->check = true;
+		if (s[5] && ft_atoi(s[5]) == 1)
+				new_object->mirror = true;
+	}
+
 	if (*objects_head == NULL)
-		*objects_head = new_object;
+			*objects_head = new_object;
 	else
 	{
 		current = *objects_head;
@@ -212,7 +226,7 @@ int	parse_sp(char **s, t_object **objects)
 	sphere->radius = sphere->diameter / 2;
 	split = ft_split(s[3], ',');
 	get_color(&(sphere->color), split);
-	add_object(objects, sphere, SPHERE);
+	add_object(objects, sphere, SPHERE, s);
 	return (0);
 }
 
@@ -237,7 +251,7 @@ int	parse_pl(char **s, t_object **objects)
 		return (1);
 	split = ft_split(s[3], ',');
 	get_color(&(plane->color), split);
-	add_object(objects, plane, PLANE);
+	add_object(objects, plane, PLANE, s);
 	return (0);
 }
 
@@ -258,7 +272,6 @@ int	parse_cy(char **s, t_object **objects)
 	cylinder->center = get_vec(split);
 	split = ft_split(s[2], ',');
 	cylinder->normal_vec = get_vec(split);
-	printf("%f, %f, %f\n", cylinder->normal_vec->x,cylinder->normal_vec->y, cylinder->normal_vec->z);
 	if (!cylinder->center || !cylinder->normal_vec)
 		return (1);
 	cylinder->diameter = ft_atoi(s[3]);
@@ -266,10 +279,9 @@ int	parse_cy(char **s, t_object **objects)
 	cylinder->height = ft_atoi(s[4]);
 	split = ft_split(s[5], ',');
 	get_color(&(cylinder->color), split);
-	add_object(objects, cylinder, CYLINDER);
+	add_object(objects, cylinder, CYLINDER, s);
 	return (0);
 }
-
 
 // Line Parser Function
 int	parse_line(char *line, t_object **objects, t_data *data)
@@ -362,7 +374,6 @@ void front_back_split(t_object* source, t_object** front_ref, t_object** back_re
 				fast = fast->next;
 			}
 		}
-
 		*front_ref = source;
 		*back_ref = slow->next;
 		slow->next = NULL;
@@ -381,7 +392,6 @@ t_object* merge_sort(t_object* head) {
 
     return sorted_merge(a, b);
 }
-
 
 double compute_distance(t_v3 origin, t_object *obj)
 {
