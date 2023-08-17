@@ -102,6 +102,8 @@ typedef struct s_object
 	double			diffuse_coefficient;
 	struct s_object	*next;
 	double			distance;
+	bool			check;
+	bool			mirror;
 }				t_object;
 
 typedef struct s_intersection
@@ -162,6 +164,7 @@ int		parser(char *filename, t_object **objects, t_data *data);
 void	free_data(t_data *data);
 int		generate_rays(t_data *data);
 void	set_pixel_color(t_data *data, int x, int y, int color);
+t_color	trace_ray(t_ray ray, t_data *data, int depth);
 
 
 // Utility Functions
