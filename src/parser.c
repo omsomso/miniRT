@@ -6,13 +6,13 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/20 20:25:59 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/20 23:55:28 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-// Function To Get Colors
+// Function gets colors from char array and frees array
 int	get_color(t_color *color, char **s)
 {
 	int	i;
@@ -44,14 +44,88 @@ t_v3	*get_vec(char **s)
 	return (vector);
 }
 
+int	check_a(char **s)
+{
+	float	ratio;
+
+	if (!s[1] || !s[2])
+	{
+		write(2, "Error: Ambient light parameters missing\n", 40);
+		return (1);
+	}
+	ratio = ft_atof(s[1]);
+	if (ratio < 0 || ratio > 1)
+	{
+		write(2, "Error: Ambient light ratio must be between 0 and 1\n", 51);
+		return (1);
+	}
+	if (ft_ptrcount(s) != 3)
+	{
+		write(2, "Error: Ambient light parameters invalid\n", 40);
+		return (1);
+	}
+	if (check_color(s[2]))
+		return (1);
+	return (0);
+}
+
+int	check_normal(char **s)
+{
+	t_v3	*norm;
+	int		err;
+
+	err = 0;
+	norm = get_vec(ft_split(s[2], ','));
+	if (norm->x < -1 || norm->x > 1)
+		err = 1;
+	if (norm->y < -1 || norm->y > 1)
+		err = 1;
+	if (norm->z < -1 || norm->z > 1)
+		err = 1;
+	free(norm);
+	if (err == 1)
+	{
+		write(2, "Error: Camera normal vector must be between -1 & 1\n", 51);
+		return (1);
+	}
+	return (0);
+}
+
+int	check_c(char **s)
+{
+	int		fov;
+
+	if (!s[1] || !s[2] || !s[3])
+	{
+		write(2, "Error: Camera parameters missing\n", 33);
+		return (1);
+	}
+	fov = ft_atoi(s[3]);
+	if (ft_ptrcount(s) != 4 || check_pos(s[1]))
+	{
+		write(2, "Error: Camera parameters invalid\n", 33);
+		return (1);
+	}
+	if (fov < 0 || fov > 180)
+	{
+		write(2, "Error: Camera FOV must be between 0 and 180\n", 45);
+		return (1);
+	}
+	if (check_normal(s))
+		return (1);
+	return (0);
+}
+
 // Ambient Light Parser
 int	parse_a(char **s, t_data **data)
 {
 	t_amb	*ambient_light;
 	char	**colors;
 
+	if (check_a(s))
+		return (1);
 	ambient_light = malloc(sizeof(t_amb));
-	if (!ambient_light || !s[1] || !s[2])
+	if (!ambient_light)
 		return (1);
 	ambient_light->ratio = ft_atof(s[1]);
 	colors = ft_split(s[2], ',');
@@ -67,6 +141,8 @@ int	parse_c(char **s, t_data **data)
 	t_camera	*camera;
 	char		**split;
 
+	if (check_c(s))
+		return (1);
 	camera = malloc(sizeof(t_camera));
 	if (!camera || !s[1] || !s[2] || !s[3])
 		return (1);
@@ -80,14 +156,38 @@ int	parse_c(char **s, t_data **data)
 	return (0);
 }
 
+int	check_l(char **s)
+{
+	if (!s[1] || !s[2] || ft_ptrcount(s) > 4)
+	{
+		write(2, "Error: Light parameters missing\n", 33);
+		return (1);
+	}
+	if (ft_atof(s[2]) < 0 || ft_atof(s[2]) > 1)
+	{
+		write(2, "Error: Light brightness must be between 0 and 1\n", 48);
+		return (1);
+	}
+	if (check_pos(s[1]))
+		return (1);
+	if (s[3])
+	{
+		if (check_color(s[3]))
+			return (1);
+	}
+	return (0);
+}
+
 // Light Parser
 int	parse_l(char **s, t_data **data)
 {
 	t_light	*light;
 	char	**split;
 
+	if (check_l(s))
+		return (1);
 	light = malloc(sizeof(t_light));
-	if (!light || !s[1] || !s[2] || !s[3])
+	if (!light || !s[1] || !s[2])
 		return (1);
 	split = ft_split(s[1], ',');
 	light->pos = get_vec(split);
@@ -206,56 +306,54 @@ void	add_object(t_object **objects_head, void *object, t_type type, char **s)
 	}
 }
 
-// Returns 1 if color is not between 0 and 255
-int	check_color(char **color)
+// Returns 1 if color is not between 0 and 255 and frees color if invalid
+int	check_color(char *color)
 {
-	if (!color[0] || !color[1] || !color[2])
+	int		err;
+	char	**split;
+
+	split = ft_split(color, ',');
+	err = 0;
+	if (!split[0] || !split[1] || !split[2])
 	{
 		write(2, "Error: Color parameters missing\n", 33);
 		return (1);
 	}
-	if (ft_atof(color[0]) < 0 || ft_atof(color[0]) > 255)
+	else if (ft_atof(split[0]) < 0 || ft_atof(split[0]) > 255)
+		err = 1;
+	else if (ft_atof(split[1]) < 0 || ft_atof(split[1]) > 255)
+		err = 1;
+	else if (ft_atof(split[2]) < 0 || ft_atof(split[2]) > 255)
+		err = 1;
+	if (err == 1)
 	{
-		write(2, "Error: Color must be between 0 and 255\n", 40);
+		write(2, "Error: Color parameters must be between 0 and 255\n", 50);
+		free(split);
 		return (1);
 	}
-	if (ft_atof(color[1]) < 0 || ft_atof(color[1]) > 255)
-	{
-		write(2, "Error: Color must be between 0 and 255\n", 40);
-		return (1);
-	}
-	if (ft_atof(color[2]) < 0 || ft_atof(color[2]) > 255)
-	{
-		write(2, "Error: Color must be between 0 and 255\n", 40);
-		return (1);
-	}
+	free(split);
 	return (0);
 }
 
-// Returns 1 if center and color are missing or invalid
-int	check_center_color(char **s)
+// Returns 1 if position is missing or invalid and frees pos if invalid
+int	check_pos(char *pos)
 {
-	char	**color;
-	char	**center;
+	char **split;
 
-	center = ft_split(s[1], ',');
-	if (!center || !center[0] || !center[1] || !center[2])
+	split = ft_split(pos, ',');
+	if (!split || ft_ptrcount(split) != 3)
 	{
-		write(2, "Error: Object center coordinates missing\n", 41);
+		write(2, "Error: Object position coordinates invalid\n", 43);
+		ft_ptrfree(split);
 		return (1);
 	}
-	color = ft_split(s[3], ',');
-	if (!color)
+	if (!split[0] || !split[1] || !split[2])
 	{
-		write(2, "Error: Object color data missing\n", 34);
-		ft_ptrfree(center);
+		write(2, "Error: Object position coordinates missing\n", 41);
+		ft_ptrfree(split);
 		return (1);
 	}
-	if (check_color(color))
-	{
-		ft_ptrfree(color);
-		return (1);
-	}
+
 	return (0);
 }
 
@@ -272,10 +370,10 @@ int	check_sp_cy(char **s)
 		write(2, "Error: Object diameter must be positive\n", 40);
 		return (1);
 	}
-	if (check_center_color(s))
-	{
+	if (check_pos(s[1]))
 		return (1);
-	}
+	if (check_color(s[3]))
+		return (1);
 	return (0);
 }
 
@@ -364,7 +462,7 @@ int	parse_cy(char **s, t_object **objects)
 }
 
 // returns 1 if line is only spaces, tabs etc
-int	check_spaces(char *line)
+int	line_isspace(char *line)
 {
 	int	i;
 	int	space;
@@ -382,9 +480,35 @@ int	check_spaces(char *line)
 	return (0);
 }
 
+// Replaces all tabs, multiple spaces etc with single space
+char	*line_fixspace(char *line)
+{
+	int		i;
+	int		j;
+	char	*newline;
+
+	i = 0;
+	j = 0;
+	newline = malloc(sizeof(char) * ft_strlen(line) + 1);
+	if (!newline)
+		return (NULL);
+	while (line[i])
+	{
+		if (ft_isspace(line[i]))
+			newline[j] = ' ';
+		else
+			newline[j] = line[i];
+		i++;
+		j++;
+	}
+	newline[j] = '\0';
+	free(line);
+	return (newline);
+}
+
 int	check_line(char *line, char *name)
 {
-	if (check_spaces(line))
+	if (line_isspace(line))
 		return (0);
 	if (!ft_strncmp("A", name, ft_strlen(name)))
 		return (0);
@@ -413,7 +537,7 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 		return (ft_ptrfree(split), -1);
 	if (check_line(line, split[0]))
 	{
-		write(2, "Error: Unrecognized object : ", 29);
+		write(2, "Error: Invalid identifier : ", 28);
 		ft_putendl_fd(split[0], 2);
 		return (1);
 	}
@@ -504,7 +628,8 @@ void front_back_split(t_object* source, t_object** front_ref, t_object** back_re
 	}
 }
 
-t_object* merge_sort(t_object* head) {
+t_object* merge_sort(t_object* head)
+{
     if (!head || !head->next) return head;
 
     t_object* a;
@@ -570,15 +695,17 @@ int	parser(char *filename, t_object **objects, t_data *data)
 		write(1, "Scene file empty\n", 17);
 		return (-1);
 	}
+	line = line_fixspace(line);
 	while (line)
 	{
-		printf("line : %s\n", line);
-		// parse_line(line, objects, data);
+		printf("%s\n", line);
 		if (parse_line(line, objects, data))
 		{
 			write(1, "Parsing error\n", 14);
+			free(line);
 			return (-1);
 		}
+		free(line);
 		line = get_next_line(fd);
 	}
 	
