@@ -1,13 +1,13 @@
 Input handling:
-	• Check file isn't empty
-	• Check if input file is in correct format (each line begins with cy, A, etc...)
-	• Check sphere/cylinder radius are non-negative
-	• Check objects are complete (nothing is missing in description)
-	• Check colours are between 0-255 and ratios 0-1 (lights)
-	• Check FOV is between 0-180 or use % to force
-	• Check camera orientation is normalized or force normalization
-	• Make sure only spaces are used to separate things in file (or handle other whitespaces)
-	• Make sure objects are complete before their parsing is finished (could lead to segfault if not)
-	
+ok	• Check file isn't empty
+ok	• Check if input file is in correct format (each line begins with cy, A, etc...)
+ok	• Check sphere/cylinder radius are non-negative
+ok	• Check objects are complete (nothing is missing in description)
+ok	• Check colours are between 0-255 and ratios 0-1 (lights)
+ok	• Check FOV is between 0-180 or use % to force
+ok	• Check camera orientation is normalized or force normalization
+ok	• Make sure only spaces are used to separate things in file (or handle other whitespaces)
+ok	• Make sure objects are complete before their parsing is finished (could lead to segfault if not)
+	- Make sure there's only one L, A & C in the file
 
 Norm...

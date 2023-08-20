@@ -188,7 +188,14 @@ t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
 int	check_line(char *line, char *name);
+int	line_isspace(char *line);
 int	check_spaces(char *line);
 int	check_sp_cy(char **s);
+int	check_color(char *color);
+int	check_pos(char *pos);
+int	check_normal(char **s);
+int	check_a(char **s);
+int	check_l(char **s);
+
 
 #endif
