@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/17 15:14:54 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/20 20:25:59 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,79 @@ void	add_object(t_object **objects_head, void *object, t_type type, char **s)
 	}
 }
 
+// Returns 1 if color is not between 0 and 255
+int	check_color(char **color)
+{
+	if (!color[0] || !color[1] || !color[2])
+	{
+		write(2, "Error: Color parameters missing\n", 33);
+		return (1);
+	}
+	if (ft_atof(color[0]) < 0 || ft_atof(color[0]) > 255)
+	{
+		write(2, "Error: Color must be between 0 and 255\n", 40);
+		return (1);
+	}
+	if (ft_atof(color[1]) < 0 || ft_atof(color[1]) > 255)
+	{
+		write(2, "Error: Color must be between 0 and 255\n", 40);
+		return (1);
+	}
+	if (ft_atof(color[2]) < 0 || ft_atof(color[2]) > 255)
+	{
+		write(2, "Error: Color must be between 0 and 255\n", 40);
+		return (1);
+	}
+	return (0);
+}
+
+// Returns 1 if center and color are missing or invalid
+int	check_center_color(char **s)
+{
+	char	**color;
+	char	**center;
+
+	center = ft_split(s[1], ',');
+	if (!center || !center[0] || !center[1] || !center[2])
+	{
+		write(2, "Error: Object center coordinates missing\n", 41);
+		return (1);
+	}
+	color = ft_split(s[3], ',');
+	if (!color)
+	{
+		write(2, "Error: Object color data missing\n", 34);
+		ft_ptrfree(center);
+		return (1);
+	}
+	if (check_color(color))
+	{
+		ft_ptrfree(color);
+		return (1);
+	}
+	return (0);
+}
+
+// Returns 1 if sp or cy data is missing or invalid
+int	check_sp_cy(char **s)
+{
+	if (!s[1] || !s[2] || !s[3])
+	{
+		write(2, "Error: Object parameters missing\n", 33);
+		return (1);
+	}
+	if (ft_atof(s[2]) <= 0)
+	{
+		write(2, "Error: Object diameter must be positive\n", 40);
+		return (1);
+	}
+	if (check_center_color(s))
+	{
+		return (1);
+	}
+	return (0);
+}
+
 // Sphere Parser
 int	parse_sp(char **s, t_object **objects)
 {
@@ -213,6 +286,8 @@ int	parse_sp(char **s, t_object **objects)
 	t_v3		*center;
 	char		**split;
 
+	if (check_sp_cy(s))
+		return (1);
 	sphere = malloc(sizeof(t_sphere));
 	center = malloc(sizeof(t_v3));
 	if (!sphere || !center)
@@ -221,7 +296,10 @@ int	parse_sp(char **s, t_object **objects)
 	split = ft_split(s[1], ',');
 	sphere->center = get_vec(split);
 	if (!sphere->center)
+	{
+		write(2, "Error: Sphere center coordinates missing\n", 41);
 		return (1);
+	}
 	sphere->diameter = ft_atof(s[2]);
 	sphere->radius = sphere->diameter / 2;
 	split = ft_split(s[3], ',');
@@ -263,6 +341,8 @@ int	parse_cy(char **s, t_object **objects)
 	t_v3		*normal_vec;
 	char		**split;
 
+	if (check_sp_cy(s))
+		return (1);
 	cylinder = malloc(sizeof(t_cylinder));
 	center = malloc(sizeof(t_v3));
 	normal_vec = malloc(sizeof(t_v3));
@@ -283,6 +363,44 @@ int	parse_cy(char **s, t_object **objects)
 	return (0);
 }
 
+// returns 1 if line is only spaces, tabs etc
+int	check_spaces(char *line)
+{
+	int	i;
+	int	space;
+
+	i = 0;
+	space = 0;
+	while (line[i])
+	{
+		if (ft_isspace(line[i]))
+			space++;
+		i++;
+	}
+	if (space == i)
+		return (1);
+	return (0);
+}
+
+int	check_line(char *line, char *name)
+{
+	if (check_spaces(line))
+		return (0);
+	if (!ft_strncmp("A", name, ft_strlen(name)))
+		return (0);
+	else if (!ft_strncmp("C", name, ft_strlen(name)))
+		return (0);
+	else if (!ft_strncmp("L", name, ft_strlen(name)))
+		return (0);
+	else if (!ft_strncmp("sp", name, ft_strlen(name)))
+		return (0);
+	else if (!ft_strncmp("pl", name, ft_strlen(name)))
+		return (0);
+	else if (!ft_strncmp("cy", name, ft_strlen(name)))
+		return (0);
+	return (1);
+}
+
 // Line Parser Function
 int	parse_line(char *line, t_object **objects, t_data *data)
 {
@@ -293,6 +411,12 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 	obj_count = 0;
 	if (!split[0])
 		return (ft_ptrfree(split), -1);
+	if (check_line(line, split[0]))
+	{
+		write(2, "Error: Unrecognized object : ", 29);
+		ft_putendl_fd(split[0], 2);
+		return (1);
+	}
 	if (!ft_strncmp("A", split[0], ft_strlen(split[0])))
 	{
 		if (parse_a(split, &data))
@@ -448,11 +572,16 @@ int	parser(char *filename, t_object **objects, t_data *data)
 	}
 	while (line)
 	{
-		printf("%s\n", line);
-		parse_line(line, objects, data);
+		printf("line : %s\n", line);
+		// parse_line(line, objects, data);
+		if (parse_line(line, objects, data))
+		{
+			write(1, "Parsing error\n", 14);
+			return (-1);
+		}
 		line = get_next_line(fd);
 	}
-
+	
 	sort_objects_by_distance(*data->camera->pos, &(*objects));
 	printf("Parsing Done!\n");
 	printf("The camera center's coordinates are: %f, %f, %f\n", data->camera->pos->x, data->camera->pos->y, data->camera->pos->z);
