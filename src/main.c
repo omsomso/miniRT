@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/17 12:28:16 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/21 14:16:11 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,81 @@ int	quit(t_mlx *mlx)
 	exit(0);
 }
 
-int	handle_keypress(int key, t_data *data)
+// Rotate the camera's orientation vector around the up vector (y-axis) by the given angle in degrees
+void rotate_camera(t_camera *camera, double angle_deg)
+{
+	double angle_rad = deg_to_rad(angle_deg);
+
+	t_v3 *camera_orientation = camera->normal_vec;
+	t_v3 new_orientation = {
+		camera_orientation->x * cos(angle_rad) - camera_orientation->z * sin(angle_rad),
+		camera_orientation->y,
+		camera_orientation->x * sin(angle_rad) + camera_orientation->z * cos(angle_rad)
+	};
+	*camera_orientation = normalize(new_orientation);
+}
+
+void rotate_camera_x(t_camera *camera, double angle_deg)
+{
+	double angle_rad = deg_to_rad(angle_deg);
+
+	t_v3 *camera_orientation = camera->normal_vec;
+	t_v3 *camera_up = camera->up;
+
+	t_v3 new_orientation = {
+		camera_orientation->x,
+		camera_orientation->y * cos(angle_rad) - camera_orientation->z * sin(angle_rad),
+		camera_orientation->y * sin(angle_rad) + camera_orientation->z * cos(angle_rad)
+	};
+
+	t_v3 new_up = {
+		camera_up->x,
+		camera_up->y * cos(angle_rad) - camera_up->z * sin(angle_rad),
+		camera_up->y * sin(angle_rad) + camera_up->z * cos(angle_rad)
+	};
+
+	*camera_orientation = normalize(new_orientation);
+	*camera_up = normalize(new_up);
+}
+
+int handle_keypress(int key, t_data *data)
 {
 	if (key == KEY_ESC)
 		quit(data->mlx);
-	if (key == 124)
-		data->camera->pos->x -= 0.2;
-	if (key == 123)
+	if (key == KEY_LEFT)
+	{
+		rotate_camera(data->camera, 5.0);
+		generate_rays(data);
+	}
+	else if (key == KEY_RIGHT)
+	{
+		rotate_camera(data->camera, -5.0);
+		generate_rays(data);
+	}
+	else if (key == KEY_UP)
+	{
+		rotate_camera_x(data->camera, 5.0);
+		generate_rays(data);
+	}
+	else if (key == KEY_DOWN)
+	{
+		rotate_camera_x(data->camera, -5.0);
+		generate_rays(data);
+	}
+	
+	// Handle other keypresses here
+	if (key == KEY_A)
 		data->camera->pos->x += 0.2;
-	if (key == 43)
+	if (key == KEY_D)
+		data->camera->pos->x -= 0.2;
+	if (key == KEY_E)
 		data->camera->pos->y -= 0.2;
-	if (key == 47)
+	if (key == KEY_Q)
 		data->camera->pos->y += 0.2;
-	if (key == 126)
-		data->camera->pos->z += 0.1;
-	if (key == 125)
+	if (key == KEY_W)
 		data->camera->pos->z -= 0.1;
+	if (key == KEY_S)
+		data->camera->pos->z += 0.1;
 	generate_rays(data);
 	// printf("%d\n", key);
 	return (0);

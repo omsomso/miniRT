@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/21 02:01:24 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/21 11:40:50 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -405,7 +405,7 @@ int	check_pos(char *position)
 // Returns 1 if sp data is missing or invalid
 int	check_sp(char **s)
 {
-	if (!s[1] || !s[2] || !s[3] || ft_ptrcount(s) != 4)
+	if (!s[1] || !s[2] || !s[3])
 	{
 		write(2, "Error: Sphere parameters invalid\n", 33);
 		return (1);

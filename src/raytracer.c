@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/17 19:39:06 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/21 13:58:10 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -462,41 +462,59 @@ t_color trace_ray(t_ray ray, t_data *data, int depth)
 	return (pixel_color);
 }
 
+int compute_camera_basis(t_camera *camera)
+{
+	t_v3 forward = normalize(*camera->normal_vec);
+	t_v3 default_up = {0, 1, 0};
+	camera->up = malloc(sizeof(t_v3));
+	camera->right = malloc(sizeof(t_v3));
+	if (!camera->up || !camera->right)
+		return (1);
+
+	if (fabs(dot_product(forward, default_up)) > 0.99)
+		*camera->up = (t_v3){0, 0, 1};
+	else
+		*camera->up = default_up;
+
+	*camera->right = cross_product(*camera->up, forward);
+	*camera->up = cross_product(forward, *camera->right);
+	return (0);
+}
+
+t_v3 calculate_pixel_relative_to_camera(int x, int y, const t_data *data)
+{
+	t_v3 *right = data->camera->right;
+	t_v3 *up = data->camera->up;
+	t_v3 *forward = data->camera->normal_vec;
+
+	double ndc_x = (2.0 * (x + 0.5) / data->win_width - 1.0) * data->aspect_ratio * data->fov_tan;
+	double ndc_y = (1.0 - 2.0 * (y + 0.5) / data->win_height) * data->fov_tan;
+
+	t_v3 pixel_relative_to_camera = {
+		ndc_x * right->x + ndc_y * up->x + forward->x,
+		ndc_x * right->y + ndc_y * up->y + forward->y,
+		ndc_x * right->z + ndc_y * up->z + forward->z
+	};
+
+	return (pixel_relative_to_camera);
+}
+
 int generate_rays(t_data *data)
 {
-	// Compute camera's basis vectors
-	t_v3 forward = normalize(*data->camera->normal_vec);
-	t_v3 default_up = {0, 1, 0};
-	t_v3 up;
-	
-	if (fabs(dot_product(forward, default_up)) > 0.99)
-		up = (t_v3){0, 0, 1};
-	else
-		up = default_up;
-
-	t_v3 right = cross_product(up, forward);
-	up = cross_product(forward, right);
-
-	// Prepare values for ray generation
-	double aspect_ratio = (double)data->win_width / (double)data->win_height;
-	double fov_tan = tan(deg_to_rad(data->camera->fov * 0.5));
+	compute_camera_basis(data->camera);
+	data->aspect_ratio = (double)data->win_width / (double)data->win_height;
+	data->fov_tan = tan(deg_to_rad(data->camera->fov * 0.5));
 
 	// Generate rays for every pixel
 	for (int y = 0; y < data->win_height; y++)
 	{
 		for (int x = 0; x < data->win_width; x++)
 		{
-			double ndc_x = (2.0 * (x + 0.5) / data->win_width - 1.0) * aspect_ratio * fov_tan;
-			double ndc_y = (1.0 - 2.0 * (y + 0.5) / data->win_height) * fov_tan;
+			t_v3 pixel_relative_to_camera = calculate_pixel_relative_to_camera(
+				x, y, data);
 
-			t_v3 pixel_relative_to_camera = {
-				ndc_x * right.x + ndc_y * up.x + forward.x,
-				ndc_x * right.y + ndc_y * up.y + forward.y,
-				ndc_x * right.z + ndc_y * up.z + forward.z
-			};
-			
 			t_v3 ray_direction = normalize(pixel_relative_to_camera);
-			
+
 			// Create the ray and trace it
 			t_ray ray = { .origin = *data->camera->pos, .direction = ray_direction };
 			t_color pixel_color = trace_ray(ray, data, MAX_RECURSION_DEPTH);
@@ -508,4 +526,3 @@ int generate_rays(t_data *data)
 	mlx_put_image_to_window(data->mlx->ptr, data->mlx->win, data->mlxdata->img, 0, 0);
 	return 0;
 }
-
