@@ -19,14 +19,17 @@
 # define EVENT_DESTROY 17
 
 # define KEY_ESC 53
-# define KEY_AR	124
-# define KEY_AL	123
-# define KEY_AU	126
-# define KEY_AD	125
+# define KEY_RIGHT	124
+# define KEY_LEFT	123
+# define KEY_DOWN	125
+# define KEY_UP		126
 # define KEY_W	13
 # define KEY_A	0
 # define KEY_S	1
 # define KEY_D	2
+# define KEY_Q	12
+# define KEY_E	14
+
 
 #define EPSILON 1e-6
 
@@ -124,6 +127,8 @@ typedef struct  s_camera
 {
 	t_v3	*pos;			//position
 	t_v3	*normal_vec;	//orientation
+	t_v3	*up;
+	t_v3	*right;
 	int		fov;			//field of view
 }			t_camera;
 
@@ -145,6 +150,8 @@ typedef struct s_data
 	t_v3		***rays;
 	int			win_width;
 	int			win_height;
+	double		aspect_ratio;
+	double		fov_tan;
 }				t_data;
 
 // Ray Tracer Stuff
