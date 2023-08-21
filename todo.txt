@@ -8,6 +8,8 @@ ok	• Check FOV is between 0-180 or use % to force
 ok	• Check camera orientation is normalized or force normalization
 ok	• Make sure only spaces are used to separate things in file (or handle other whitespaces)
 ok	• Make sure objects are complete before their parsing is finished (could lead to segfault if not)
-	- Make sure there's only one L, A & C in the file
+ok	- Make sure there's only one L, A & C in the file
+ok	- Make sure there's at least one of each L, A & C before rendering (L???)
+ok	- Check plane too
 
 Norm...
