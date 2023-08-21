@@ -187,15 +187,28 @@ t_v3	get_orthogonal(t_v3 v);
 t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
-int	check_line(char *line, char *name);
-int	line_isspace(char *line);
-int	check_spaces(char *line);
-int	check_sp_cy(char **s);
-int	check_color(char *color);
-int	check_pos(char *pos);
-int	check_normal(char **s);
-int	check_a(char **s);
-int	check_l(char **s);
+int		parse_spplcy(char **s, t_object **objects);
+int		parse_acl(char **s, t_data **data);
+
+int		check_line(char *line, char *name);
+int		line_isspace(char *line);
+char	*line_fixspace(char *line);
+int		check_spaces(char *line);
+
+int		check_a(char **s);
+int		check_l(char **s);
+
+int		check_sp(char **s);
+int		check_cy(char **s);
+int		check_pl(char **s);
+
+int		check_color(char *color);
+int		check_pos(char *pos);
+int		check_normal(char *s);
+int		ch_nb(char *s);
+
+int		init_scene(t_data *data);
+int		check_scene(t_data *data);
 
 
 #endif
