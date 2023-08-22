@@ -82,7 +82,7 @@ int	check_c(char **s)
 	static int	count = 0;
 
 	count++;
-	if (ft_ptrcount(s) != 4 || s[1] && check_pos(s[1]))
+	if ((ft_ptrcount(s) != 4) || (s[1] && check_pos(s[1])))
 	{
 		write(2, "Error: Camera parameters invalid\n", 33);
 		return (1);
