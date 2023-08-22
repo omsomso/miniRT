@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 18:17:23 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 20:58:37 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,30 @@ t_v3	*get_vec(char **s)
 	vector->z = ft_atof(s[2]);
 	ft_ptrfree(s);
 	return (vector);
+}
+
+void	dbg_parser(t_data *data)
+{
+	printf("Parsing Done!\n");
+	printf("The camera center's coordinates are: %f, %f, %f\n", data->camera->pos->x, data->camera->pos->y, data->camera->pos->z);
+	printf("The camera orientation is: %f, %f, %f\n", data->camera->normal_vec->x, data->camera->normal_vec->y, data->camera->normal_vec->z);
+	t_object *obj = data->objects;
+	while (obj != NULL)
+	{
+		if (obj->type == SPHERE)
+		{
+			t_sphere *sphere = (t_sphere*)obj->object;
+			printf("The sphere center's coordinates are: %f, %f, %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
+			// printf("Diameter = %f\n", sphere->diameter);
+			// printf("Sphere color.r = %f\n", sphere->color.r);
+		}
+		else if (obj->type == PLANE)
+		{
+			t_sphere *plane = (t_sphere*)obj->object;
+			printf("The plane's coordinates are: %f, %f, %f\n", plane->center->x, plane->center->y, plane->center->z);
+			// printf("Diameter = %f\n", sphere->diameter);
+			// printf("Sphere color.r = %f\n", sphere->color.r);
+		}
+		obj = obj->next;
+	}
 }

@@ -10,6 +10,7 @@
 #include "../libft/libft.h"
 #include "../mlx/mlx.h"
 
+
 # define WIN_HEIGHT 480
 # define WIN_WIDTH 640
 # define MAX_RECURSION_DEPTH 4
@@ -166,8 +167,9 @@ typedef struct	s_matrix4
 	double	m[4][4];
 }			t_matrix4;
 
+#include "parser.h"
+
 // miniRT Functions
-int		parser(char *filename, t_object **objects, t_data *data);
 void	free_data(t_data *data);
 int		generate_rays(t_data *data);
 void	set_pixel_color(t_data *data, int x, int y, int color);
@@ -193,60 +195,5 @@ bool	v3_equal(t_v3 v1, t_v3 v2);
 t_v3	get_orthogonal(t_v3 v);
 t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
-
-void	add_object(t_object **objects_head, void *object, t_type type, char **s);
-
-t_object*	merge_sort(t_object* head);
-double		compute_distance(t_v3 origin, t_object *obj);
-void		sort_objects_by_distance(t_v3 origin, t_object **head);
-void		front_back_split(t_object* source, t_object** front_ref, t_object** back_ref);
-t_object*	sorted_merge(t_object* a, t_object* b);
-
-
-int		get_color(t_color *color, char **s);
-t_v3	*get_vec(char **s);
-
-int		parse_spc(char **s, t_object **objects);
-int		parse_acl(char **s, t_data *data);
-
-int		parse_a(char **s, t_data **data);
-int		parse_c(char **s, t_data **data);
-int		parse_l(char **s, t_data **data);
-
-int		check_line(char *line, char *name);
-int		line_isspace(char *line);
-char	*line_fixspace(char *line);
-int		check_spaces(char *line);
-
-int		parse_sp(char **s, t_object **objects);
-int		parse_pl(char **s, t_object **objects);
-int		parse_cy(char **s, t_object **objects);
-
-int		check_a(char **s);
-int		check_l(char **s);
-int		check_l_brightness(float ratio);
-int		check_c(char **s);
-
-int		check_sp(char **s);
-int		check_cy(char **s);
-int		check_pl(char **s);
-
-int		check_color(char *color);
-int		check_pos(char *pos);
-int		check_normal(char *s);
-int		ch_nb(char *s);
-
-void	free_sp(void *object);
-void	free_pl(void *object);
-void	free_cy(void *object);
-void	free_objects(t_object *objects_head);
-void	free_acl(t_amb *ambient_light, t_camera *camera, t_light *light);
-
-int	parse_loop(int fd, t_object **objects, t_data *data);
-
-int		init_scene(t_data *data);
-int		check_scene(t_data *data);
-
-void	dbg_parser(t_data *data);
 
 #endif

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_check_2.c                                   :+:      :+:    :+:   */
+/*   error_check_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/21 18:49:11 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 21:23:32 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	check_pos(char *position)
 	return (0);
 }
 
-// Returns 1 if color is invalid
+// Returns 1 and writes error if color is invalid
 int	check_color(char *color)
 {
 	int		err;
@@ -80,8 +80,7 @@ int	check_color(char *color)
 		err = 1;
 	if (err == 1)
 	{
-		write(2, "Error: Color parameters must be\
-		numbers between 0 & 255\n", 57);
+		write(2, "Error: Color parameters must be numbers between 0 & 255\n", 57);
 		free(col);
 		return (1);
 	}
@@ -89,6 +88,7 @@ int	check_color(char *color)
 	return (0);
 }
 
+// Returns 1 and writes error if normal is invalid
 int	check_normal(char *s)
 {
 	t_v3	*norm;
@@ -111,7 +111,7 @@ int	check_normal(char *s)
 	return (0);
 }
 
-// Returns 0 if name starts with a valid identifier or line is empty
+// Returns 1 if finds invalid identifier
 int	check_line(char *line, char *name)
 {
 	if (line_isspace(line))

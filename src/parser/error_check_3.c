@@ -6,13 +6,13 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 17:33:22 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 21:31:01 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minirt.h"
 
-// returns 1 if line is only spaces, tabs etc
+// Returns 1 if line is only spaces, tabs etc
 int	line_isspace(char *line)
 {
 	int	i;
@@ -31,7 +31,7 @@ int	line_isspace(char *line)
 	return (0);
 }
 
-// Replaces all tabs, multiple spaces etc with single space
+// Replaces all tabs, multiple spaces etc with spaces for split
 char	*line_fixspace(char *line)
 {
 	int		i;
@@ -56,6 +56,7 @@ char	*line_fixspace(char *line)
 	return (newline);
 }
 
+// Returns 1 if scene lack a required element (A, C, L)
 int	check_scene(t_data *data)
 {
 	if (!data->ambient_light)
@@ -76,6 +77,7 @@ int	check_scene(t_data *data)
 	return (0);
 }
 
+// Inits scene info in data struct
 int	init_scene(t_data *data)
 {
 	data->ambient_light = NULL;
@@ -85,7 +87,7 @@ int	init_scene(t_data *data)
 	return (0);
 }
 
-// Returns 1 if string has invalid number (for color & pos)
+// Returns 1 if string has invalid number characters (for color & pos)
 int	ch_nb(char *s)
 {
 	int	i;

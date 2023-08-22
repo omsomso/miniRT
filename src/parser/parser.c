@@ -6,69 +6,30 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/22 19:04:27 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 21:32:04 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minirt.h"
-
-// Object Creation
-void	add_object(t_object **objects_head, void *object, t_type type, char **s)
-{
-	t_object	*current;
-	t_object	*new_object;
-
-	new_object = malloc(sizeof(t_object));
-	if (!new_object)
-		return ;
-	new_object->object = object;
-	new_object->type = type;
-	new_object->ambient_coefficient = 0.2;
-	new_object->diffuse_coefficient = 0.9;
-	new_object->next = NULL;
-	new_object->distance = INFINITY;
-	new_object->mirror = false;
-
-	if (!s[4])
-	{
-		new_object->check = false;
-		new_object->mirror = false;
-	}
-	else if (s[4] && ft_atoi(s[4]) == 1)
-	{
-		new_object->check = true;
-		if (s[5] && ft_atoi(s[5]) == 1)
-				new_object->mirror = true;
-	}
-
-	if (*objects_head == NULL)
-			*objects_head = new_object;
-	else
-	{
-		current = *objects_head;
-		while (current->next != NULL)
-			current = current->next;
-		current->next = new_object;
-	}
-}
 
 int	parse_acl(char **s, t_data *data)
 {
 	if (!ft_strncmp("A", s[0], ft_strlen(s[0])))
 	{
 		if (parse_a(s, &data))
-			return (ft_ptrfree(s), 1);
+			return (1);
 	}
 	else if (!ft_strncmp("C", s[0], ft_strlen(s[0])))
 	{
 		if (parse_c(s, &data))
-			return (ft_ptrfree(s), 1);
+			return (1);
 	}
 	else if (!ft_strncmp("L", s[0], ft_strlen(s[0])))
 	{
 		if (parse_l(s, &data))
-			return (ft_ptrfree(s), 1);
+			return (1);
 	}
+	return (0);
 }
 
 // Parse Sphere, Plane and Cylinder
@@ -113,6 +74,7 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 	return (0);
 }
 
+// Main Parser Loop
 int	parse_loop(int fd, t_object **objects, t_data *data)
 {
 	char	*line;
@@ -141,7 +103,6 @@ int	parse_loop(int fd, t_object **objects, t_data *data)
 }
 
 // Main Parser Function
-// needs check for A, C, L duplicates
 int	parser(char *filename, t_object **objects, t_data *data)
 {
 	int		fd;
@@ -157,30 +118,4 @@ int	parser(char *filename, t_object **objects, t_data *data)
 	sort_objects_by_distance(*data->camera->pos, &(*objects));
 	dbg_parser(data);
 	return (0);
-}
-
-void	dbg_parser(t_data *data)
-{
-	printf("Parsing Done!\n");
-	printf("The camera center's coordinates are: %f, %f, %f\n", data->camera->pos->x, data->camera->pos->y, data->camera->pos->z);
-	printf("The camera orientation is: %f, %f, %f\n", data->camera->normal_vec->x, data->camera->normal_vec->y, data->camera->normal_vec->z);
-	t_object *obj = data->objects;
-	while (obj != NULL)
-	{
-		if (obj->type == SPHERE)
-		{
-			t_sphere *sphere = (t_sphere*)obj->object;
-			printf("The sphere center's coordinates are: %f, %f, %f\n", sphere->center->x, sphere->center->y, sphere->center->z);
-			// printf("Diameter = %f\n", sphere->diameter);
-			// printf("Sphere color.r = %f\n", sphere->color.r);
-		}
-		else if (obj->type == PLANE)
-		{
-			t_sphere *plane = (t_sphere*)obj->object;
-			printf("The plane's coordinates are: %f, %f, %f\n", plane->center->x, plane->center->y, plane->center->z);
-			// printf("Diameter = %f\n", sphere->diameter);
-			// printf("Sphere color.r = %f\n", sphere->color.r);
-		}
-		obj = obj->next;
-	}
 }

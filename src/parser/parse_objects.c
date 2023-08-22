@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/21 18:54:34 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 21:21:53 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,53 @@ int	parse_cy(char **s, t_object **objects)
 	get_color(&(cylinder->color), split);
 	add_object(objects, cylinder, CYLINDER, s);
 	return (0);
+}
+
+// Inits new object
+t_object	*create_obj(void *object, t_type type, char **s)
+{
+	t_object	*new_object;
+
+	new_object = malloc(sizeof(t_object));
+	if (!new_object)
+		return (NULL);
+	new_object->object = object;
+	new_object->type = type;
+	new_object->ambient_coefficient = 0.2;
+	new_object->diffuse_coefficient = 0.9;
+	new_object->next = NULL;
+	new_object->distance = INFINITY;
+	new_object->mirror = false;
+	if (!s[4])
+	{
+		new_object->check = false;
+		new_object->mirror = false;
+	}
+	return (new_object);
+}
+
+// Object Creation
+void	add_object(t_object **obj_head, void *object, t_type type, char **s)
+{
+	t_object	*current;
+	t_object	*new_object;
+
+	new_object = create_obj(object, type, s);
+	if (!new_object)
+		return ;
+	if (s[4] && ft_atoi(s[4]) == 1)
+	{
+		new_object->check = true;
+		if (s[5] && ft_atoi(s[5]) == 1)
+				new_object->mirror = true;
+	}
+	if (*obj_head == NULL)
+			*obj_head = new_object;
+	else
+	{
+		current = *obj_head;
+		while (current->next != NULL)
+			current = current->next;
+		current->next = new_object;
+	}
 }
