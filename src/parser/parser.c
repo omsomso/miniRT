@@ -6,12 +6,13 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/22 21:32:04 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 22:37:46 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minirt.h"
 
+// Parse Ambient Light, Camera and Light
 int	parse_acl(char **s, t_data *data)
 {
 	if (!ft_strncmp("A", s[0], ft_strlen(s[0])))

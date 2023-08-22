@@ -11,6 +11,7 @@ t_object*	merge_sort(t_object* head);
 double		compute_distance(t_v3 origin, t_object *obj);
 void		sort_objects_by_distance(t_v3 origin, t_object **head);
 void		front_back_split(t_object* source, t_object** front_ref, t_object** back_ref);
+void		front_back_loop(t_object *fast, t_object *slow);
 t_object*	sorted_merge(t_object* a, t_object* b);
 
 int			get_color(t_color *color, char **s);
