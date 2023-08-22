@@ -65,7 +65,7 @@ typedef struct s_v3
 	float	z;
 }			t_v3;
 
-typedef struct	s_sphere
+typedef struct s_sphere
 {
 	t_v3		*center;
 	float		diameter;
@@ -73,16 +73,15 @@ typedef struct	s_sphere
 	t_color		color;
 }				t_sphere;
 
-typedef struct  s_plane
+typedef struct s_plane
 {
 	t_v3		*point;
 	t_v3		*normal_vec;
 	t_color		color;
 }				t_plane;
 
-typedef struct  s_cylinder
+typedef struct s_cylinder
 {
-	
 	t_v3		*center;
 	t_v3		*normal_vec;
 	float		diameter;
@@ -91,7 +90,7 @@ typedef struct  s_cylinder
 	t_color		color;
 }				t_cylinder;
 
-typedef enum	e_type
+typedef enum e_type
 {
 	SPHERE,
 	PLANE,
@@ -156,13 +155,13 @@ typedef struct s_data
 }				t_data;
 
 // Ray Tracer Stuff
-typedef struct	s_ray
+typedef struct s_ray
 {
 	t_v3	origin;
 	t_v3	direction;
 }			t_ray;
 
-typedef struct	s_matrix4
+typedef struct s_matrix4
 {
 	double	m[4][4];
 }			t_matrix4;
@@ -174,7 +173,6 @@ void	free_data(t_data *data);
 int		generate_rays(t_data *data);
 void	set_pixel_color(t_data *data, int x, int y, int color);
 t_color	trace_ray(t_ray ray, t_data *data, int depth);
-
 
 // Utility Functions
 int		ft_isspace(char c);

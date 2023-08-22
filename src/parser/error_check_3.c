@@ -83,7 +83,6 @@ int	init_scene(t_data *data)
 	data->ambient_light = NULL;
 	data->camera = NULL;
 	data->light = NULL;
-	// data->objects = NULL;
 	return (0);
 }
 

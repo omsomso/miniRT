@@ -66,16 +66,6 @@ int	check_l(char **s)
 	return (0);
 }
 
-int	check_l_brightness(float ratio)
-{
-	if (ratio < 0 || ratio > 1)
-	{
-		write(2, "Error: Light brightness must be between 0 and 1\n", 48);
-		return (1);
-	}
-	return (0);
-}
-
 int	check_c(char **s)
 {
 	int			fov;

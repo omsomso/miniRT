@@ -40,7 +40,7 @@ int	check_cy(char **s)
 // Returns 1 if position is missing or invalid
 int	check_pos(char *position)
 {
-	char **pos;
+	char	**pos;
 
 	pos = ft_split(position, ',');
 	if (!pos || !pos[0] || !pos[1] || !pos[2] || ft_ptrcount(pos) != 3)
@@ -80,7 +80,7 @@ int	check_color(char *color)
 		err = 1;
 	if (err == 1)
 	{
-		write(2, "Error: Color parameters must be numbers between 0 & 255\n", 57);
+		write(2, "Error: Color parameters must be nbs between 0 & 255\n", 52);
 		free(col);
 		return (1);
 	}
