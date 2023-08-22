@@ -44,6 +44,27 @@ t_v3	*get_vec(char **s)
 	return (vector);
 }
 
+double	compute_distance(t_v3 origin, t_object *obj)
+{
+	t_v3 *object_point;
+
+	switch (obj->type)
+	{
+	case SPHERE:
+		object_point = ((t_sphere *)obj->object)->center;
+		break;
+	case PLANE:
+		object_point = ((t_plane *)obj->object)->point;
+		break;
+	case CYLINDER:
+		object_point = ((t_cylinder *)obj->object)->center;
+		break;
+	default:
+		return INFINITY;
+	}
+	return (distance_to_point(origin, *object_point));
+}
+
 void	dbg_parser(t_data *data)
 {
 	printf("Parsing Done!\n");

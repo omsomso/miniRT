@@ -18,14 +18,14 @@ int	check_a(char **s)
 	static int	count = 0;
 
 	count++;
-	if (ft_ptrcount(s) != 3 || count > 1)
+	if (ft_ptrcount(s) != 3)
 	{
 		write(2, "Error: Ambient light parameters invalid\n", 40);
 		return (1);
 	}
-	if (!s[1] || !s[2])
+	if (count > 1)
 	{
-		write(2, "Error: Ambient light parameters missing\n", 40);
+		write(2, "Error: There can only be 1 Ambient light\n", 41);
 		return (1);
 	}
 	ratio = ft_atof(s[1]);

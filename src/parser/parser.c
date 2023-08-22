@@ -12,6 +12,7 @@
 
 #include "../../inc/minirt.h"
 
+// Parse Ambient Light, Camera and Light
 int	parse_acl(char **s, t_data *data)
 {
 	if (!ft_strncmp("A", s[0], ft_strlen(s[0])))
