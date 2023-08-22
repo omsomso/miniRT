@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17                               #+#    #+#             */
-/*   Updated: 2023/08/21 by fcullen                   ###   ########.fr       */
+/*   Updated: 2023/08/22                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
+
+void	free_data(t_data *data)
+{
+	free_objects(data->objects);
+	free_acl(data->ambient_light, data->camera, data->light);
+}
 
 int	quit(t_mlx *mlx)
 {
