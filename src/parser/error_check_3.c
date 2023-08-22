@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 21:31:01 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 22:58:11 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ int	init_scene(t_data *data)
 	data->ambient_light = NULL;
 	data->camera = NULL;
 	data->light = NULL;
-	// data->objects = NULL;
 	return (0);
 }
 

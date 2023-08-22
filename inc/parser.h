@@ -1,18 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/22 23:02:27 by kpawlows          #+#    #+#             */
+/*   Updated: 2023/08/22 23:02:29 by kpawlows         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PARSER_H
 # define PARSER_H
 
 # include "minirt.h"
 
-void		add_object(t_object **obj_head, void *object, t_type type, char **s);
+void		add_object(t_object **obj_head, void *o, t_type t, char **s);
 t_object	*create_obj(void *object, t_type type, char **s);
 
-
-t_object*	merge_sort(t_object* head);
+t_object	*merge_sort(t_object *head);
 double		compute_distance(t_v3 origin, t_object *obj);
 void		sort_objects_by_distance(t_v3 origin, t_object **head);
-void		front_back_split(t_object* source, t_object** front_ref, t_object** back_ref);
+void		fb_split(t_object *s, t_object **fr, t_object **br);
 void		front_back_loop(t_object *fast, t_object *slow);
-t_object*	sorted_merge(t_object* a, t_object* b);
+t_object	*sorted_merge(t_object *a, t_object *b);
 
 int			get_color(t_color *color, char **s);
 t_v3		*get_vec(char **s);

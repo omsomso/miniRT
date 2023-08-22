@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 22:15:03 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 22:43:00 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,6 @@ int	check_l(char **s)
 	{
 		if (check_color(s[3]))
 			return (1);
-	}
-	return (0);
-}
-
-int	check_l_brightness(float ratio)
-{
-	if (ratio < 0 || ratio > 1)
-	{
-		write(2, "Error: Light brightness must be between 0 and 1\n", 48);
-		return (1);
 	}
 	return (0);
 }

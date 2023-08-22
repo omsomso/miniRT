@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 22:25:16 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/22 22:54:06 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,22 +46,16 @@ t_v3	*get_vec(char **s)
 
 double	compute_distance(t_v3 origin, t_object *obj)
 {
-	t_v3 *object_point;
+	t_v3	*object_point;
 
-	switch (obj->type)
-	{
-	case SPHERE:
+	if (obj->type == SPHERE)
 		object_point = ((t_sphere *)obj->object)->center;
-		break;
-	case PLANE:
+	else if (obj->type == PLANE)
 		object_point = ((t_plane *)obj->object)->point;
-		break;
-	case CYLINDER:
+	else if (obj->type == CYLINDER)
 		object_point = ((t_cylinder *)obj->object)->center;
-		break;
-	default:
-		return INFINITY;
-	}
+	else
+		return (INFINITY);
 	return (distance_to_point(origin, *object_point));
 }
 
