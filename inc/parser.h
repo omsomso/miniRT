@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 23:02:27 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 23:02:29 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/23 01:43:41 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void		free_acl(t_amb *ambient_light, t_camera *camera, t_light *light);
 int			check_line(char *line, char *name);
 int			line_isspace(char *line);
 char		*line_fixspace(char *line);
+void		fix_last_whitespace(char **s, int last);
 int			check_spaces(char *line);
 
 int			parse_loop(int fd, t_object **objects, t_data *data);

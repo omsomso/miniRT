@@ -6,17 +6,19 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 22:43:00 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/23 01:57:32 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minirt.h"
 
+// Returns 1 if ambient light data is missing or invalid
 int	check_a(char **s)
 {
 	float		ratio;
 	static int	count = 0;
 
+	fix_last_whitespace(s, 3);
 	count++;
 	if (ft_ptrcount(s) != 3)
 	{
@@ -39,11 +41,13 @@ int	check_a(char **s)
 	return (0);
 }
 
+// Returns 1 if light data is missing or invalid
 int	check_l(char **s)
 {
 	static int	count = 0;
 
 	count++;
+	fix_last_whitespace(s, 4);
 	if (!s[1] || !s[2] || ft_ptrcount(s) > 4)
 	{
 		write(2, "Error: Light parameters invalid\n", 33);
@@ -66,12 +70,14 @@ int	check_l(char **s)
 	return (0);
 }
 
+// Returns 1 if camera data is missing or invalid
 int	check_c(char **s)
 {
 	int			fov;
 	static int	count = 0;
 
 	count++;
+	fix_last_whitespace(s, 4);
 	if ((ft_ptrcount(s) != 4) || (s[1] && check_pos(s[1])))
 	{
 		write(2, "Error: Camera parameters invalid\n", 33);
@@ -93,6 +99,7 @@ int	check_c(char **s)
 	return (0);
 }
 
+// Returns 1 if plane data is missing or invalid
 int	check_pl(char **s)
 {
 	if (!s[1] || !s[2] || !s[3])
@@ -112,7 +119,7 @@ int	check_pl(char **s)
 	return (0);
 }
 
-// Returns 1 if sp data is missing or invalid
+// Returns 1 if sphere data is missing or invalid
 int	check_sp(char **s)
 {
 	if (!s[1] || !s[2] || !s[3] || ft_ptrcount(s) != 4)

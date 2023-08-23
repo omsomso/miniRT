@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 22:56:42 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/23 02:15:56 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 // Returns 1 if cy data is missing or invalid
 int	check_cy(char **s)
 {
-	if (!s[1] || !s[2] || !s[3] || s[4] || ft_ptrcount(s) != 5)
+	fix_last_whitespace(s, 6);
+	if (ft_ptrcount(s) != 6)
 	{
 		write(2, "Error: Cylinder parameters invalid\n", 35);
 		return (1);
 	}
-	if (ch_nb(s[2]) || ft_atof(s[2]) <= 0)
+	if (ch_nb(s[3]) || ft_atof(s[3]) <= 0)
 	{
 		write(2, "Error: Cylinder diameter must be a positive number\n", 51);
 		return (1);
@@ -32,7 +33,9 @@ int	check_cy(char **s)
 	}
 	if (check_pos(s[1]))
 		return (1);
-	if (check_color(s[4]))
+	if (check_normal(s[2]))
+		return (1);
+	if (check_color(s[5]))
 		return (1);
 	return (0);
 }
@@ -105,7 +108,7 @@ int	check_normal(char *s)
 	free(norm);
 	if (err == 1)
 	{
-		write(2, "Error: Camera normal vector must be between -1 & 1\n", 51);
+		write(2, "Error: Normal vectors must be between -1 & 1\n", 45);
 		return (1);
 	}
 	return (0);

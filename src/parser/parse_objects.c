@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 22:18:52 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/23 02:07:53 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	parse_sp(char **s, t_object **objects)
 	t_v3		*center;
 	char		**split;
 
+	fix_last_whitespace(s, 4);
 	if (check_sp(s))
 		return (1);
 	sphere = malloc(sizeof(t_sphere));
@@ -46,6 +47,9 @@ int	parse_pl(char **s, t_object **objects)
 	t_v3		*normal_vec;
 	char		**split;
 
+	fix_last_whitespace(s, 4);
+	if (check_pl(s))
+		return (1);
 	plane = malloc(sizeof(t_plane));
 	point = malloc(sizeof(t_v3));
 	normal_vec = malloc(sizeof(t_v3));

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 22:54:06 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/23 01:51:22 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,16 @@ double	compute_distance(t_v3 origin, t_object *obj)
 	else
 		return (INFINITY);
 	return (distance_to_point(origin, *object_point));
+}
+
+// If s[last] is a newline, frees and NULLs it
+void	fix_last_whitespace(char **s, int last)
+{
+	if (s && s[last] && s[last][0] == '\n')
+	{
+		free(s[last]);
+		s[last] = NULL;
+	}
 }
 
 void	dbg_parser(t_data *data)
