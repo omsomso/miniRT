@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/22 22:37:46 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/23 02:38:57 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,11 @@ int	parse_spc(char **s, t_object **objects)
 int	parse_line(char *line, t_object **objects, t_data *data)
 {
 	char	**split;
-	int		obj_count;
 
 	split = ft_split(line, ' ');
-	obj_count = 0;
 	if (!split[0])
-		return (ft_ptrfree(split), -1);
+		return (ft_ptrfree(split), 1);
+	fix_last_whitespace(split);
 	if (check_line(line, split[0]))
 	{
 		write(2, "Error: Invalid identifier : ", 28);
