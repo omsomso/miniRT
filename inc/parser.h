@@ -59,7 +59,7 @@ void		free_acl(t_amb *ambient_light, t_camera *camera, t_light *light);
 int			check_line(char *line, char *name);
 int			line_isspace(char *line);
 char		*line_fixspace(char *line);
-void		fix_last_whitespace(char **s, int last);
+void		fix_last_whitespace(char **s);
 int			check_spaces(char *line);
 
 int			parse_loop(int fd, t_object **objects, t_data *data);

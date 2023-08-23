@@ -15,7 +15,6 @@
 // Returns 1 if cy data is missing or invalid
 int	check_cy(char **s)
 {
-	fix_last_whitespace(s, 6);
 	if (ft_ptrcount(s) != 6)
 	{
 		write(2, "Error: Cylinder parameters invalid\n", 35);

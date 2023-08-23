@@ -59,13 +59,18 @@ double	compute_distance(t_v3 origin, t_object *obj)
 	return (distance_to_point(origin, *object_point));
 }
 
-// If s[last] is a newline, frees and NULLs it
-void	fix_last_whitespace(char **s, int last)
+// If last string in s is a newline, frees and NULLs it
+void	fix_last_whitespace(char **s)
 {
-	if (s && s[last] && s[last][0] == '\n')
+	int	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	if (i > 1 && s[i - 1][0] && s[i - 1][0] == '\n')
 	{
-		free(s[last]);
-		s[last] = NULL;
+		free(s[i - 1]);
+		s[i - 1] = NULL;
 	}
 }
 
