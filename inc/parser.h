@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22                               #+#    #+#             */
-/*   Updated: 2023/08/22                              ###   ########.fr       */
+/*   Updated: 2023/08/23                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void		free_acl(t_amb *ambient_light, t_camera *camera, t_light *light);
 int			check_line(char *line, char *name);
 int			line_isspace(char *line);
 char		*line_fixspace(char *line);
+void		fix_last_whitespace(char **s, int last);
 int			check_spaces(char *line);
 
 int			parse_loop(int fd, t_object **objects, t_data *data);

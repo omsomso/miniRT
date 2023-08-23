@@ -6,13 +6,13 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/08/22                              ###   ########.fr       */
+/*   Updated: 2023/08/23                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minirt.h"
 
-// Returns 1 if line is only spaces, tabs etc
+// Returns 1 if line consists only of whitespaces
 int	line_isspace(char *line)
 {
 	int	i;
@@ -31,7 +31,7 @@ int	line_isspace(char *line)
 	return (0);
 }
 
-// Replaces all tabs, multiple spaces etc with spaces for split
+// Replaces all whitespaces except \n with spaces for split
 char	*line_fixspace(char *line)
 {
 	int		i;
@@ -56,7 +56,7 @@ char	*line_fixspace(char *line)
 	return (newline);
 }
 
-// Returns 1 if scene lack a required element (A, C, L)
+// Returns 1 if the scene lacks a required element (A, C, L)
 int	check_scene(t_data *data)
 {
 	if (!data->ambient_light)

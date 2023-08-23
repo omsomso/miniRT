@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/08/22                              ###   ########.fr       */
+/*   Updated: 2023/08/23                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ int	parse_a(char **s, t_data **data)
 	t_amb	*ambient_light;
 	char	**colors;
 
-	if (s[3] && s[3][0] == '\n')
-		s[3] = NULL;
 	if (check_a(s))
 		return (1);
 	ambient_light = malloc(sizeof(t_amb));
@@ -39,8 +37,6 @@ int	parse_c(char **s, t_data **data)
 	t_camera	*camera;
 	char		**split;
 
-	if (s[4] && s[4][0] == '\n')
-		s[4] = NULL;
 	if (check_c(s))
 		return (1);
 	camera = malloc(sizeof(t_camera));
@@ -62,8 +58,6 @@ int	parse_l(char **s, t_data **data)
 	t_light	*light;
 	char	**split;
 
-	if (s[4] && s[4][0] == '\n')
-		s[4] = NULL;
 	if (check_l(s))
 		return (1);
 	light = malloc(sizeof(t_light));
