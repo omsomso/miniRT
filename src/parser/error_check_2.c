@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/08/23                              ###   ########.fr       */
+/*   Updated: 2023/08/25                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	check_cy(char **s)
 		write(2, "Error: Cylinder diameter must be a positive number\n", 51);
 		return (1);
 	}
-	if (ch_nb(s[3]) || ft_atof(s[3]) <= 0)
+	if (ch_nb(s[4]) || ft_atof(s[4]) <= 0)
 	{
 		write(2, "Error: Cylinder height must be a positive number\n", 49);
 		return (1);
