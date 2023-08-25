@@ -41,6 +41,9 @@ typedef struct s_mlx
 {
 	void	*ptr;
 	void	*win;
+	void	*win_gui;
+	void	*bckg;
+	void	*sel;
 }			t_mlx;
 
 typedef struct s_mlxdata
@@ -168,6 +171,15 @@ typedef struct s_matrix4
 	double	m[4][4];
 }			t_matrix4;
 
+typedef struct s_gui_element
+{
+	int		x;
+	int		y;
+	t_type	type;
+	int		id;
+	char	*name;
+}			t_gui_el;
+
 #include "parser.h"
 
 // miniRT Functions
@@ -195,5 +207,10 @@ bool	v3_equal(t_v3 v1, t_v3 v2);
 t_v3	get_orthogonal(t_v3 v);
 t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
+
+int	draw_gui(t_data *data, int sel);
+int	count_objects(t_object *objects);
+int handle_mouse(int button, int x, int y, t_data *data);
+int	calculate_gui_height(int obj_count);
 
 #endif

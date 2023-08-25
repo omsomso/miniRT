@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/22 20:56:58 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/26 01:25:08 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ void	free_data(t_data *data)
 int	quit(t_mlx *mlx)
 {
 	mlx_destroy_window(mlx->ptr, mlx->win);
+	mlx_destroy_window(mlx->ptr, mlx->win_gui);
+	mlx_destroy_image(mlx->ptr, mlx->bckg);
+	// mlx_destroy_image(mlx->ptr, mlx->sphere);
 	free(mlx);
 	exit(0);
 }
@@ -107,8 +110,17 @@ int handle_keypress(int key, t_data *data)
 
 void	init_window(t_data *data)
 {
+	int	x;
+	int	y;
+	int	obj_count;
+
 	data->mlx->ptr = mlx_init();
+	obj_count = count_objects(data->objects);
+	data->mlx->win_gui = mlx_new_window(data->mlx->ptr, obj_count * 100, calculate_gui_height(obj_count), "miniRT Object Controls");
+	data->mlx->bckg = mlx_xpm_file_to_image(data->mlx->ptr, "assets/bckg.xpm", &x, &y);
+	data->mlx->sel = mlx_xpm_file_to_image(data->mlx->ptr, "assets/select.xpm", &x, &y);
 	data->mlx->win = mlx_new_window(data->mlx->ptr, data->win_width, data->win_height, "miniRT");
+	draw_gui(data, 1);
 	data->mlxdata = malloc(sizeof(t_mlxdata));
 	if (!data->mlxdata)
 		return ;
@@ -122,6 +134,7 @@ void	start_loop(t_data *data)
 {
 	mlx_hook(data->mlx->win, EVENT_KEYPRESS, 0, &handle_keypress, data);
 	mlx_hook(data->mlx->win, EVENT_DESTROY, 0, &quit, data->mlx);
+	mlx_mouse_hook(data->mlx->win_gui, &handle_mouse, data);
 	mlx_loop(data->mlx->ptr);
 }
 
@@ -169,9 +182,9 @@ int	main(int argc, char **argv)
 	data = init_data();
 	if (!data)
 		return (1);
-	init_window(data);
 	if (parser(argv[1], &data->objects, data))
 		return (1);
+	init_window(data);
 	generate_rays(data);
 	printf("%f\n", data->camera->pos->x);
 	start_loop(data);
