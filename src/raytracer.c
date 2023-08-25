@@ -6,7 +6,7 @@
 /*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/21 13:58:10 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/22 23:52:58 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -403,8 +403,8 @@ t_color calculate_ambient_color(t_intersection *intersection, t_data *data)
 t_v3 reflect(t_v3 incident_dir, t_v3 normal)
 {
 	double dot_product_value = dot_product(incident_dir, normal);
-	t_v3 reflection = subtract_vectors(incident_dir, multiply_vector_scalar(normal, 2.0 * dot_product_value));
-	return reflection;
+	t_v3 reflection = subtract_vectors(multiply_vector_scalar(normal, 2.0 * dot_product_value), incident_dir);
+	return normalize(reflection);
 }
 
 t_color calculate_specular_color(t_intersection *intersection, t_light *light, t_v3 camera_position, double specular_exponent)
@@ -445,22 +445,91 @@ t_color calculate_shading(t_intersection *intersection, t_data *data, t_v3 camer
 	return total_color;
 }
 
+t_ray offset_ray(t_data *data, t_ray ray, double dx, double dy)
+{
+	t_ray offset_ray;
+	offset_ray.origin = ray.origin;
+
+	t_v3 right_offset = multiply_vector_scalar(*data->camera->right, dx);
+	t_v3 up_offset = multiply_vector_scalar(*data->camera->up, dy);
+
+	t_v3 new_direction = add_vectors(ray.direction, right_offset);
+	new_direction = add_vectors(new_direction, up_offset);
+
+	offset_ray.direction = normalize(new_direction);
+
+	return offset_ray;
+}
+
+t_color mix_colors(t_color color1, t_color color2, double intensity)
+{
+	t_color mixed_color;
+
+	mixed_color.r = (1 - intensity) * color1.r + intensity * color2.r;
+	mixed_color.g = (1 - intensity) * color1.g + intensity * color2.g;
+	mixed_color.b = (1 - intensity) * color1.b + intensity * color2.b;
+	return (mixed_color);
+}
+
 t_color trace_ray(t_ray ray, t_data *data, int depth)
 {
 	t_intersection intersection;
 	t_color pixel_color;
-	(void)depth;
 
 	if (find_closest_intersection(ray, data->objects, &intersection))
 	{
-		// Calculate shading and lighting at the intersection point
-		pixel_color = calculate_shading(&intersection, data, *data->camera->pos, 100);
+		if (intersection.object->mirror && depth > 0)
+		{
+			t_color supersampled_color = {0, 0, 0};
+
+			// Apply supersampling on reflective surfaces
+			for (int sy = 0; sy < NUM_SAMPLES; sy++)
+			{
+				for (int sx = 0; sx < NUM_SAMPLES; sx++)
+				{
+					// Calculate sub-pixel's offset and direction
+					double dx = (double)sx / NUM_SAMPLES;
+					double dy = (double)sy / NUM_SAMPLES;
+					t_ray subpixel_ray = offset_ray(data, ray, dx, dy);
+
+					// Trace the sub-pixel ray and accumulate the color
+					t_color subpixel_color = trace_ray(subpixel_ray, data, depth - 1);
+					supersampled_color = add_colors(supersampled_color, subpixel_color);
+				}
+			}
+
+			// Calculate average color of supersampled rays
+			supersampled_color = multiply_color_scalar(supersampled_color, 1.0 / (NUM_SAMPLES * NUM_SAMPLES));
+
+			// Calculate reflection direction
+			t_v3 reflect_dir = reflect(ray.direction, intersection.normal);
+			t_ray reflection_ray = {
+				.origin = intersection.point, // Origin is the intersection point
+				.direction = reflect_dir
+			};
+
+			// Trace the reflection ray and calculate reflection color
+			t_color reflection_color = trace_ray(reflection_ray, data, depth - 1);
+
+			// Mix supersampled color with reflection color
+			t_color final_color = mix_colors(supersampled_color, reflection_color, 0.5);
+
+			return normalize_color(final_color);
+		}
+		else 
+		{
+			// Calculate shading and lighting at the intersection point
+			pixel_color = calculate_shading(&intersection, data, *data->camera->pos, 100);
+		}
 	}
 	else
+	{
 		pixel_color = calculate_background_color(*data->ambient_light);
-	pixel_color = normalize_color(pixel_color);  // Normalize color here
-	return (pixel_color);
+	}
+	pixel_color = normalize_color(pixel_color);
+	return pixel_color;
 }
+
 
 int compute_camera_basis(t_camera *camera)
 {
@@ -510,8 +579,7 @@ int generate_rays(t_data *data)
 	{
 		for (int x = 0; x < data->win_width; x++)
 		{
-			t_v3 pixel_relative_to_camera = calculate_pixel_relative_to_camera(
-				x, y, data);
+			t_v3 pixel_relative_to_camera = calculate_pixel_relative_to_camera(x, y, data);
 
 			t_v3 ray_direction = normalize(pixel_relative_to_camera);
 

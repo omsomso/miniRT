@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_objects.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/23 02:33:03 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:28:00 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,31 @@ void	add_object(t_object **obj_head, void *object, t_type type, char **s)
 		if (s[5] && ft_atoi(s[5]) == 1)
 				new_object->mirror = true;
 	}
+
+	if (!s[4])
+	{
+		new_object->check = false;
+		new_object->mirror = false;
+	}
+	else if (type == SPHERE && s[4])
+	{
+		if (ft_atoi(s[4]) == 1)
+			new_object->check = true;
+		if (s[5] && ft_atoi(s[5]) == 1)
+				{new_object->mirror = true;
+				printf("yesyesyes\n");
+				printf("%d\n", new_object->mirror);}
+	}
+	else if (type == CYLINDER && s[6])
+	{
+		if (ft_atoi(s[6]) == 1)
+			new_object->check = true;
+		if (s[7] && ft_atoi(s[7]) == 1)
+				{new_object->mirror = true;
+				printf("yesyesyes\n");
+				printf("%d\n", new_object->mirror);}
+	}
+	
 	if (*obj_head == NULL)
 			*obj_head = new_object;
 	else

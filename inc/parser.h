@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 23:02:27 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/23 02:33:09 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:23:55 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_v3		*get_vec(char **s);
 
 int			parser(char *filename, t_object **objects, t_data *data);
 int			parse_spc(char **s, t_object **objects);
-int			parse_acl(char **s, t_data *data);
+void	free_acl(t_amb *ambient_light, t_camera *camera, t_light *light);
 int			parse_a(char **s, t_data **data);
 int			parse_c(char **s, t_data **data);
 int			parse_l(char **s, t_data **data);
