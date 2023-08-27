@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/26 01:25:08 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/28 00:14:49 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,17 +110,21 @@ int handle_keypress(int key, t_data *data)
 
 void	init_window(t_data *data)
 {
-	int	x;
-	int	y;
-	int	obj_count;
+	int		x;
+	int		y;
+	int		obj_count;
+	t_pos	pos;
 
+	pos.x = 0;
+	pos.y = 0;
 	data->mlx->ptr = mlx_init();
+	data->mlx->win = mlx_new_window(data->mlx->ptr, data->win_width, data->win_height, "miniRT");
 	obj_count = count_objects(data->objects);
-	data->mlx->win_gui = mlx_new_window(data->mlx->ptr, obj_count * 100, calculate_gui_height(obj_count), "miniRT Object Controls");
+	data->mlx->win_gui = mlx_new_window(data->mlx->ptr, calculate_gui_width(obj_count), calculate_gui_height(obj_count), "miniRT Object Controls");
 	data->mlx->bckg = mlx_xpm_file_to_image(data->mlx->ptr, "assets/bckg.xpm", &x, &y);
 	data->mlx->sel = mlx_xpm_file_to_image(data->mlx->ptr, "assets/select.xpm", &x, &y);
-	data->mlx->win = mlx_new_window(data->mlx->ptr, data->win_width, data->win_height, "miniRT");
-	draw_gui(data, 1);
+	data->mlx->slider = mlx_xpm_file_to_image(data->mlx->ptr, "assets/slider.xpm", &x, &y);
+	draw_gui(data, pos);
 	data->mlxdata = malloc(sizeof(t_mlxdata));
 	if (!data->mlxdata)
 		return ;
