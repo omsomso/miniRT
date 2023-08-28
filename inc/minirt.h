@@ -33,6 +33,11 @@
 # define KEY_Q	12
 # define KEY_E	14
 
+# define GUI_MAX_WIDTH 900
+# define GUI_EL_WIDTH 100
+# define GUI_EL_HEIGHT 100
+
+# define RESIZE_AMOUNT 0.2
 
 #define EPSILON 1e-6
 
@@ -44,6 +49,7 @@ typedef struct s_mlx
 	void	*win_gui;
 	void	*bckg;
 	void	*sel;
+	void	*slider;
 }			t_mlx;
 
 typedef struct s_mlxdata
@@ -54,6 +60,13 @@ typedef struct s_mlxdata
 	int		line_length;
 	int		endian;
 }			t_mlxdata;
+
+typedef struct s_pics
+{
+	void	*bckg;
+	void	*sel;
+	void	*slider;
+}			t_pics;
 
 // Parser Stuff
 typedef struct s_color
@@ -69,6 +82,12 @@ typedef struct s_v3
 	float	y;
 	float	z;
 }			t_v3;
+
+typedef struct s_pos
+{
+	int	x;
+	int	y;
+}			t_pos;
 
 typedef struct s_sphere
 {
@@ -171,14 +190,53 @@ typedef struct s_matrix4
 	double	m[4][4];
 }			t_matrix4;
 
-typedef struct s_gui_element
+typedef struct s_gui
 {
-	int		x;
-	int		y;
-	t_type	type;
-	int		id;
-	char	*name;
-}			t_gui_el;
+	t_pos		mouse_pos;
+	t_pos		draw_pos;
+	int			sel_bckg;
+	t_object	*objects;
+	t_mlx		*mlx;
+}		t_gui;
+
+// typedef struct s_gui_el
+// {
+// 	int				x;
+// 	int				y;
+// 	t_type			type;
+// 	int				id;
+// 	char			*name;
+// 	char			*pos;
+// 	char			*orient;
+// 	char			*diameter;
+// 	struct s_gui_el	*next;
+// }			t_gui_el;
+
+// typedef struct s_gui_el
+// {
+// 	int				x;
+// 	int				y;
+// 	t_type			type;
+// 	int				id;
+// 	char			*name;
+// 	char			*pos;
+// 	char			*orient;
+// 	char			*diameter;
+// 	struct s_gui_el	*next;
+// }			t_gui_el;
+
+// typedef struct s_gui
+// {
+// 	int				x;
+// 	int				y;
+// 	t_type			type;
+// 	int				id;
+// 	char			*name;
+// 	char			*pos;
+// 	char			*orient;
+// 	char			*diameter;
+// 	struct s_gui_el	*next;
+// }			t_gui_el;
 
 #include "parser.h"
 
@@ -208,9 +266,10 @@ t_v3	get_orthogonal(t_v3 v);
 t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
-int	draw_gui(t_data *data, int sel);
+int	draw_gui(t_data *data, t_pos mouse_pos);
 int	count_objects(t_object *objects);
 int handle_mouse(int button, int x, int y, t_data *data);
 int	calculate_gui_height(int obj_count);
+int	calculate_gui_width(int obj_count);
 
 #endif
