@@ -35,7 +35,8 @@
 
 # define GUI_MAX_WIDTH 900
 # define GUI_EL_WIDTH 100
-# define GUI_EL_HEIGHT 100
+# define GUI_EL_HEIGHT 110
+# define GUI_EL_MARGIN 10
 
 # define RESIZE_AMOUNT 0.2
 
