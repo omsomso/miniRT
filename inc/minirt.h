@@ -42,6 +42,7 @@
 # define MOD_POS 0.2
 # define MOD_RADIUS 0.05
 # define MOD_FOV 1
+# define MOD_NORMAL 0.01
 
 # define COL_GREY_L 0x8A8A8A
 # define COL_GREY_D 0x6F6F6F

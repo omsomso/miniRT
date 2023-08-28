@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 22:52:43 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/28 22:17:33 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/29 01:05:51 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,17 +88,17 @@ int	modify_sphere(t_sphere *sphere, int button, int sel_param)
 int	modify_plane_b(t_plane *plane, int button, int sel_param)
 {
 	if (sel_param == 5 && button == 4)
-		plane->normal_vec->x -= MOD_POS;
+		plane->normal_vec->x -= MOD_NORMAL;
 	else if (sel_param == 5 && button == 5)
-		plane->normal_vec->x += MOD_POS;
+		plane->normal_vec->x += MOD_NORMAL;
 	else if (sel_param == 6 && button == 4)
-		plane->normal_vec->y -= MOD_POS;
+		plane->normal_vec->y -= MOD_NORMAL;
 	else if (sel_param == 6 && button == 5)
-		plane->normal_vec->y += MOD_POS;
+		plane->normal_vec->y += MOD_NORMAL;
 	else if (sel_param == 7 && button == 4)
-		plane->normal_vec->z -= MOD_POS;
+		plane->normal_vec->z -= MOD_NORMAL;
 	else if (sel_param == 7 && button == 5)
-		plane->normal_vec->z += MOD_POS;
+		plane->normal_vec->z += MOD_NORMAL;
 	else if (sel_param)
 		return (1);
 	cut_values(&plane->normal_vec->x, 1, -1);
@@ -196,22 +196,22 @@ int	modify_camera_b(t_data *data, t_gui *gui, int button, int sel)
 	if (sel == 5 && button == 4)
 	{
 		rotate_camera_x(data->camera, -1);
-		gui->cam_ang_change.x -= 1;
+		gui->cam_ang_change.x += 1;
 	}
 	else if (sel == 5 && button == 5)
 	{
 		rotate_camera_x(data->camera, 1);
-		gui->cam_ang_change.x += 1;
+		gui->cam_ang_change.x -= 1;
 	}
 	else if (sel == 6 && button == 4)
 	{
 		rotate_camera_y(data->camera, -1);
-		gui->cam_ang_change.y -= 1;
+		gui->cam_ang_change.y += 1;
 	}
 	else if (sel == 6 && button == 5)
 	{
 		rotate_camera_y(data->camera, 1);
-		gui->cam_ang_change.y += 1;
+		gui->cam_ang_change.y -= 1;
 	}
 	return (0);
 }
@@ -271,7 +271,7 @@ void	conditional_retrace(t_data *data, int button)
 	if (data->auto_retrace)
 		generate_rays(data);
 	else if (button == 2 || button == -1)
-			generate_rays(data);
+		generate_rays(data);
 }
 
 t_gui	*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos)
@@ -321,8 +321,6 @@ int	gui(t_data *data, t_gui *gui, t_pos mouse_pos, int button)
 	(void)mod;
 	draw_gui(data, data->gui);
 	conditional_retrace(data, button);
-	// generate_rays(data);
-	// if (!mod)
 	return (0);
 }
 
@@ -541,10 +539,34 @@ int	draw_cy_ctrls(t_gui *gui, t_cylinder *cylinder, int id)
 	// draw_rot_names(gui);
 	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 60, COL_GREY_L, "WIDTH");
 	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 60, COL_GREY_D, s[0]);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 100, COL_GREY_L, "HI");
+	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 100, COL_GREY_L, "HGHT");
 	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 100, COL_GREY_D, s[1]);
 	free(s[0]);
 	free(s[1]);
+	return (0);
+}
+
+int	draw_rot_values(t_gui *gui, t_mlx *m, t_v3 rot)
+{
+	t_v3	p;
+	int		x;
+	int		y;
+	char	*s[3];
+
+	x = gui->draw_pos.x;
+	y = gui->draw_pos.y;
+	p.x = gui->draw_pos.x + rot.x;
+	p.y = gui->draw_pos.x + rot.y;
+	p.z = gui->draw_pos.x + rot.z;
+	s[0] = ft_ftoa(rot.x);
+	s[1] = ft_ftoa(rot.y);
+	s[2] = ft_ftoa(rot.z);
+	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 70, COL_GREY_D, s[0]);
+	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 80, COL_GREY_D, s[1]);
+	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 90, COL_GREY_D, s[2]);
+	free(s[0]);
+	free(s[1]);
+	free(s[2]);
 	return (0);
 }
 
@@ -555,8 +577,9 @@ int	draw_pl_ctrls(t_gui *gui, t_plane *plane, int id)
 	pos_plane = get_pos_plane(plane);
 	draw_object_name(gui, " - PLANE ", id);
 	draw_pos_names(gui);
-	draw_rot_names(gui);
 	draw_pos_values(gui, gui->mlx, pos_plane);
+	draw_rot_names(gui);
+	draw_rot_values(gui, gui->mlx, get_rot_plane(plane));
 	return (0);
 }
 
@@ -613,14 +636,38 @@ int	calculate_gui_width(int obj_count)
 	return (width);
 }
 
-int	draw_gui_loop(t_data *data, t_gui *gui)
+void	wrap_gui(t_gui *gui)
 {
-	int	obj_id;
+	gui->draw_pos.x += GUI_EL_WIDTH;
+	if (gui->draw_pos.x >= GUI_MAX_WIDTH)
+	{
+		gui->draw_pos.x = 0;
+		gui->draw_pos.y += GUI_EL_HEIGHT;
+	}
+}
+
+void	fill_background(t_gui *gui, t_mlx *m)
+{
+	int	w;
+	int	h;
+	int	el_per_row;
+	t_pos	p;
+
+	p.y = gui->draw_pos.y;
+	p.x = gui->draw_pos.x;
+	while (p.x < GUI_MAX_WIDTH)
+	{
+		mlx_put_image_to_window(m->ptr, m->win_gui, gui->pics->bckg, p.x, p.y);
+		p.x += GUI_EL_WIDTH;
+	}
+}
+
+int	draw_gui_loop(t_gui *gui)
+{
+	t_object	*current;
+	int			obj_id;
 
 	obj_id = 0;
-	(void)data;
-	t_object	*current;
-
 	current = gui->objects;
 	while (current)
 	{
@@ -633,12 +680,7 @@ int	draw_gui_loop(t_data *data, t_gui *gui)
 		else if (current->type == CYLINDER)
 			draw_cy_ctrls(gui, current->object, obj_id);
 		current = current->next;
-		gui->draw_pos.x += GUI_EL_WIDTH;
-		if (gui->draw_pos.x >= GUI_MAX_WIDTH)
-		{
-			gui->draw_pos.x = 0;
-			gui->draw_pos.y += GUI_EL_HEIGHT;
-		}
+		wrap_gui(gui);
 	}
 	return (0);
 }
@@ -675,12 +717,8 @@ int	draw_light_ctrls(t_light *light, t_gui *gui, t_mlx *m)
 	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 16, COL_WHITE, "LIGHT");
 	draw_pos_names(gui);
 	draw_pos_values(gui, gui->mlx, light_pos);
-	gui->draw_pos.x += GUI_EL_WIDTH;
-	if (gui->draw_pos.x >= GUI_MAX_WIDTH)
-	{
-		gui->draw_pos.x = 0;
-		gui->draw_pos.y += GUI_EL_HEIGHT;
-	}
+	// gui->draw_pos.x += GUI_EL_WIDTH;
+	wrap_gui(gui);
 	return (0);
 }
 
@@ -723,14 +761,16 @@ int	draw_camera_ctrls(t_camera *camera, t_gui *gui, t_mlx *m)
 	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 80, COL_GREY_L, "ANG Y");
 	free(fov_str);
 	draw_camera_rotation_values(gui);
+	wrap_gui(gui);
 	return (0);
 }
 
 int	draw_gui(t_data *data, t_gui *gui)
 {
 	mlx_clear_window(data->mlx->ptr, data->mlx->win_gui);
-	draw_gui_loop(data, gui);
+	draw_gui_loop(gui);
 	draw_light_ctrls(data->light, gui, data->mlx);
 	draw_camera_ctrls(data->camera, gui, data->mlx);
+	fill_background(gui, gui->mlx);
 	return (0);
 }
