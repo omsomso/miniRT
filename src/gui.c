@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 22:52:43 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/28 21:16:38 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/28 22:17:33 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,10 @@ int	calculate_selected_bckg(t_data *data, t_pos mouse_pos)
 	return (obj_selected + 1);
 }
 
+// Finds object in obj linked list by id from 0, advances the list
 t_object *find_object(t_object *obj, int id)
 {
-	int	count;
+	int			count;
 
 	count = 0;
 	while (obj)
@@ -142,25 +143,10 @@ int	calculate_selected_param(t_pos mouse_pos)
 
 int	modify_cylinder_b(t_cylinder *cy, int button, int sel)
 {
-	if (sel == 5 && button == 4)
-		cy->normal_vec->x -= MOD_POS;
-	else if (sel == 5 && button == 5)
-		cy->normal_vec->x += MOD_POS;
-	else if (sel == 6 && button == 4)
-		cy->normal_vec->y -= MOD_POS;
-	else if (sel == 6 && button == 5)
-		cy->normal_vec->y += MOD_POS;
-	else if (sel == 7 && button == 4)
-		cy->normal_vec->z -= MOD_POS;
-	else if (sel == 7 && button == 5)
-		cy->normal_vec->z += MOD_POS;
-	else if (sel == 8 && button == 4)
+	if (sel == 8 && button == 4)
 		cy->height -= MOD_POS;
 	else if (sel == 8 && button == 5)
 		cy->height += MOD_POS;
-	cut_values(&cy->normal_vec->x, 1, -1);
-	cut_values(&cy->normal_vec->y, 1, -1);
-	cut_values(&cy->normal_vec->z, 1, -1);
 	cut_values(&cy->diameter, 100000, 0.1);
 	cut_values(&cy->height, 100000, 0.1);
 	return (0);
@@ -222,7 +208,7 @@ int	modify_camera_b(t_data *data, t_gui *gui, int button, int sel)
 		rotate_camera_y(data->camera, -1);
 		gui->cam_ang_change.y -= 1;
 	}
-	else if (sel == 6 && button == 1)
+	else if (sel == 6 && button == 5)
 	{
 		rotate_camera_y(data->camera, 1);
 		gui->cam_ang_change.y += 1;
@@ -283,14 +269,9 @@ int	modify_objects(t_data *data, t_gui *gui, int button)
 void	conditional_retrace(t_data *data, int button)
 {
 	if (data->auto_retrace)
-	{
 		generate_rays(data);
-	}
-	else
-	{
-		if (button == 2 || button == -1)
+	else if (button == 2 || button == -1)
 			generate_rays(data);
-	}
 }
 
 t_gui	*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos)
@@ -545,19 +526,25 @@ int	draw_cy_ctrls(t_gui *gui, t_cylinder *cylinder, int id)
 {
 	t_v3		pos_cylinder;
 	t_mlx		*m;
-	int			x;
-	int			y;
+	t_pos		p;
+	char		*s[2];
 
 	m = gui->mlx;
-	x = gui->draw_pos.x;
-	y = gui->draw_pos.y;
+	p.x = gui->draw_pos.x;
+	p.y = gui->draw_pos.y;
 	pos_cylinder = get_pos_cylinder(cylinder);
+	s[0] = ft_ftoa (cylinder->radius);
+	s[1] = ft_ftoa (cylinder->height);
 	draw_object_name(gui, " - CYLINDER ", id);
 	draw_pos_names(gui);
 	draw_pos_values(gui, gui->mlx, pos_cylinder);
-	draw_rot_names(gui);
-	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 60, COL_GREY_L, "WIDTH");
-	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 100, COL_GREY_L, "HI");
+	// draw_rot_names(gui);
+	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 60, COL_GREY_L, "WIDTH");
+	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 60, COL_GREY_D, s[0]);
+	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 100, COL_GREY_L, "HI");
+	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 100, COL_GREY_D, s[1]);
+	free(s[0]);
+	free(s[1]);
 	return (0);
 }
 

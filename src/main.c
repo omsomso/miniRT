@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/28 21:17:25 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/28 22:15:04 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int handle_keypress(int key, t_data *data)
 		data->auto_retrace = 1;
 	else if (key == KEY_ENTER && data->auto_retrace == 1)
 		data->auto_retrace = 0;
-	conditional_retrace(data, -1);
+	conditional_retrace(data, 0);
 	return (0);
 }
 
@@ -125,7 +125,6 @@ void	init_gui_window(t_data *data, t_mlx *m, int x, int y)
 	obj_count = count_objects(data->objects);
 	m->win_gui = mlx_new_window(m->ptr, calculate_gui_width(obj_count), \
 	calculate_gui_height(obj_count), "miniRT Object Controls");
-	printf("salut\n");
 	gui = init_gui_struct(data);
 	draw_gui(data, gui);
 }
