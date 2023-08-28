@@ -39,11 +39,19 @@
 # define GUI_EL_HEIGHT 110
 # define GUI_EL_MARGIN 10
 
-# define RESIZE_AMOUNT 0.2
+# define MOD_POS 0.2
+# define MOD_RADIUS 0.05
+# define MOD_FOV 1
+
+# define COL_GREY_L 0x8A8A8A
+# define COL_GREY_D 0x6F6F6F
+# define COL_WHITE 0xFFFFFF
 
 #define EPSILON 1e-6
 
 // Mlx Stuff
+
+typedef struct s_gui t_gui;
 
 typedef struct s_mlx
 {
@@ -65,7 +73,7 @@ typedef struct s_pics
 {
 	void	*bckg;
 	void	*sel;
-	void	*slider;
+	void	*sel_p;
 }			t_pics;
 
 // Parser Stuff
@@ -173,6 +181,7 @@ typedef struct s_data
 	t_light		*light;
 	t_object	*objects;
 	t_v3		***rays;
+	t_gui		*gui;
 	int			auto_retrace;
 	int			win_width;
 	int			win_height;
@@ -188,7 +197,9 @@ typedef struct s_gui
 	t_mlx		*mlx;
 	t_pics		*pics;
 	t_data 		*data;
+	t_pos		cam_ang_change;
 	int			sel_bckg;
+	int			sel_par;
 	int			obj_count;
 }		t_gui;
 
@@ -234,12 +245,16 @@ t_v3	get_orthogonal(t_v3 v);
 t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
+void 	rotate_camera_x(t_camera *camera, double angle_deg);
+void	rotate_camera_y(t_camera *camera, double angle_deg);
 
-int	draw_gui(t_data *data, t_pos mouse_pos);
+t_gui	*init_gui_struct(t_data *data);
+t_gui	*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos);
+int		draw_gui(t_data *data, t_gui *gui);
 void	conditional_retrace(t_data *data, int button);
-int	count_objects(t_object *objects);
-int handle_mouse(int button, int x, int y, t_data *data);
-int	calculate_gui_height(int obj_count);
-int	calculate_gui_width(int obj_count);
+int		count_objects(t_object *objects);
+int 	handle_mouse(int button, int x, int y, t_data *data);
+int		calculate_gui_height(int obj_count);
+int		calculate_gui_width(int obj_count);
 
 #endif
