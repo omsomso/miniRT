@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 22:52:43 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/28 00:01:35 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/28 02:19:53 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	calculate_selected_bckg(t_data *data, t_pos mouse_pos)
 {
-	int	obj_count;
-	int	obj_selected;
+	int		obj_count;
+	float	obj_selected;
 
 	obj_selected = 0;
 	obj_count = count_objects(data->objects);
@@ -67,20 +67,32 @@ int	modify_sphere(t_data *data, t_sphere *sphere, int button, int sel_param)
 	return (0);
 }
 
+float	cut_values(float *a, float max_a, float min_a)
+{
+	if (*a > max_a)
+		*a = max_a;
+	if (*a < min_a)
+		*a = min_a;
+	return (*a);
+}
+
 int	rotate_plane(t_data *data, t_plane *plane, int button, int sel_param)
 {
-	if (sel_param == 4 && button == 4)
-		plane->normal_vec->x += RESIZE_AMOUNT;
-	if (sel_param == 4 && button == 5)
-		plane->normal_vec->x -= RESIZE_AMOUNT;
 	if (sel_param == 5 && button == 4)
-		plane->normal_vec->y += RESIZE_AMOUNT;
+		plane->normal_vec->x += RESIZE_AMOUNT;
 	if (sel_param == 5 && button == 5)
-		plane->normal_vec->y -= RESIZE_AMOUNT;
+		plane->normal_vec->x -= RESIZE_AMOUNT;
 	if (sel_param == 6 && button == 4)
-		plane->normal_vec->z += RESIZE_AMOUNT;
+		plane->normal_vec->y += RESIZE_AMOUNT;
 	if (sel_param == 6 && button == 5)
+		plane->normal_vec->y -= RESIZE_AMOUNT;
+	if (sel_param == 7 && button == 4)
+		plane->normal_vec->z += RESIZE_AMOUNT;
+	if (sel_param == 7 && button == 5)
 		plane->normal_vec->z -= RESIZE_AMOUNT;
+	cut_values(&plane->normal_vec->x, 1, -1);
+	cut_values(&plane->normal_vec->y, 1, -1);
+	cut_values(&plane->normal_vec->z, 1, -1);
 	return (0);
 }
 
@@ -98,14 +110,14 @@ int	modify_plane(t_data *data, t_plane *plane, int button, int sel_param)
 		plane->point->z += RESIZE_AMOUNT;
 	if (sel_param == 3 && button == 5)
 		plane->point->z -= RESIZE_AMOUNT;
-	// rotate_plane(data, plane, button, sel_param);
+	rotate_plane(data, plane, button, sel_param);
 	return (0);
 }
 
 int	calculate_selected_param(t_data *data, t_pos mouse_pos)
 {
-	int	sel_param;
-	int	sel_row;
+	float	sel_param;
+	float	sel_row;
 
 	sel_row = 0;
 	while (sel_row * GUI_EL_HEIGHT < mouse_pos.y)
@@ -113,9 +125,53 @@ int	calculate_selected_param(t_data *data, t_pos mouse_pos)
 	sel_row--;
 	sel_param = (mouse_pos.y - (sel_row * GUI_EL_HEIGHT)) / 10;
 	sel_param -= 1;
-	// printf("sel_row: %d\n", sel_row);
-	// printf("sel_param: %d\n", sel_param);
 	return (sel_param);
+}
+
+int	rotate_cylinder(t_data *data, t_cylinder *cylinder, int button, int sel_param)
+{
+	if (sel_param == 6 && button == 4)
+		cylinder->normal_vec->x += RESIZE_AMOUNT;
+	if (sel_param == 6 && button == 5)
+		cylinder->normal_vec->x -= RESIZE_AMOUNT;
+	if (sel_param == 7 && button == 4)
+		cylinder->normal_vec->y += RESIZE_AMOUNT;
+	if (sel_param == 7 && button == 5)
+		cylinder->normal_vec->y -= RESIZE_AMOUNT;
+	if (sel_param == 8 && button == 4)
+		cylinder->normal_vec->z += RESIZE_AMOUNT;
+	if (sel_param == 8 && button == 5)
+		cylinder->normal_vec->z -= RESIZE_AMOUNT;
+	cut_values(&cylinder->normal_vec->x, 1, -1);
+	cut_values(&cylinder->normal_vec->y, 1, -1);
+	cut_values(&cylinder->normal_vec->z, 1, -1);
+	return (0);
+}
+
+int	modify_cylinder(t_data *data, t_cylinder *cylinder, int button, int sel_param)
+{
+	if (sel_param == 1 && button == 4)
+		cylinder->center->x += RESIZE_AMOUNT;
+	if (sel_param == 1 && button == 5)
+		cylinder->center->x -= RESIZE_AMOUNT;
+	if (sel_param == 2 && button == 4)
+		cylinder->center->y += RESIZE_AMOUNT;
+	if (sel_param == 2 && button == 5)
+		cylinder->center->y -= RESIZE_AMOUNT;
+	if (sel_param == 3 && button == 4)
+		cylinder->center->z += RESIZE_AMOUNT;
+	if (sel_param == 3 && button == 5)
+		cylinder->center->z -= RESIZE_AMOUNT;
+	if (sel_param == 4 && button == 4)
+		cylinder->diameter += RESIZE_AMOUNT;
+	if (sel_param == 4 && button == 5)
+			cylinder->diameter -= RESIZE_AMOUNT;
+	cut_values(&cylinder->diameter, 0.1, 100000);
+	if (sel_param == 5 && button == 4)
+		cylinder->height += RESIZE_AMOUNT;
+	cut_values(&cylinder->height, 0.1, 100000);
+	rotate_cylinder(data, cylinder, button, sel_param);
+	return (0);
 }
 
 int	modify_objects(t_data *data, t_pos mouse_pos, int button)
@@ -131,10 +187,14 @@ int	modify_objects(t_data *data, t_pos mouse_pos, int button)
 		found_obj = find_object(data->objects, selected_obj);
 		if (!found_obj)
 		return (1);
+		printf("modyfying param %d of object %d\n", sel_param, selected_obj);
 		if (sel_param >= 1 && sel_param <= 4 && found_obj->type == SPHERE)
 			modify_sphere(data, found_obj->object, button, sel_param);
-		if (sel_param >= 1 && sel_param <= 6 && found_obj->type == PLANE)
+		if (sel_param >= 1 && sel_param <= 7 && found_obj->type == PLANE)
 			modify_plane(data, found_obj->object, button, sel_param);
+		if (found_obj->type == CYLINDER)
+			modify_cylinder(data, found_obj->object, button, sel_param);
+			
 	}
 	return (0);
 }
@@ -184,151 +244,158 @@ int	draw_background(t_gui *gui, int obj_id)
 	return (0);
 }
 
-t_v3	calculate_pos_sliders_sphere(t_gui *gui, t_sphere *sphere)
+t_v3	get_pos_sphere(t_sphere *sphere)
+{
+	t_v3	pos;
+
+	pos.x = sphere->center->x;
+	pos.y = sphere->center->y;
+	pos.z = sphere->center->z;
+	return (pos);
+}
+
+t_v3	get_pos_plane(t_plane *plane)
+{
+	t_v3	pos;
+
+	pos.x = plane->point->x;
+	pos.y = plane->point->y;
+	pos.z = plane->point->z;
+	return (pos);
+}
+
+t_v3	get_pos_cylinder(t_cylinder *cylinder)
+{
+	t_v3	pos;
+
+	pos.x = cylinder->center->x;
+	pos.y = cylinder->center->y;
+	pos.z = cylinder->center->z;
+	return (pos);
+}
+
+t_v3	get_rot_plane(t_plane *plane)
+{
+	t_v3	rot;
+
+	rot.x = plane->normal_vec->x;
+	rot.y = plane->normal_vec->y;
+	rot.z = plane->normal_vec->z;
+	return (rot);
+}
+
+t_v3	get_rot_cylinder(t_cylinder *cylinder)
+{
+	t_v3	rot;
+
+	rot.x = cylinder->normal_vec->x;
+	rot.y = cylinder->normal_vec->y;
+	rot.z = cylinder->normal_vec->z;
+	return (rot);
+}
+
+t_v3	calculate_pos_sliders(t_gui *gui, t_v3 pos)
 {
 	t_v3	slider_pos;
 
-	slider_pos.x = 4 * ((sphere->center->x * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.x < 0)
-		slider_pos.x = 0;
-	if (slider_pos.x > GUI_EL_WIDTH)
-		slider_pos.x = GUI_EL_WIDTH - 10;
-	slider_pos.y = 4 * ((sphere->center->y * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.y < 0)
-		slider_pos.y = 0;
-	if (slider_pos.y > GUI_EL_WIDTH)
-		slider_pos.y = GUI_EL_WIDTH - 10;
-	slider_pos.z = 4 * ((sphere->center->z * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.z < 0)
-		slider_pos.z = 0;
-	if (slider_pos.z > GUI_EL_WIDTH)
-		slider_pos.z = GUI_EL_WIDTH - 10;
+	slider_pos.x = 4 * ((pos.x * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
+	cut_values(&slider_pos.x, GUI_EL_WIDTH - GUI_EL_MARGIN, 0);
+	slider_pos.y = 4 * ((pos.y * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
+	cut_values(&slider_pos.x, GUI_EL_WIDTH - GUI_EL_MARGIN, 0);
+	slider_pos.z = 4 * ((pos.z * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
+	cut_values(&slider_pos.x, GUI_EL_WIDTH - GUI_EL_MARGIN, 0);
 	return (slider_pos);
 }
 
-t_v3	calculate_pos_sliders_plane(t_gui *gui, t_plane *plane)
+t_v3	calculate_rot_sliders(t_gui *gui, t_v3 normal_vec)
 {
 	t_v3	slider_pos;
 
-	slider_pos.x = 4 * ((plane->point->x * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.x < 0)
-		slider_pos.x = 0;
-	if (slider_pos.x > GUI_EL_WIDTH)
-		slider_pos.x = GUI_EL_WIDTH - 10;
-	slider_pos.y = 4 * ((plane->point->y * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.y < 0)
-		slider_pos.y = 0;
-	if (slider_pos.y > GUI_EL_WIDTH)
-		slider_pos.y = GUI_EL_WIDTH - 10;
-	slider_pos.z = 4 * ((plane->point->z * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.z < 0)
-		slider_pos.z = 0;
-	if (slider_pos.z > GUI_EL_WIDTH)
-		slider_pos.z = GUI_EL_WIDTH - 10;
-	return (slider_pos);
-}
-
-t_v3	calculate_rot_sliders_plane(t_gui *gui, t_cylinder *plane)
-{
-	t_v3	slider_pos;
-
-	slider_pos.x = 4 * ((plane->normal_vec->x * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.x < 0)
-		slider_pos.x = 0;
-	if (slider_pos.x > GUI_EL_WIDTH)
-		slider_pos.x = GUI_EL_WIDTH - 10;
-	slider_pos.y = 4 * ((plane->normal_vec->y * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.y < 0)
-		slider_pos.y = 0;
-	if (slider_pos.y > GUI_EL_WIDTH)
-		slider_pos.y = GUI_EL_WIDTH - 10;
-	slider_pos.z = 4 * ((plane->normal_vec->z * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.z < 0)
-		slider_pos.z = 0;
-	if (slider_pos.z > GUI_EL_WIDTH)
-		slider_pos.z = GUI_EL_WIDTH - 10;
-	return (slider_pos);
-}
-
-t_v3	calculate_pos_sliders_cylinder(t_gui *gui, t_cylinder *cylinder)
-{
-	t_v3	slider_pos;
-
-	slider_pos.x = 4 * ((cylinder->center->x * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.x < 0)
-		slider_pos.x = 0;
-	if (slider_pos.x > GUI_EL_WIDTH)
-		slider_pos.x = GUI_EL_WIDTH - 10;
-	slider_pos.y = 4 * ((cylinder->center->y * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.y < 0)
-		slider_pos.y = 0;
-	if (slider_pos.y > GUI_EL_WIDTH)
-		slider_pos.y = GUI_EL_WIDTH - 10;
-	slider_pos.z = 4 * ((cylinder->center->z * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.z < 0)
-		slider_pos.z = 0;
-	if (slider_pos.z > GUI_EL_WIDTH)
-		slider_pos.z = GUI_EL_WIDTH - 10;
-	return (slider_pos);
-}
-
-t_v3	calculate_rot_sliders_cylinder(t_gui *gui, t_cylinder *cylinder)
-{
-	t_v3	slider_pos;
-
-	slider_pos.x = 4 * ((cylinder->normal_vec->x * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.x < 0)
-		slider_pos.x = 0;
-	if (slider_pos.x > GUI_EL_WIDTH)
-		slider_pos.x = GUI_EL_WIDTH - 10;
-	slider_pos.y = 4 * ((cylinder->normal_vec->y * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.y < 0)
-		slider_pos.y = 0;
-	if (slider_pos.y > GUI_EL_WIDTH)
-		slider_pos.y = GUI_EL_WIDTH - 10;
-	slider_pos.z = 4 * ((cylinder->normal_vec->z * 100) / GUI_EL_WIDTH) + GUI_EL_WIDTH / 2;
-	if (slider_pos.z < 0)
-		slider_pos.z = 0;
-	if (slider_pos.z > GUI_EL_WIDTH)
-		slider_pos.z = GUI_EL_WIDTH - 10;
+	slider_pos.x = normal_vec.x * 50 + 50;
+	cut_values(&slider_pos.x, GUI_EL_WIDTH - GUI_EL_MARGIN, 0);
+	slider_pos.y = normal_vec.y * 50 + 50;
+	cut_values(&slider_pos.y, GUI_EL_WIDTH - GUI_EL_MARGIN, 0);
+	slider_pos.z = normal_vec.z * 50 + 50;
+	cut_values(&slider_pos.z, GUI_EL_WIDTH - GUI_EL_MARGIN, 0);
 	return (slider_pos);
 }
 
 int	draw_pos_sliders(t_gui *gui, t_v3 pos_sliders)
 {
-	mlx_string_put(gui->mlx->ptr, gui->mlx->win_gui, gui->draw_pos.x + 10, gui->draw_pos.y + 30, 0x8A8A8A, "POS X");
-	mlx_string_put(gui->mlx->ptr, gui->mlx->win_gui, gui->draw_pos.x + 10, gui->draw_pos.y + 40, 0x8A8A8A, "POS Y");
-	mlx_string_put(gui->mlx->ptr, gui->mlx->win_gui, gui->draw_pos.x + 10, gui->draw_pos.y + 50, 0x8A8A8A, "POS Z");
-	mlx_put_image_to_window(gui->mlx->ptr, gui->mlx->win_gui, gui->mlx->slider, gui->draw_pos.x + pos_sliders.x, gui->draw_pos.y + 20);
-	mlx_put_image_to_window(gui->mlx->ptr, gui->mlx->win_gui, gui->mlx->slider, gui->draw_pos.x + pos_sliders.y, gui->draw_pos.y + 30);
-	mlx_put_image_to_window(gui->mlx->ptr, gui->mlx->win_gui, gui->mlx->slider, gui->draw_pos.x + pos_sliders.z, gui->draw_pos.y + 40);
+	t_mlx	*m;
+	t_v3	p;
+	int		x;
+	int		y;
+
+	x = gui->draw_pos.x;
+	y = gui->draw_pos.y;
+	p.x = gui->draw_pos.x + pos_sliders.x;
+	p.y = gui->draw_pos.x + pos_sliders.y;
+	p.z = gui->draw_pos.x + pos_sliders.z;
+	m = gui->mlx;
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 30, 0x8A8A8A, "POS X");
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 40, 0x8A8A8A, "POS Y");
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 50, 0x8A8A8A, "POS Z");
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, p.x, y + 20);
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, p.y, y + 30);
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, p.z, y + 40);
 	return (0);
 }
 
 int	draw_rot_sliders(t_gui *gui, t_v3 rot_sliders)
 {
+	t_mlx	*m;
+	t_v3	p;
+	int		x;
+	int		y;
 
-	mlx_string_put(gui->mlx->ptr, gui->mlx->win_gui, gui->draw_pos.x + 10, gui->draw_pos.y + 70, 0x8A8A8A, "ROT X");
-	mlx_string_put(gui->mlx->ptr, gui->mlx->win_gui, gui->draw_pos.x + 10, gui->draw_pos.y + 80, 0x8A8A8A, "ROT Y");
-	mlx_string_put(gui->mlx->ptr, gui->mlx->win_gui, gui->draw_pos.x + 10, gui->draw_pos.y + 90, 0x8A8A8A, "ROT Z");
-	mlx_put_image_to_window(gui->mlx->ptr, gui->mlx->win_gui, gui->mlx->slider, gui->draw_pos.x + rot_sliders.x, gui->draw_pos.y + 60);
-	mlx_put_image_to_window(gui->mlx->ptr, gui->mlx->win_gui, gui->mlx->slider, gui->draw_pos.x + rot_sliders.y, gui->draw_pos.y + 70);
-	mlx_put_image_to_window(gui->mlx->ptr, gui->mlx->win_gui, gui->mlx->slider, gui->draw_pos.x + rot_sliders.z, gui->draw_pos.y + 80);
+	m = gui->mlx;
+	x = gui->draw_pos.x;
+	y = gui->draw_pos.y;
+	p.x = gui->draw_pos.x + rot_sliders.x;
+	p.y = gui->draw_pos.x + rot_sliders.y;
+	p.z = gui->draw_pos.x + rot_sliders.z;
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 70, 0x8A8A8A, "ROT X");
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 80, 0x8A8A8A, "ROT Y");
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 90, 0x8A8A8A, "ROT Z");
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, p.x, y + 60);
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, p.y, y + 70);
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, p.z, y + 80);
 	return (0);
 }
 
 int	draw_radius_slider(t_gui *gui, float radius)
 {
-	int	rad_slider_pos;
+	t_mlx	*m;
+	float	pos;
+	int		x;
+	int		y;
 
-	rad_slider_pos = ((radius * GUI_MAX_WIDTH) / GUI_EL_WIDTH);
-	if (rad_slider_pos < 0)
-		rad_slider_pos = 0;
-	// if (rad_slider_pos > GUI_EL_WIDTH)
-	// printf("radius: %f\n", radius);
-	// printf("rad_slider_pos: %d\n", rad_slider_pos);
-	mlx_string_put(gui->mlx->ptr, gui->mlx->win_gui, gui->draw_pos.x + 10, gui->draw_pos.y + 60, 0x8A8A8A, "RADIUS");
-	mlx_put_image_to_window(gui->mlx->ptr, gui->mlx->win_gui, gui->mlx->slider, gui->draw_pos.x + rad_slider_pos, gui->draw_pos.y + 50);
+	m = gui->mlx;
+	x = gui->draw_pos.x;
+	y = gui->draw_pos.y;
+	pos = ((radius * GUI_MAX_WIDTH) / GUI_EL_WIDTH);
+	cut_values(&pos, GUI_MAX_WIDTH - GUI_EL_MARGIN, 0);
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 60, 0x8A8A8A, "RADIUS");
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, x + pos, y + 50);
+	return (0);
+}
+
+int	draw_wh_sliders(t_gui *gui, t_mlx *m, int w, int h)
+{
+	int		x;
+	int		y;
+	int		pw;
+	int		ph;
+	
+	x = gui->draw_pos.x;
+	y = gui->draw_pos.y;
+	pw = ((w * GUI_MAX_WIDTH) / GUI_EL_WIDTH);
+	ph = ((h * GUI_MAX_WIDTH) / GUI_EL_WIDTH);
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 60, 0x8A8A8A, "WIDTH");
+	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 100, 0x8A8A8A, "HEIGHT");
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, x, y + 50);
+	mlx_put_image_to_window(m->ptr, m->win_gui, m->slider, x, y + 90);
 	return (0);
 }
 
@@ -340,12 +407,12 @@ int	draw_cy_ctrls(t_gui *gui, int id)
 	t_cylinder	*cylinder;
 
 	cylinder = gui->objects->object;
-	pos_sliders = calculate_pos_sliders_cylinder(gui, gui->objects->object);
-	rot_sliders = calculate_rot_sliders_cylinder(gui, gui->objects->object);
+	pos_sliders = calculate_pos_sliders(gui, get_pos_cylinder(cylinder));
+	rot_sliders = calculate_pos_sliders(gui, get_rot_cylinder(cylinder));
 	draw_object_name(gui, " - CYLINDER ", id);
 	draw_pos_sliders(gui, pos_sliders);
 	draw_rot_sliders(gui, pos_sliders);
-	// draw_radius_slider(gui, sphere->radius);
+	draw_wh_sliders(gui, gui->mlx, cylinder->diameter, cylinder->height);
 	return (0);
 }
 
@@ -357,11 +424,11 @@ int	draw_pl_ctrls(t_gui *gui, int id)
 	t_plane	*plane;
 
 	plane = gui->objects->object;
-	pos_sliders = calculate_pos_sliders_plane(gui, gui->objects->object);
-	rot_sliders = calculate_rot_sliders_plane(gui, gui->objects->object);
+	pos_sliders = calculate_pos_sliders(gui, get_pos_plane(plane));
+	rot_sliders = calculate_rot_sliders(gui, get_rot_plane(plane));
 	draw_object_name(gui, " - PLANE ", id);
 	draw_pos_sliders(gui, pos_sliders);
-	draw_rot_sliders(gui, pos_sliders);
+	draw_rot_sliders(gui, rot_sliders);
 	// draw_radius_slider(gui, sphere->radius);
 	return (0);
 }
@@ -375,14 +442,10 @@ int	draw_sp_ctrls(t_gui *gui, int id)
 	t_sphere	*sphere;
 
 	sphere = gui->objects->object;
-	pos_sliders = calculate_pos_sliders_sphere(gui, gui->objects->object);
-	// rot_sliders = calculate_rot_sliders_sphere(gui, gui->objects->object);
+	pos_sliders = calculate_pos_sliders(gui, get_pos_sphere(sphere));
 	draw_object_name(gui, " - SPHERE ", id);
 	draw_pos_sliders(gui, pos_sliders);
-	// draw_rot_sliders(gui, pos_sliders);
 	draw_radius_slider(gui, sphere->radius);
-	// printf("%s\n", s);
-	// free(s);
 	return (0);
 }
 

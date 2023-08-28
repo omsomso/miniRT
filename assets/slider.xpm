@@ -1,19 +1,21 @@
 /* XPM */
-static char *ffee3c7fe3db4f28fa32e19d69b168bfA3l2iX5CqX3wnfjC[] = {
+static char *result[] = {
 /* columns rows colors chars-per-pixel */
-"10 10 3 1 ",
-"  c #383E3A",
-". c #036D67",
-"X c gray54",
+"15 10 5 1 ",
+"  c #1E1E1E",
+". c gray23",
+"X c #27394F",
+"o c #2D415A",
+"O c #434343",
 /* pixels */
-"XXXXXXXXXX",
-"..........",
-"..........",
-"..........",
-"          ",
-"          ",
-"..........",
-"..........",
-"..........",
-"XXXXXXXXXX"
+"               ",
+"ooooooooooooooo",
+"ooooooooooooooo",
+"XXXXXXXXXXXXXXX",
+".OOOOOOOOOOOOO.",
+".OOOOOOOOOOOOO.",
+"XXXXXXXXXXXXXXX",
+"ooooooooooooooo",
+"ooooooooooooooo",
+"               "
 };
