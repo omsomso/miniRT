@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/23 02:38:57 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/28 17:46:01 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,6 @@ int	parser(char *filename, t_object **objects, t_data *data)
 	if (check_scene(data))
 		return (-1);
 	sort_objects_by_distance(*data->camera->pos, &(*objects));
-	dbg_parser(data);
+	// dbg_parser(data);
 	return (0);
 }

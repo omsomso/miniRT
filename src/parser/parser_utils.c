@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/23 02:41:22 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/28 20:08:17 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 // Function gets colors from char array and frees array
 int	get_color(t_color *color, char **s)
 {
-	int	i;
-
-	i = 0;
 	if (!s[0] || !s[1] || !s[2])
 		return (1);
 	color->r = ft_atoi(s[0]);

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/28 12:36:14 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/28 21:17:25 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,14 @@ int	quit(t_data *data)
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win_gui);
 	mlx_destroy_image(data->mlx->ptr, data->pics->bckg);
 	mlx_destroy_image(data->mlx->ptr, data->pics->sel);
-	mlx_destroy_image(data->mlx->ptr, data->pics->slider);
+	mlx_destroy_image(data->mlx->ptr, data->pics->sel_p);
 	free(data->mlx);
+	// free(data->gui);
 	exit(0);
 }
 
 // Rotate the camera's orientation vector around the up vector (y-axis) by the given angle in degrees
-void rotate_camera(t_camera *camera, double angle_deg)
+void	rotate_camera_y(t_camera *camera, double angle_deg)
 {
 	double angle_rad = deg_to_rad(angle_deg);
 
@@ -45,7 +46,7 @@ void rotate_camera(t_camera *camera, double angle_deg)
 	*camera_orientation = normalize(new_orientation);
 }
 
-void rotate_camera_x(t_camera *camera, double angle_deg)
+void	rotate_camera_x(t_camera *camera, double angle_deg)
 {
 	double angle_rad = deg_to_rad(angle_deg);
 
@@ -73,26 +74,14 @@ int handle_keypress(int key, t_data *data)
 	if (key == KEY_ESC)
 		quit(data);
 	if (key == KEY_LEFT)
-	{
-		rotate_camera(data->camera, 5.0);
-		generate_rays(data);
-	}
+		rotate_camera_y(data->camera, 5.0);
 	else if (key == KEY_RIGHT)
-	{
-		rotate_camera(data->camera, -5.0);
-		generate_rays(data);
-	}
+		rotate_camera_y(data->camera, -5.0);
 	else if (key == KEY_UP)
-	{
 		rotate_camera_x(data->camera, 5.0);
-		generate_rays(data);
-	}
 	else if (key == KEY_DOWN)
-	{
 		rotate_camera_x(data->camera, -5.0);
-		generate_rays(data);
-	}
-	
+
 	// Handle other keypresses here
 	if (key == KEY_A)
 		data->camera->pos->x += 0.2;
@@ -110,16 +99,16 @@ int handle_keypress(int key, t_data *data)
 		data->auto_retrace = 1;
 	else if (key == KEY_ENTER && data->auto_retrace == 1)
 		data->auto_retrace = 0;
-	conditional_retrace(data, 0);
-	// printf("%d\n", key);
+	conditional_retrace(data, -1);
 	return (0);
 }
 
-void	init_gui(t_data *data, t_mlx *m, int x, int y)
+void	init_gui_window(t_data *data, t_mlx *m, int x, int y)
 {
 	t_pics	*pics;
 	t_pos	pos;
 	int		obj_count;
+	t_gui	*gui;
 
 	pics = malloc(sizeof(t_pics));
 	if (!pics)
@@ -129,13 +118,16 @@ void	init_gui(t_data *data, t_mlx *m, int x, int y)
 	pos.y = 0;
 	pics->bckg = mlx_xpm_file_to_image(m->ptr, "assets/bckg.xpm", &x, &y);
 	pics->sel = mlx_xpm_file_to_image(m->ptr, "assets/select.xpm", &x, &y);
-	pics->slider = mlx_xpm_file_to_image(m->ptr, "assets/slider.xpm", &x, &y);
-	printf("Mouse wheel\t= modify\nRight click\t= retrace\nEnter\t\t= toggle auto-retrace\n");
+	pics->sel_p = mlx_xpm_file_to_image(m->ptr, "assets/sel_p.xpm", &x, &y);
+	printf("Mouse wheel\t: modify\nRight click\t: retrace\nEnter");
+	printf("\t\t: auto retrace\n");
 	data->pics = pics;
 	obj_count = count_objects(data->objects);
 	m->win_gui = mlx_new_window(m->ptr, calculate_gui_width(obj_count), \
 	calculate_gui_height(obj_count), "miniRT Object Controls");
-	draw_gui(data, pos);
+	printf("salut\n");
+	gui = init_gui_struct(data);
+	draw_gui(data, gui);
 }
 
 void	init_window(t_data *data)
@@ -149,7 +141,7 @@ void	init_window(t_data *data)
 	data->mlxdata->addr = mlx_get_data_addr(data->mlxdata->img,
 			&data->mlxdata->bits_per_pixel, &data->mlxdata->line_length,
 			&data->mlxdata->endian);
-	init_gui(data, data->mlx, 0, 0);
+	init_gui_window(data, data->mlx, 0, 0);
 }
 
 void	start_loop(t_data *data)
@@ -166,12 +158,8 @@ void	start_loop(t_data *data)
 t_data	*init_data(void)
 {
 	t_data	*data;
-	t_mlx	*mlx;
 
 	data = malloc(sizeof(t_data));
-	mlx = malloc(sizeof(t_mlx));
-	if (!data)
-		return (NULL);
 	data->mlx = malloc(sizeof(t_mlx));
 	if (!data->mlx)
 		return (NULL);
@@ -212,7 +200,7 @@ int	main(int argc, char **argv)
 		return (1);
 	init_window(data);
 	generate_rays(data);
-	printf("%f\n", data->camera->pos->x);
+	// printf("%f\n", data->camera->pos->x);
 	start_loop(data);
 	free_data(data);
 	return (0);
