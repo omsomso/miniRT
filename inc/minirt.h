@@ -32,8 +32,9 @@
 # define KEY_D	2
 # define KEY_Q	12
 # define KEY_E	14
+# define KEY_ENTER	36
 
-# define GUI_MAX_WIDTH 900
+# define GUI_MAX_WIDTH 700
 # define GUI_EL_WIDTH 100
 # define GUI_EL_HEIGHT 110
 # define GUI_EL_MARGIN 10
@@ -43,14 +44,12 @@
 #define EPSILON 1e-6
 
 // Mlx Stuff
+
 typedef struct s_mlx
 {
 	void	*ptr;
 	void	*win;
 	void	*win_gui;
-	void	*bckg;
-	void	*sel;
-	void	*slider;
 }			t_mlx;
 
 typedef struct s_mlxdata
@@ -168,16 +167,30 @@ typedef struct s_data
 {
 	t_mlx		*mlx;
 	t_mlxdata	*mlxdata;
+	t_pics		*pics;
 	t_amb		*ambient_light;
 	t_camera	*camera;
 	t_light		*light;
 	t_object	*objects;
 	t_v3		***rays;
+	int			auto_retrace;
 	int			win_width;
 	int			win_height;
 	double		aspect_ratio;
 	double		fov_tan;
 }				t_data;
+
+typedef struct s_gui
+{
+	t_pos		mouse_pos;
+	t_pos		draw_pos;
+	t_object	*objects;
+	t_mlx		*mlx;
+	t_pics		*pics;
+	t_data 		*data;
+	int			sel_bckg;
+	int			obj_count;
+}		t_gui;
 
 // Ray Tracer Stuff
 typedef struct s_ray
@@ -191,53 +204,7 @@ typedef struct s_matrix4
 	double	m[4][4];
 }			t_matrix4;
 
-typedef struct s_gui
-{
-	t_pos		mouse_pos;
-	t_pos		draw_pos;
-	int			sel_bckg;
-	t_object	*objects;
-	t_mlx		*mlx;
-}		t_gui;
 
-// typedef struct s_gui_el
-// {
-// 	int				x;
-// 	int				y;
-// 	t_type			type;
-// 	int				id;
-// 	char			*name;
-// 	char			*pos;
-// 	char			*orient;
-// 	char			*diameter;
-// 	struct s_gui_el	*next;
-// }			t_gui_el;
-
-// typedef struct s_gui_el
-// {
-// 	int				x;
-// 	int				y;
-// 	t_type			type;
-// 	int				id;
-// 	char			*name;
-// 	char			*pos;
-// 	char			*orient;
-// 	char			*diameter;
-// 	struct s_gui_el	*next;
-// }			t_gui_el;
-
-// typedef struct s_gui
-// {
-// 	int				x;
-// 	int				y;
-// 	t_type			type;
-// 	int				id;
-// 	char			*name;
-// 	char			*pos;
-// 	char			*orient;
-// 	char			*diameter;
-// 	struct s_gui_el	*next;
-// }			t_gui_el;
 
 #include "parser.h"
 
@@ -267,7 +234,9 @@ t_v3	get_orthogonal(t_v3 v);
 t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
+
 int	draw_gui(t_data *data, t_pos mouse_pos);
+void	conditional_retrace(t_data *data, int button);
 int	count_objects(t_object *objects);
 int handle_mouse(int button, int x, int y, t_data *data);
 int	calculate_gui_height(int obj_count);

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/28 00:14:49 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/28 12:36:14 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,16 @@ void	free_data(t_data *data)
 	free_acl(data->ambient_light, data->camera, data->light);
 }
 
-int	quit(t_mlx *mlx)
+int	quit(t_data *data)
 {
-	mlx_destroy_window(mlx->ptr, mlx->win);
-	mlx_destroy_window(mlx->ptr, mlx->win_gui);
-	mlx_destroy_image(mlx->ptr, mlx->bckg);
-	// mlx_destroy_image(mlx->ptr, mlx->sphere);
-	free(mlx);
+	mlx_clear_window(data->mlx->ptr, data->mlx->win);
+	mlx_clear_window(data->mlx->ptr, data->mlx->win_gui);
+	mlx_destroy_window(data->mlx->ptr, data->mlx->win);
+	mlx_destroy_window(data->mlx->ptr, data->mlx->win_gui);
+	mlx_destroy_image(data->mlx->ptr, data->pics->bckg);
+	mlx_destroy_image(data->mlx->ptr, data->pics->sel);
+	mlx_destroy_image(data->mlx->ptr, data->pics->slider);
+	free(data->mlx);
 	exit(0);
 }
 
@@ -68,7 +71,7 @@ void rotate_camera_x(t_camera *camera, double angle_deg)
 int handle_keypress(int key, t_data *data)
 {
 	if (key == KEY_ESC)
-		quit(data->mlx);
+		quit(data);
 	if (key == KEY_LEFT)
 	{
 		rotate_camera(data->camera, 5.0);
@@ -103,28 +106,42 @@ int handle_keypress(int key, t_data *data)
 		data->camera->pos->z -= 0.1;
 	if (key == KEY_S)
 		data->camera->pos->z += 0.1;
-	generate_rays(data);
+	if (key == KEY_ENTER && data->auto_retrace == 0)
+		data->auto_retrace = 1;
+	else if (key == KEY_ENTER && data->auto_retrace == 1)
+		data->auto_retrace = 0;
+	conditional_retrace(data, 0);
 	// printf("%d\n", key);
 	return (0);
 }
 
-void	init_window(t_data *data)
+void	init_gui(t_data *data, t_mlx *m, int x, int y)
 {
-	int		x;
-	int		y;
-	int		obj_count;
+	t_pics	*pics;
 	t_pos	pos;
+	int		obj_count;
 
+	pics = malloc(sizeof(t_pics));
+	if (!pics)
+		return ;
+	m = data->mlx;
 	pos.x = 0;
 	pos.y = 0;
+	pics->bckg = mlx_xpm_file_to_image(m->ptr, "assets/bckg.xpm", &x, &y);
+	pics->sel = mlx_xpm_file_to_image(m->ptr, "assets/select.xpm", &x, &y);
+	pics->slider = mlx_xpm_file_to_image(m->ptr, "assets/slider.xpm", &x, &y);
+	printf("Mouse wheel\t= modify\nRight click\t= retrace\nEnter\t\t= toggle auto-retrace\n");
+	data->pics = pics;
+	obj_count = count_objects(data->objects);
+	m->win_gui = mlx_new_window(m->ptr, calculate_gui_width(obj_count), \
+	calculate_gui_height(obj_count), "miniRT Object Controls");
+	draw_gui(data, pos);
+}
+
+void	init_window(t_data *data)
+{
 	data->mlx->ptr = mlx_init();
 	data->mlx->win = mlx_new_window(data->mlx->ptr, data->win_width, data->win_height, "miniRT");
-	obj_count = count_objects(data->objects);
-	data->mlx->win_gui = mlx_new_window(data->mlx->ptr, calculate_gui_width(obj_count), calculate_gui_height(obj_count), "miniRT Object Controls");
-	data->mlx->bckg = mlx_xpm_file_to_image(data->mlx->ptr, "assets/bckg.xpm", &x, &y);
-	data->mlx->sel = mlx_xpm_file_to_image(data->mlx->ptr, "assets/select.xpm", &x, &y);
-	data->mlx->slider = mlx_xpm_file_to_image(data->mlx->ptr, "assets/slider.xpm", &x, &y);
-	draw_gui(data, pos);
 	data->mlxdata = malloc(sizeof(t_mlxdata));
 	if (!data->mlxdata)
 		return ;
@@ -132,12 +149,16 @@ void	init_window(t_data *data)
 	data->mlxdata->addr = mlx_get_data_addr(data->mlxdata->img,
 			&data->mlxdata->bits_per_pixel, &data->mlxdata->line_length,
 			&data->mlxdata->endian);
+	init_gui(data, data->mlx, 0, 0);
 }
 
 void	start_loop(t_data *data)
 {
 	mlx_hook(data->mlx->win, EVENT_KEYPRESS, 0, &handle_keypress, data);
-	mlx_hook(data->mlx->win, EVENT_DESTROY, 0, &quit, data->mlx);
+	mlx_hook(data->mlx->win, EVENT_DESTROY, 0, &quit, data);
+	mlx_mouse_hook(data->mlx->win, &handle_mouse, data);
+	mlx_hook(data->mlx->win_gui, EVENT_KEYPRESS, 0, &handle_keypress, data);
+	mlx_hook(data->mlx->win_gui, EVENT_DESTROY, 0, &quit, data);
 	mlx_mouse_hook(data->mlx->win_gui, &handle_mouse, data);
 	mlx_loop(data->mlx->ptr);
 }
@@ -159,6 +180,7 @@ t_data	*init_data(void)
 	data->objects = malloc(sizeof(t_object));
 	if (!data->objects)
 		return (NULL);
+	data->auto_retrace = 0;
 	return (data);
 }
 
