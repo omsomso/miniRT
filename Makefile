@@ -36,7 +36,7 @@ $(NAME): 	$(OBJ)
 			
 run:		all
 			@echo "$$HEADER"
-			@./minirt scenes/test01-sphere.rt
+			@./minirt scenes/planes.rt
 
 clean:
 			@$(RM) $(OBJDIR)

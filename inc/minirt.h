@@ -111,6 +111,7 @@ typedef struct s_plane
 	t_v3		*point;
 	t_v3		*normal_vec;
 	t_color		color;
+	t_pos		pl_ang_offset;
 }				t_plane;
 
 typedef struct s_cylinder
@@ -198,7 +199,7 @@ typedef struct s_gui
 	t_mlx		*mlx;
 	t_pics		*pics;
 	t_data 		*data;
-	t_pos		cam_ang_change;
+	t_pos		cam_ang_offset;
 	int			sel_bckg;
 	int			sel_par;
 	int			obj_count;
@@ -229,6 +230,7 @@ t_color	trace_ray(t_ray ray, t_data *data, int depth);
 // Utility Functions
 int		ft_isspace(char c);
 float	ft_atof(const char *s);
+char	*ft_ftoa(float f);
 
 // Math Functions
 t_v3	add_vectors(t_v3 a, t_v3 b);
@@ -248,6 +250,8 @@ t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
 void 	rotate_camera_x(t_camera *camera, double angle_deg);
 void	rotate_camera_y(t_camera *camera, double angle_deg);
+void	rotate_plane_y(t_plane *plane, double angle_deg);
+void	rotate_plane_x(t_plane *plane, double angle_deg);
 
 t_gui	*init_gui_struct(t_data *data);
 t_gui	*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos);
