@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_objects.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/25 15:28:00 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/29 18:39:49 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ int	parse_pl(char **s, t_object **objects)
 	normal_vec = malloc(sizeof(t_v3));
 	if (!plane || !point || !normal_vec)
 		return (1);
+	plane->pl_ang_offset.x = 0;
+	plane->pl_ang_offset.y = 0;
 	split = ft_split(s[1], ',');
 	plane->point = get_vec(split);
 	split = ft_split(s[2], ',');

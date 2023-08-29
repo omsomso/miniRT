@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/29 01:04:30 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/29 18:21:15 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,43 +30,6 @@ int	quit(t_data *data)
 	free(data->mlx);
 	// free(data->gui);
 	exit(0);
-}
-
-// Rotate the camera's orientation vector around the up vector (y-axis) by the given angle in degrees
-void	rotate_camera_y(t_camera *camera, double angle_deg)
-{
-	double angle_rad = deg_to_rad(angle_deg);
-
-	t_v3 *camera_orientation = camera->normal_vec;
-	t_v3 new_orientation = {
-		camera_orientation->x * cos(angle_rad) - camera_orientation->z * sin(angle_rad),
-		camera_orientation->y,
-		camera_orientation->x * sin(angle_rad) + camera_orientation->z * cos(angle_rad)
-	};
-	*camera_orientation = normalize(new_orientation);
-}
-
-void	rotate_camera_x(t_camera *camera, double angle_deg)
-{
-	double angle_rad = deg_to_rad(angle_deg);
-
-	t_v3 *camera_orientation = camera->normal_vec;
-	t_v3 *camera_up = camera->up;
-
-	t_v3 new_orientation = {
-		camera_orientation->x,
-		camera_orientation->y * cos(angle_rad) - camera_orientation->z * sin(angle_rad),
-		camera_orientation->y * sin(angle_rad) + camera_orientation->z * cos(angle_rad)
-	};
-
-	t_v3 new_up = {
-		camera_up->x,
-		camera_up->y * cos(angle_rad) - camera_up->z * sin(angle_rad),
-		camera_up->y * sin(angle_rad) + camera_up->z * cos(angle_rad)
-	};
-
-	*camera_orientation = normalize(new_orientation);
-	*camera_up = normalize(new_up);
 }
 
 int handle_keypress(int key, t_data *data)
@@ -120,7 +83,7 @@ void	init_gui_window(t_data *data, t_mlx *m, int x, int y)
 	pics->sel = mlx_xpm_file_to_image(m->ptr, "assets/select.xpm", &x, &y);
 	pics->sel_p = mlx_xpm_file_to_image(m->ptr, "assets/sel_p.xpm", &x, &y);
 	printf("Mouse wheel\t: modify parameters\nRight click\t: retrace\n");
-	printf("nEnter\t\t: toggle auto retrace\n");
+	printf("Enter\t\t: toggle auto retrace\n");
 	data->pics = pics;
 	obj_count = count_objects(data->objects);
 	m->win_gui = mlx_new_window(m->ptr, calculate_gui_width(obj_count), \

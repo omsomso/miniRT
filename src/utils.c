@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:02:44 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/27 18:04:06 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/29 17:52:02 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,18 @@ float	ft_atof(const char *s)
 		}
 	}
 	return (res * sign);
+}
+
+char	*ft_ftoa(float f)
+{
+	char	*tmp1;
+	char	*tmp2;
+	char	*tmp3;
+	char	*out;
+
+	tmp1 = ft_itoa((int)f);
+	tmp2 = ft_strjoin_ff(tmp1, ".");
+	tmp3 = ft_itoa((int)((f - (int)f) * 100));
+	out = ft_strjoin_fb(tmp2, tmp3);
+	return (out);
 }

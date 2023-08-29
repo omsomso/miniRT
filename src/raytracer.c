@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raytracer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/22 23:52:58 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/08/29 17:01:49 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -529,7 +529,6 @@ t_color trace_ray(t_ray ray, t_data *data, int depth)
 	pixel_color = normalize_color(pixel_color);
 	return pixel_color;
 }
-
 
 int compute_camera_basis(t_camera *camera)
 {
