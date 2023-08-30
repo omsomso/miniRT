@@ -38,11 +38,12 @@
 # define GUI_EL_WIDTH 100
 # define GUI_EL_HEIGHT 110
 # define GUI_EL_MARGIN 10
+# define GUI_EL_PAR_HEIGHT 10
+# define GUI_EL_PAR_OFFSET 1
 
 # define MOD_POS 0.2
 # define MOD_RADIUS 0.05
 # define MOD_FOV 1
-# define MOD_NORMAL 0.01
 
 # define COL_GREY_L 0x8A8A8A
 # define COL_GREY_D 0x6F6F6F
@@ -50,10 +51,10 @@
 
 #define EPSILON 1e-6
 
-// Mlx Stuff
 
 typedef struct s_gui t_gui;
 
+// Mlx Stuff
 typedef struct s_mlx
 {
 	void	*ptr;
@@ -75,6 +76,7 @@ typedef struct s_pics
 	void	*bckg;
 	void	*sel;
 	void	*sel_p;
+	void	*empty;
 }			t_pics;
 
 // Parser Stuff
@@ -96,6 +98,7 @@ typedef struct s_pos
 {
 	int	x;
 	int	y;
+	int	z;
 }			t_pos;
 
 typedef struct s_sphere
@@ -122,6 +125,7 @@ typedef struct s_cylinder
 	float		radius;
 	float		height;
 	t_color		color;
+	t_pos		cy_ang_offset;
 }				t_cylinder;
 
 typedef enum e_type
@@ -191,6 +195,18 @@ typedef struct s_data
 	double		fov_tan;
 }				t_data;
 
+// Ray Tracer Stuff
+typedef struct s_ray
+{
+	t_v3	origin;
+	t_v3	direction;
+}			t_ray;
+
+typedef struct s_matrix4
+{
+	double	m[4][4];
+}			t_matrix4;
+
 typedef struct s_gui
 {
 	t_pos		mouse_pos;
@@ -204,20 +220,6 @@ typedef struct s_gui
 	int			sel_par;
 	int			obj_count;
 }		t_gui;
-
-// Ray Tracer Stuff
-typedef struct s_ray
-{
-	t_v3	origin;
-	t_v3	direction;
-}			t_ray;
-
-typedef struct s_matrix4
-{
-	double	m[4][4];
-}			t_matrix4;
-
-
 
 #include "parser.h"
 
@@ -250,16 +252,33 @@ t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
 void 	rotate_camera_x(t_camera *camera, double angle_deg);
 void	rotate_camera_y(t_camera *camera, double angle_deg);
-void	rotate_plane_y(t_plane *plane, double angle_deg);
-void	rotate_plane_x(t_plane *plane, double angle_deg);
+void	rotate_camera_z(t_camera *camera, double angle_deg);
+
+void	rotate_plane_x(t_plane *pl, double ang_deg);
+void 	rotate_plane_y(t_plane *pl, double ang_deg);
+void	rotate_plane_z(t_plane *pl, double ang_deg);
+
+void	rotate_cylinder_x(t_cylinder *cy, double ang_deg);
+void	rotate_cylinder_y(t_cylinder *cy, double ang_deg);
+void	rotate_cylinder_z(t_cylinder *cy, double ang_deg);
+
+int		handle_mouse_gui(int button, int x, int y, t_data *data);
+int 	handle_mouse(int button, int x, int y, t_data *data);
 
 t_gui	*init_gui_struct(t_data *data);
 t_gui	*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos);
 int		draw_gui(t_data *data, t_gui *gui);
 void	conditional_retrace(t_data *data, int button);
 int		count_objects(t_object *objects);
-int 	handle_mouse(int button, int x, int y, t_data *data);
-int		calculate_gui_height(int obj_count);
-int		calculate_gui_width(int obj_count);
+int		compute_gui_height(int obj_count);
+int		compute_gui_width(int obj_count);
+
+t_v3	get_pos_sphere(t_sphere *sphere);
+t_v3	get_pos_plane(t_plane *plane);
+t_v3	get_pos_cylinder(t_cylinder *cylinder);
+t_v3	get_light_pos(t_light *light);
+t_v3	get_camera_pos(t_camera *camera);
+t_v3	get_rot_plane(t_plane *plane);
+t_v3	get_rot_cylinder(t_cylinder *cylinder);
 
 #endif

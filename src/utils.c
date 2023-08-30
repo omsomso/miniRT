@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:02:44 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/29 17:52:02 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/30 02:13:49 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,13 @@ char	*ft_ftoa(float f)
 {
 	char	*tmp1;
 	char	*tmp2;
-	char	*tmp3;
-	char	*out;
+	int		dec;
 
 	tmp1 = ft_itoa((int)f);
-	tmp2 = ft_strjoin_ff(tmp1, ".");
-	tmp3 = ft_itoa((int)((f - (int)f) * 100));
-	out = ft_strjoin_fb(tmp2, tmp3);
-	return (out);
+	tmp1 = ft_strjoin_ff(tmp1, ".");
+	dec = (f - (int)f) * 100;
+	if (dec < 0)
+		dec *= -1;
+	tmp2 = ft_itoa(dec);
+	return (ft_strjoin_fb(tmp1, tmp2));
 }

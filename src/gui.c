@@ -6,28 +6,31 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 22:52:43 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/29 18:40:48 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/30 12:38:07 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-int	calculate_selected_bckg(t_data *data, t_pos mouse_pos)
+// Returns selected ui element id based on mouse pos
+int	find_selected_ui_element(t_data *data, t_pos mouse_pos)
 {
-	int		obj_count;
-	float	obj_selected;
+	int	obj_selected;
+	int	max_horizontal_el;
 
 	obj_selected = 0;
-	obj_count = count_objects(data->objects) + 2;
+	max_horizontal_el = 0;
 	obj_selected = (mouse_pos.x / GUI_EL_WIDTH);
-		obj_selected = obj_selected + ((mouse_pos.y / GUI_EL_HEIGHT) \
-		* (GUI_MAX_WIDTH / GUI_EL_WIDTH));
-	if (obj_selected > obj_count)
+	while (max_horizontal_el < GUI_MAX_WIDTH)
+		max_horizontal_el += GUI_EL_WIDTH;
+	max_horizontal_el = max_horizontal_el / GUI_EL_WIDTH;
+	obj_selected += ((mouse_pos.y / GUI_EL_HEIGHT) * max_horizontal_el);
+	if (obj_selected > data->gui->obj_count)
 		return (-1);
 	return (obj_selected + 1);
 }
 
-// Finds object in obj linked list by id from 0, advances the list
+// Finds object in obj linked list by id, advances the list
 t_object *find_object(t_object *obj, int id)
 {
 	int			count;
@@ -97,7 +100,7 @@ int	modify_plane_b(t_gui *gui, t_plane *plane, int button, int sel)
 		rotate_plane_x(plane, 1);
 		plane->pl_ang_offset.x -= 1;
 	}
-	if (sel == 6 && button == 5)
+	else if (sel == 6 && button == 5)
 	{
 		rotate_plane_y(plane, -1);
 		plane->pl_ang_offset.y += 1;
@@ -107,6 +110,17 @@ int	modify_plane_b(t_gui *gui, t_plane *plane, int button, int sel)
 		rotate_plane_y(plane, 1);
 		plane->pl_ang_offset.y -= 1;
 	}
+	else if (sel == 7 && button == 5)
+	{
+		rotate_plane_z(plane, -1);
+		plane->pl_ang_offset.z += 1;
+	}
+	else if (sel == 7 && button == 4)
+	{
+		rotate_plane_z(plane, 1);
+		plane->pl_ang_offset.z -= 1;
+	}
+	*plane->normal_vec = normalize(*plane->normal_vec);
 	// if (sel_param)
 		// return (1);
 	// cut_values(&plane->normal_vec->x, 1, -1);
@@ -135,28 +149,59 @@ int	modify_plane(t_gui *gui, t_plane *plane, int button, int sel)
 	return (mod += (modify_plane_b(gui, plane, button, sel)));
 }
 
-int	calculate_selected_param(t_pos mouse_pos)
+// Returns selected row of an ui element based on mouse_pos.y
+int	find_selected_param(t_pos mouse_pos)
 {
-	float	sel_param;
+	float	sel_par;
 	float	sel_row;
 
 	sel_row = 0;
 	while (sel_row * GUI_EL_HEIGHT < mouse_pos.y)
 		sel_row++;
 	sel_row--;
-	sel_param = (mouse_pos.y - (sel_row * GUI_EL_HEIGHT)) / 10;
-	sel_param -= 1;
-	return (sel_param);
+	sel_par = (mouse_pos.y - (sel_row * GUI_EL_HEIGHT)) / GUI_EL_PAR_HEIGHT;
+	sel_par -= GUI_EL_PAR_OFFSET;
+	return (sel_par);
 }
 
 int	modify_cylinder_b(t_cylinder *cy, int button, int sel)
 {
+	if (sel == 5 && button == 5)
+	{
+		rotate_cylinder_x(cy, -1);
+		cy->cy_ang_offset.x += 1;
+	}
+	else if (sel == 5 && button == 4)
+	{
+		rotate_cylinder_x(cy, 1);
+		cy->cy_ang_offset.x -= 1;
+	}
+	else if (sel == 6 && button == 5)
+	{
+		rotate_cylinder_y(cy, -1);
+		cy->cy_ang_offset.y += 1;
+	}
+	else if (sel == 6 && button == 4)
+	{
+		rotate_cylinder_y(cy, 1);
+		cy->cy_ang_offset.y -= 1;
+	}
+	else if (sel == 7 && button == 5)
+	{
+		rotate_cylinder_z(cy, -1);
+		cy->cy_ang_offset.z += 1;
+	}
+	else if (sel == 7 && button == 4)
+	{
+		rotate_cylinder_z(cy, 1);
+		cy->cy_ang_offset.z -= 1;
+	}
 	if (sel == 8 && button == 4)
 		cy->height -= MOD_POS;
 	else if (sel == 8 && button == 5)
 		cy->height += MOD_POS;
-	cut_values(&cy->diameter, 100000, 0.1);
-	cut_values(&cy->height, 100000, 0.1);
+	cut_values(&cy->diameter, 100000, 0.01);
+	cut_values(&cy->height, 100000, 0.01);
 	return (0);
 }
 
@@ -204,12 +249,12 @@ int	modify_camera_b(t_data *data, t_gui *gui, int button, int sel)
 	if (sel == 5 && button == 5)
 	{
 		rotate_camera_x(data->camera, -1);
-		gui->cam_ang_offset.x += 1;
+		gui->cam_ang_offset.x -= 1;
 	}
 	else if (sel == 5 && button == 4)
 	{
 		rotate_camera_x(data->camera, 1);
-		gui->cam_ang_offset.x -= 1;
+		gui->cam_ang_offset.x += 1;
 	}
 	else if (sel == 6 && button == 5)
 	{
@@ -221,6 +266,16 @@ int	modify_camera_b(t_data *data, t_gui *gui, int button, int sel)
 		rotate_camera_y(data->camera, 1);
 		gui->cam_ang_offset.y -= 1;
 	}
+	// else if (sel == 7 && button == 5)
+	// {
+	// 	rotate_camera_z(data->camera, -1);
+	// 	gui->cam_ang_offset.z += 1;
+	// }
+	// else if (sel == 7 && button == 4)
+	// {
+	// 	rotate_camera_z(data->camera, 1);
+	// 	gui->cam_ang_offset.z -= 1;
+	// }
 	return (0);
 }
 
@@ -247,6 +302,7 @@ int	modify_camera(t_data *data, t_gui *gui, int button, int sel)
 	return (0);
 }
 
+// Modifies object parameters based on user input
 int	modify_objects(t_data *data, t_gui *gui, int button)
 {
 	t_object	*obj;
@@ -274,6 +330,7 @@ int	modify_objects(t_data *data, t_gui *gui, int button)
 	return (mod);
 }
 
+// Calls generate rays if auto_retrace is on or if right click
 void	conditional_retrace(t_data *data, int button)
 {
 	if (data->auto_retrace)
@@ -282,13 +339,14 @@ void	conditional_retrace(t_data *data, int button)
 		generate_rays(data);
 }
 
+// Updates the gui struct for each ui redraw
 t_gui	*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos)
 {
 	gui->mouse_pos = mouse_pos;
-	gui->sel_bckg = calculate_selected_bckg(data, mouse_pos);
+	gui->sel_bckg = find_selected_ui_element(data, mouse_pos);
 	if (gui->sel_bckg < 0)
 		gui->sel_bckg = -1;
-	gui->sel_par = calculate_selected_param(mouse_pos);
+	gui->sel_par = find_selected_param(mouse_pos);
 	if (gui->sel_par < 0)
 		gui->sel_par = -1;
 	gui->draw_pos.x = 0;
@@ -296,6 +354,7 @@ t_gui	*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos)
 	return (gui);
 }
 
+// Inits gui struct
 t_gui	*init_gui_struct(t_data *data)
 {
 	t_gui	*gui;
@@ -319,6 +378,7 @@ t_gui	*init_gui_struct(t_data *data)
 	return (gui);
 }
 
+// Calls relevant ui functions and retraces based on user mouse input
 int	gui(t_data *data, t_gui *gui, t_pos mouse_pos, int button)
 {
 	int		mod;
@@ -332,10 +392,27 @@ int	gui(t_data *data, t_gui *gui, t_pos mouse_pos, int button)
 	return (0);
 }
 
+// Handles mouse inputs from main window
 int handle_mouse(int button, int x, int y, t_data *data)
 {
 	t_pos	mouse_pos;
 
+	if (y < 0)
+		return (0);
+	mouse_pos.x = x;
+	mouse_pos.y = y;
+	if (button == 2)
+		gui(data, data->gui, mouse_pos, button);
+	return (0);
+}
+
+// Handles mouse inputs from gui window
+int handle_mouse_gui(int button, int x, int y, t_data *data)
+{
+	t_pos	mouse_pos;
+
+	if (y < 0)
+		return (0);
 	mouse_pos.x = x;
 	mouse_pos.y = y;
 	// printf("Mouse button %d pressed at %d, %d\n", button, x, y);
@@ -343,6 +420,7 @@ int handle_mouse(int button, int x, int y, t_data *data)
 	return (0);
 }
 
+// Draws name on the ui
 int	draw_object_name(t_gui *gui, char *name, int id)
 {
 	t_mlx	*m;
@@ -357,11 +435,12 @@ int	draw_object_name(t_gui *gui, char *name, int id)
 	s = ft_strjoin_ff(id_str, name);
 	if (!s)
 		return (1);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 16, COL_WHITE, s);
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 16, COL_WHITE, s);
 	free(s);
 	return (0);
 }
 
+// Draws selection highlight on the ui
 int	draw_sel_param_bckg(t_gui *gui, t_mlx *m, int id)
 {
 	t_pos	p;
@@ -376,6 +455,7 @@ int	draw_sel_param_bckg(t_gui *gui, t_mlx *m, int id)
 	return (0);
 }
 
+// Draws background for each object on the ui
 int	draw_background(t_gui *gui, t_mlx *m, int obj_id)
 {
 	t_pics	*pics;
@@ -393,69 +473,20 @@ int	draw_background(t_gui *gui, t_mlx *m, int obj_id)
 	return (0);
 }
 
-t_v3	get_pos_sphere(t_sphere *sphere)
-{
-	t_v3	pos;
-
-	pos.x = sphere->center->x;
-	pos.y = sphere->center->y;
-	pos.z = sphere->center->z;
-	return (pos);
-}
-
-t_v3	get_pos_plane(t_plane *plane)
-{
-	t_v3	pos;
-
-	pos.x = plane->point->x;
-	pos.y = plane->point->y;
-	pos.z = plane->point->z;
-	return (pos);
-}
-
-t_v3	get_pos_cylinder(t_cylinder *cylinder)
-{
-	t_v3	pos;
-
-	pos.x = cylinder->center->x;
-	pos.y = cylinder->center->y;
-	pos.z = cylinder->center->z;
-	return (pos);
-}
-
-t_v3	get_rot_plane(t_plane *plane)
-{
-	t_v3	rot;
-
-	rot.x = plane->normal_vec->x;
-	rot.y = plane->normal_vec->y;
-	rot.z = plane->normal_vec->z;
-	return (rot);
-}
-
-t_v3	get_rot_cylinder(t_cylinder *cylinder)
-{
-	t_v3	rot;
-
-	rot.x = cylinder->normal_vec->x;
-	rot.y = cylinder->normal_vec->y;
-	rot.z = cylinder->normal_vec->z;
-	return (rot);
-}
-
-
-int	draw_rot_data(t_gui * gui, t_mlx *m, t_pos obj_ang_offset)
+// Draws object position names and values
+int	draw_rot_data_cam(t_gui * gui, t_mlx *m, t_pos obj_ang_offset)
 {
 	char	*ang_x;
 	char	*ang_y;
+	char	*ang_z;
 	t_pos	p;
 
 	p.x = gui->draw_pos.x;
 	p.y = gui->draw_pos.y;
 	ang_x = ft_itoa(obj_ang_offset.x);
 	ang_y = ft_itoa(obj_ang_offset.y);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 70, COL_GREY_L, "ANG X");
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 80, COL_GREY_L, "ANG Y");
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 70, COL_GREY_L, "ANG X");
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 80, COL_GREY_L, "ANG Y");
 	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 70, COL_GREY_D, ang_x);
 	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 80, COL_GREY_D, ang_y);
 	free(ang_x);
@@ -463,6 +494,32 @@ int	draw_rot_data(t_gui * gui, t_mlx *m, t_pos obj_ang_offset)
 	return (0);
 }
 
+// Draws object rotation names and values
+int	draw_rot_data(t_gui * gui, t_mlx *m, t_pos obj_ang_offset)
+{
+	char	*ang_x;
+	char	*ang_y;
+	char	*ang_z;
+	t_pos	p;
+
+	p.x = gui->draw_pos.x;
+	p.y = gui->draw_pos.y;
+	ang_x = ft_itoa(obj_ang_offset.x);
+	ang_y = ft_itoa(obj_ang_offset.y);
+	ang_z = ft_itoa(obj_ang_offset.z);
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 70, COL_GREY_L, "ANG X");
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 80, COL_GREY_L, "ANG Y");
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 90, COL_GREY_L, "ANG Z");
+	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 70, COL_GREY_D, ang_x);
+	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 80, COL_GREY_D, ang_y);
+	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 90, COL_GREY_D, ang_z);
+	free(ang_x);
+	free(ang_y);
+	free(ang_z);
+	return (0);
+}
+
+// Draws object position names and values
 int	draw_pos_data(t_gui *gui, t_mlx *m, t_v3 pos)
 {
 	int		x;
@@ -474,9 +531,9 @@ int	draw_pos_data(t_gui *gui, t_mlx *m, t_v3 pos)
 	s[0] = ft_ftoa(pos.x);
 	s[1] = ft_ftoa(pos.y);
 	s[2] = ft_ftoa(pos.z);
-	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 30, COL_GREY_L, "POS X");
-	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 40, COL_GREY_L, "POS Y");
-	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 50, COL_GREY_L, "POS Z");
+	mlx_string_put(m->ptr, m->win_gui, x, y + 30, COL_GREY_L, "POS X");
+	mlx_string_put(m->ptr, m->win_gui, x, y + 40, COL_GREY_L, "POS Y");
+	mlx_string_put(m->ptr, m->win_gui, x, y + 50, COL_GREY_L, "POS Z");
 	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 30, COL_GREY_D, s[0]);
 	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 40, COL_GREY_D, s[1]);
 	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 50, COL_GREY_D, s[2]);
@@ -486,49 +543,22 @@ int	draw_pos_data(t_gui *gui, t_mlx *m, t_v3 pos)
 	return (0);
 }
 
-// int	draw_pos_names(t_gui *gui, t_mlx *m)
-// {
-// 	int		x;
-// 	int		y;
-
-// 	x = gui->draw_pos.x;
-// 	y = gui->draw_pos.y;
-// 	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 30, COL_GREY_L, "POS X");
-// 	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 40, COL_GREY_L, "POS Y");
-// 	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 50, COL_GREY_L, "POS Z");
-// 	return (0);
-// }
-
-// int	draw_rot_names(t_gui *gui, t_mlx *m)
-// {
-// 	int		x;
-// 	int		y;
-
-// 	x = gui->draw_pos.x;
-// 	y = gui->draw_pos.y;
-// 	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 70, COL_GREY_L, "ANG X");
-// 	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 80, COL_GREY_L, "ANG Y");
-// 	// mlx_string_put(m->ptr, m->win_gui, x + 10, y + 70, COL_GREY_L, "ROT X");
-// 	// mlx_string_put(m->ptr, m->win_gui, x + 10, y + 80, COL_GREY_L, "ROT Y");
-// 	// mlx_string_put(m->ptr, m->win_gui, x + 10, y + 90, COL_GREY_L, "ROT Z");
-// 	return (0);
-// }
-
-int	draw_radius(t_gui *gui, t_mlx *m, float radius)
+// Gets and draws name and value of sphere radius
+int	draw_sp_radius(t_gui *gui, t_mlx *m, float radius)
 {
 	char	*value;
-	int		x;
-	int		y;
+	t_pos	p;
 
 	value = ft_ftoa(radius);
-	x = gui->draw_pos.x;
-	y = gui->draw_pos.y + 50;
-	mlx_string_put(m->ptr, m->win_gui, x + 10, y + 10, COL_GREY_L, "RAD");
-	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 10, COL_GREY_D, value);
+	p.x = gui->draw_pos.x;
+	p.y = gui->draw_pos.y + 50;
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 10, COL_GREY_L, "RAD");
+	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 10, COL_GREY_D, value);
 	free(value);
 	return (0);
 }
 
+// Gets and draws cylinder parameters on ui window
 int	draw_cy_ctrls(t_gui *gui, t_cylinder *cylinder, int id)
 {
 	t_v3		pos_cylinder;
@@ -542,67 +572,39 @@ int	draw_cy_ctrls(t_gui *gui, t_cylinder *cylinder, int id)
 	pos_cylinder = get_pos_cylinder(cylinder);
 	s[0] = ft_ftoa (cylinder->radius);
 	s[1] = ft_ftoa (cylinder->height);
-	draw_object_name(gui, " - CYLINDER ", id);
+	draw_object_name(gui, " CYLINDER ", id);
 	draw_pos_data(gui, gui->mlx, pos_cylinder);
-	// draw_rot_names(gui, gui->mlx);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 60, COL_GREY_L, "WIDTH");
+	draw_rot_data(gui, gui->mlx, cylinder->cy_ang_offset);
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 60, COL_GREY_L, "WIDTH");
 	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 60, COL_GREY_D, s[0]);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 100, COL_GREY_L, "HGHT");
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 100, COL_GREY_L, "HGHT");
 	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 100, COL_GREY_D, s[1]);
 	free(s[0]);
 	free(s[1]);
 	return (0);
 }
 
-// int	draw_rot_values(t_gui *gui, t_mlx *m, t_v3 rot)
-// {
-// 	t_v3	p;
-// 	int		x;
-// 	int		y;
-// 	char	*s[3];
-
-// 	x = gui->draw_pos.x;
-// 	y = gui->draw_pos.y;
-// 	p.x = gui->draw_pos.x + rot.x;
-// 	p.y = gui->draw_pos.x + rot.y;
-// 	p.z = gui->draw_pos.x + rot.z;
-// 	s[0] = ft_ftoa(rot.x);
-// 	s[1] = ft_ftoa(rot.y);
-// 	s[2] = ft_ftoa(rot.z);
-// 	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 70, COL_GREY_D, s[0]);
-// 	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 80, COL_GREY_D, s[1]);
-// 	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 90, COL_GREY_D, s[2]);
-// 	free(s[0]);
-// 	free(s[1]);
-// 	free(s[2]);
-// 	return (0);
-// }
-
+// Gets and draws plane parameters on ui window
 int	draw_pl_ctrls(t_gui *gui, t_plane *plane, int id)
 {
-	t_v3	pos_plane;
-
-	pos_plane = get_pos_plane(plane);
-	draw_object_name(gui, " - PLANE ", id);
-	draw_pos_data(gui, gui->mlx, pos_plane);
+	draw_object_name(gui, " PLANE ", id);
+	draw_pos_data(gui, gui->mlx,  get_pos_plane(plane));
 	draw_rot_data(gui, gui->mlx, plane->pl_ang_offset);
 	// draw_rot_names(gui, gui->mlx);
 	// draw_rot_values(gui, gui->mlx, get_rot_plane(plane));
 	return (0);
 }
 
+// Gets and draws sphere parameters on gui window
 int	draw_sp_ctrls(t_gui *gui, t_sphere *sphere, int id)
 {
-	t_v3		pos_sphere;
-
-	pos_sphere = get_pos_sphere(sphere);
-	draw_object_name(gui, " - SPHERE ", id);
-	// draw_pos_names(gui, gui->mlx);
-	draw_pos_data(gui, gui->mlx, pos_sphere);
-	draw_radius(gui, gui->mlx, sphere->radius);
+	draw_object_name(gui, " SPHERE ", id);
+	draw_pos_data(gui, gui->mlx, get_pos_sphere(sphere));
+	draw_sp_radius(gui, gui->mlx, sphere->radius);
 	return (0);
 }
 
+// Counts objects for ui (adds 2 for C and L)
 int	count_objects(t_object *objects)
 {
 	int			count;
@@ -618,7 +620,8 @@ int	count_objects(t_object *objects)
 	return (count);
 }
 
-int	calculate_gui_height(int obj_count)
+// Returns ui window height based on modifiable parameters
+int	compute_gui_height(int obj_count)
 {
 	int	height;
 
@@ -631,7 +634,8 @@ int	calculate_gui_height(int obj_count)
 	return (height);
 }
 
-int	calculate_gui_width(int obj_count)
+// Returns final ui window width based on GUI_MAX_WIDTH
+int	compute_gui_width(int obj_count)
 {
 	int	width;
 
@@ -644,6 +648,7 @@ int	calculate_gui_width(int obj_count)
 	return (width);
 }
 
+// Offsets draw_pos to higher y values if x exceeds GUI_MAX_WIDTH
 void	wrap_gui(t_gui *gui)
 {
 	gui->draw_pos.x += GUI_EL_WIDTH;
@@ -654,6 +659,7 @@ void	wrap_gui(t_gui *gui)
 	}
 }
 
+// Fills background of empty ui space
 void	fill_background(t_gui *gui, t_mlx *m)
 {
 	int	w;
@@ -665,11 +671,12 @@ void	fill_background(t_gui *gui, t_mlx *m)
 	p.x = gui->draw_pos.x;
 	while (p.x < GUI_MAX_WIDTH)
 	{
-		mlx_put_image_to_window(m->ptr, m->win_gui, gui->pics->bckg, p.x, p.y);
+		mlx_put_image_to_window(m->ptr, m->win_gui, gui->pics->empty, p.x, p.y);
 		p.x += GUI_EL_WIDTH;
 	}
 }
 
+// Draws ui elements for each object in data->objects
 int	draw_gui_loop(t_gui *gui)
 {
 	t_object	*current;
@@ -681,6 +688,7 @@ int	draw_gui_loop(t_gui *gui)
 	{
 		obj_id++;
 		draw_background(gui, gui->mlx, obj_id);
+		gui->draw_pos.x += GUI_EL_MARGIN;
 		if (current->type == SPHERE)
 			draw_sp_ctrls(gui, current->object, obj_id);
 		else if (current->type == PLANE)
@@ -688,67 +696,56 @@ int	draw_gui_loop(t_gui *gui)
 		else if (current->type == CYLINDER)
 			draw_cy_ctrls(gui, current->object, obj_id);
 		current = current->next;
+		gui->draw_pos.x -= GUI_EL_MARGIN;
 		wrap_gui(gui);
 	}
 	return (0);
 }
 
-t_v3	get_light_pos(t_light *light)
-{
-	t_v3	pos;
-
-	pos.x = light->pos->x;
-	pos.y = light->pos->y;
-	pos.z = light->pos->z;
-	return (pos);
-}
-
-t_v3	get_camera_pos(t_camera *camera)
-{
-	t_v3	pos;
-
-	pos.x = camera->pos->x;
-	pos.y = camera->pos->y;
-	pos.z = camera->pos->z;
-	return (pos);
-}
-
+// Gets and draws light parameters
 int	draw_light_ctrls(t_light *light, t_gui *gui, t_mlx *m)
 {
 	t_v3	light_pos;
 	t_pos	p;
 
+
+	draw_background(gui, m, gui->obj_count - 1);
+	gui->draw_pos.x += GUI_EL_MARGIN;
 	p.x = gui->draw_pos.x;
 	p.y = gui->draw_pos.y;
-	draw_background(gui, m, gui->obj_count - 1);
 	light_pos = get_light_pos(light);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 16, COL_WHITE, "LIGHT");
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 16, COL_WHITE, "LIGHT");
 	draw_pos_data(gui, gui->mlx, light_pos);
+	gui->draw_pos.x -= GUI_EL_MARGIN;
 	wrap_gui(gui);
 	return (0);
 }
 
+// Gets and draws camera parameters
 int	draw_camera_ctrls(t_camera *camera, t_gui *gui, t_mlx *m)
 {
 	t_v3	camera_pos;
 	t_pos	p;
-	char	*fov_str;
+	char	*fov_s;
 
 	draw_background(gui, m, gui->obj_count);
-	camera_pos = get_camera_pos(camera);
+	gui->draw_pos.x += GUI_EL_MARGIN;
 	p.x = gui->draw_pos.x;
 	p.y = gui->draw_pos.y;
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 16, COL_WHITE, "CAMERA");
-	mlx_string_put(m->ptr, m->win_gui, p.x + 10, p.y + 60, COL_GREY_L, "FOV");
-	fov_str = ft_itoa(camera->fov);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 60, COL_GREY_D, fov_str);
-	free(fov_str);
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 60, COL_GREY_L, "FOV");
+	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 16, COL_WHITE, "CAMERA");
+	fov_s = ft_itoa(camera->fov);
+	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 60, COL_GREY_D, fov_s);
+	free(fov_s);
+	camera_pos = get_camera_pos(camera);
 	draw_pos_data(gui, gui->mlx, camera_pos);
-	draw_rot_data(gui, gui->mlx, gui->cam_ang_offset);
+	draw_rot_data_cam(gui, gui->mlx, gui->cam_ang_offset);
+	gui->draw_pos.x -= GUI_EL_MARGIN;
 	wrap_gui(gui);
 	return (0);
 }
 
+// Draws ui window
 int	draw_gui(t_data *data, t_gui *gui)
 {
 	mlx_clear_window(data->mlx->ptr, data->mlx->win_gui);

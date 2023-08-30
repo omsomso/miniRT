@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/29 18:21:15 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/30 12:38:10 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	quit(t_data *data)
 	mlx_destroy_image(data->mlx->ptr, data->pics->bckg);
 	mlx_destroy_image(data->mlx->ptr, data->pics->sel);
 	mlx_destroy_image(data->mlx->ptr, data->pics->sel_p);
+	mlx_destroy_image(data->mlx->ptr, data->pics->empty);
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win);
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win_gui);
 	free(data->mlx);
@@ -82,27 +83,34 @@ void	init_gui_window(t_data *data, t_mlx *m, int x, int y)
 	pics->bckg = mlx_xpm_file_to_image(m->ptr, "assets/bckg.xpm", &x, &y);
 	pics->sel = mlx_xpm_file_to_image(m->ptr, "assets/select.xpm", &x, &y);
 	pics->sel_p = mlx_xpm_file_to_image(m->ptr, "assets/sel_p.xpm", &x, &y);
+	pics->empty = mlx_xpm_file_to_image(m->ptr, "assets/empty.xpm", &x, &y);
 	printf("Mouse wheel\t: modify parameters\nRight click\t: retrace\n");
 	printf("Enter\t\t: toggle auto retrace\n");
 	data->pics = pics;
 	obj_count = count_objects(data->objects);
-	m->win_gui = mlx_new_window(m->ptr, calculate_gui_width(obj_count), \
-	calculate_gui_height(obj_count), "miniRT Object Controls");
+	m->win_gui = mlx_new_window(m->ptr, compute_gui_width(obj_count), \
+	compute_gui_height(obj_count), "miniRT Object Controls");
 	gui = init_gui_struct(data);
 	draw_gui(data, gui);
 }
 
 void	init_window(t_data *data)
 {
-	data->mlx->ptr = mlx_init();
-	data->mlx->win = mlx_new_window(data->mlx->ptr, data->win_width, data->win_height, "miniRT");
+	t_mlx	*m;
+
+	m = malloc(sizeof(t_mlx));
+	if (!m)
+		return ;
+	m->ptr = mlx_init();
+	m->win = mlx_new_window(m->ptr, data->win_width, data->win_height, "miniRT");
 	data->mlxdata = malloc(sizeof(t_mlxdata));
 	if (!data->mlxdata)
 		return ;
-	data->mlxdata->img = mlx_new_image(data->mlx->ptr, 1080, 720);
+	data->mlxdata->img = mlx_new_image(m->ptr, 1080, 720);
 	data->mlxdata->addr = mlx_get_data_addr(data->mlxdata->img,
 			&data->mlxdata->bits_per_pixel, &data->mlxdata->line_length,
 			&data->mlxdata->endian);
+	data->mlx = m;
 	init_gui_window(data, data->mlx, 0, 0);
 }
 
@@ -110,10 +118,10 @@ void	start_loop(t_data *data)
 {
 	mlx_hook(data->mlx->win, EVENT_KEYPRESS, 0, &handle_keypress, data);
 	mlx_hook(data->mlx->win, EVENT_DESTROY, 0, &quit, data);
+	mlx_mouse_hook(data->mlx->win_gui, &handle_mouse_gui, data);
 	mlx_mouse_hook(data->mlx->win, &handle_mouse, data);
 	mlx_hook(data->mlx->win_gui, EVENT_KEYPRESS, 0, &handle_keypress, data);
 	mlx_hook(data->mlx->win_gui, EVENT_DESTROY, 0, &quit, data);
-	mlx_mouse_hook(data->mlx->win_gui, &handle_mouse, data);
 	mlx_loop(data->mlx->ptr);
 }
 
