@@ -86,6 +86,8 @@ int	parse_cy(char **s, t_object **objects)
 	cylinder->center = get_vec(split);
 	split = ft_split(s[2], ',');
 	cylinder->normal_vec = get_vec(split);
+	cylinder->cy_ang_offset.x = 0;
+	cylinder->cy_ang_offset.y = 0;
 	if (!cylinder->center || !cylinder->normal_vec)
 		return (1);
 	cylinder->diameter = ft_atoi(s[3]);
