@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/28 17:46:01 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/01 22:49:14 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ int	parse_loop(int fd, t_object **objects, t_data *data)
 	}
 	while (line)
 	{
-		// printf("line = %s\n", line);
 		line = line_fixspace(line);
 		if (parse_line(line, objects, data))
 		{

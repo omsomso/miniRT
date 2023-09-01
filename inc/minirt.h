@@ -1,15 +1,19 @@
 #ifndef MINIRT_H
 # define MINIRT_H
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <math.h>
-#include <fcntl.h>
-#include <stdbool.h>
-#include "../libft/libft.h"
-#include "../mlx/mlx.h"
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <math.h>
+# include <fcntl.h>
+# include <stdbool.h>
 
+# include "../libft/libft.h"
+# include "../mlx/mlx.h"
+
+# include "types.h"
+# include "parser.h"
+# include "gui.h"
 
 # define WIN_HEIGHT 480
 # define WIN_WIDTH 640
@@ -52,189 +56,28 @@
 # define COL_GREY_D 0x6F6F6F
 # define COL_WHITE 0xFFFFFF
 
-#define EPSILON 1e-6
-
-typedef struct s_gui t_gui;
-
-// Mlx Stuff
-typedef struct s_mlx
-{
-	void	*ptr;
-	void	*win;
-	void	*win_gui;
-}			t_mlx;
-
-typedef struct s_mlxdata
-{
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}			t_mlxdata;
-
-typedef struct s_pics
-{
-	void	*bckg;
-	void	*sel;
-	void	*sel_p;
-	void	*empty;
-}			t_pics;
-
-// Parser Stuff
-typedef struct s_color
-{
-	float	r;
-	float	g;
-	float	b;
-}			t_color;
-
-typedef struct s_v3
-{
-	float	x;
-	float	y;
-	float	z;
-}			t_v3;
-
-typedef struct s_pos
-{
-	int	x;
-	int	y;
-	int	z;
-}			t_pos;
-
-typedef struct s_sphere
-{
-	t_v3		*center;
-	float		diameter;
-	float		radius;
-	t_color		color;
-}				t_sphere;
-
-typedef struct s_plane
-{
-	t_v3		*point;
-	t_v3		*normal_vec;
-	t_color		color;
-	t_pos		pl_ang_offset;
-}				t_plane;
-
-typedef struct s_cylinder
-{
-	t_v3		*center;
-	t_v3		*normal_vec;
-	float		diameter;
-	float		radius;
-	float		height;
-	t_color		color;
-	t_pos		cy_ang_offset;
-}				t_cylinder;
-
-typedef enum e_type
-{
-	SPHERE,
-	PLANE,
-	CYLINDER
-}				t_type;
-
-typedef struct s_object
-{
-	void			*object;
-	t_type			type;
-	double			ambient_coefficient;
-	double			diffuse_coefficient;
-	struct s_object	*next;
-	double			distance;
-	bool			check;
-	bool			mirror;
-}				t_object;
-
-typedef struct s_intersection
-{
-	t_v3		point;      // Intersection point in 3D space
-	t_v3		normal;     // Surface normal at the intersection point
-	t_object	*object;      // Object that was intersected
-	double		t;             // Parameter value along the ray where the intersection occurs
-}				t_intersection;
-
-typedef struct s_amb
-{
-	float	ratio;
-	t_color	color;
-}			t_amb;
-
-typedef struct  s_camera
-{
-	t_v3	*pos;			//position
-	t_v3	*normal_vec;	//orientation
-	t_v3	*up;
-	t_v3	*right;
-	int		fov;			//field of view
-}			t_camera;
-
-typedef struct s_light
-{
-	t_v3	*pos;
-	float	brightness;
-	t_color	color;
-}			t_light;
-
-typedef struct s_data
-{
-	t_mlx		*mlx;
-	t_mlxdata	*mlxdata;
-	t_pics		*pics;
-	t_amb		*ambient_light;
-	t_camera	*camera;
-	t_light		*light;
-	t_object	*objects;
-	t_v3		***rays;
-	t_gui		*gui;
-	int			auto_retrace;
-	int			win_width;
-	int			win_height;
-	double		aspect_ratio;
-	double		fov_tan;
-}				t_data;
-
-// Ray Tracer Stuff
-typedef struct s_ray
-{
-	t_v3	origin;
-	t_v3	direction;
-}			t_ray;
-
-typedef struct s_matrix4
-{
-	double	m[4][4];
-}			t_matrix4;
-
-typedef struct s_gui
-{
-	t_pos		mouse_pos;
-	t_pos		draw_pos;
-	t_object	*objects;
-	t_mlx		*mlx;
-	t_pics		*pics;
-	t_data 		*data;
-	t_pos		cam_ang_offset;
-	int			sel_bckg;
-	int			sel_par;
-	int			obj_count;
-}		t_gui;
-
-#include "parser.h"
+# define EPSILON 1e-6
 
 // miniRT Functions
 void	free_data(t_data *data);
+t_data	*init_data(void);
+int		check_main_args(int argc, char **argv);
 int		generate_rays(t_data *data);
 void	set_pixel_color(t_data *data, int x, int y, int color);
 t_color	trace_ray(t_ray ray, t_data *data, int depth);
+
+// Mlx Functions
+int		quit(t_data *data);
+void	init_gui_window(t_data *data, t_mlx *m, int x, int y);
+void	init_window(t_data *data);
+void	start_loop(t_data *data);
 
 // Utility Functions
 int		ft_isspace(char c);
 float	ft_atof(const char *s);
 char	*ft_ftoa(float f);
+int		cut_values_int(int *a, int max_a, int min_a);
+float	cut_values(float *a, float max_a, float min_a);
 
 // Math Functions
 t_v3	add_vectors(t_v3 a, t_v3 b);
@@ -247,40 +90,26 @@ t_v3	cross_product(t_v3 a, t_v3 b);
 float	dot_product(t_v3 a, t_v3 b);
 float	deg_to_rad(float deg);
 t_v3	new_v3(float x, float y, float z);
-bool	v3_equal(t_v3 v1, t_v3 v2);
+int		v3_equal(t_v3 v1, t_v3 v2);
 t_v3	get_orthogonal(t_v3 v);
 t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
 t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
-void 	rotate_camera_x(t_camera *camera, double angle_deg);
+// Object transform
+void	rotate_camera_x(t_camera *camera, double angle_deg);
 void	rotate_camera_y(t_camera *camera, double angle_deg);
 void	rotate_camera_z(t_camera *camera, double angle_deg);
-
 void	rotate_plane_x(t_plane *pl, double ang_deg);
-void 	rotate_plane_y(t_plane *pl, double ang_deg);
+void	rotate_plane_y(t_plane *pl, double ang_deg);
 void	rotate_plane_z(t_plane *pl, double ang_deg);
-
 void	rotate_cylinder_x(t_cylinder *cy, double ang_deg);
 void	rotate_cylinder_y(t_cylinder *cy, double ang_deg);
 void	rotate_cylinder_z(t_cylinder *cy, double ang_deg);
 
+// User input handling
+int		handle_mouse(int button, int x, int y, t_data *data);
 int		handle_mouse_gui(int button, int x, int y, t_data *data);
-int 	handle_mouse(int button, int x, int y, t_data *data);
-
-t_gui	*init_gui_struct(t_data *data);
-t_gui	*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos);
-int		draw_gui(t_data *data, t_gui *gui);
-void	conditional_retrace(t_data *data, int button);
-int		count_objects(t_object *objects);
-int		compute_gui_height(int obj_count);
-int		compute_gui_width(int obj_count);
-
-t_v3	get_pos_sphere(t_sphere *sphere);
-t_v3	get_pos_plane(t_plane *plane);
-t_v3	get_pos_cylinder(t_cylinder *cylinder);
-t_v3	get_light_pos(t_light *light);
-t_v3	get_camera_pos(t_camera *camera);
-t_v3	get_rot_plane(t_plane *plane);
-t_v3	get_rot_cylinder(t_cylinder *cylinder);
+int		handle_keypress(int key, t_data *data);
+void	move_camera_w_arrows(int key, t_data *data);
 
 #endif

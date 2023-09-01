@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   math.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 13:32:47 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/07 13:38:19 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/09/01 22:07:36 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
 
-t_v3 add_vectors(t_v3 a, t_v3 b)
+t_v3	add_vectors(t_v3 a, t_v3 b)
 {
 	t_v3	result;
 
@@ -22,7 +22,7 @@ t_v3 add_vectors(t_v3 a, t_v3 b)
 	return (result);
 }
 
-t_v3 subtract_vectors(t_v3 a, t_v3 b)
+t_v3	subtract_vectors(t_v3 a, t_v3 b)
 {
 	t_v3	result;
 
@@ -32,9 +32,10 @@ t_v3 subtract_vectors(t_v3 a, t_v3 b)
 	return (result);
 }
 
-t_v3 multiply_vector_scalar(t_v3 a, double s)
+t_v3	multiply_vector_scalar(t_v3 a, double s)
 {
-	t_v3 result;
+	t_v3	result;
+
 	result.x = a.x * s;
 	result.y = a.y * s;
 	result.z = a.z * s;
@@ -104,7 +105,7 @@ t_v3 new_v3(float x, float y, float z)
 }
 
 // Function to check if two vectors are equal
-bool v3_equal(t_v3 v1, t_v3 v2)
+int v3_equal(t_v3 v1, t_v3 v2)
 {
 	return fabs(v1.x - v2.x) < EPSILON && fabs(v1.y - v2.y) < EPSILON && fabs(v1.z - v2.z) < EPSILON;
 }

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:02:44 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/30 02:13:49 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/01 21:47:12 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,22 @@ char	*ft_ftoa(float f)
 		dec *= -1;
 	tmp2 = ft_itoa(dec);
 	return (ft_strjoin_fb(tmp1, tmp2));
+}
+
+int	cut_values_int(int *a, int max_a, int min_a)
+{
+	if (*a > max_a)
+		*a = max_a;
+	if (*a < min_a)
+		*a = min_a;
+	return (*a);
+}
+
+float	cut_values(float *a, float max_a, float min_a)
+{
+	if (*a > max_a)
+		*a = max_a;
+	if (*a < min_a)
+		*a = min_a;
+	return (*a);
 }

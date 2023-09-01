@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_objects.c                                    :+:      :+:    :+:   */
+/*   parse_spc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/30 18:36:30 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/01 19:57:31 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int	parse_pl(char **s, t_object **objects)
 		return (1);
 	plane->pl_ang_offset.x = 0;
 	plane->pl_ang_offset.y = 0;
+	plane->pl_ang_offset.z = 0;
 	split = ft_split(s[1], ',');
 	plane->point = get_vec(split);
 	split = ft_split(s[2], ',');
@@ -65,6 +66,18 @@ int	parse_pl(char **s, t_object **objects)
 	get_color(&(plane->color), split);
 	add_object(objects, plane, PLANE, s);
 	return (0);
+}
+
+// Parses color and inits angle offset for the cylinder
+void	set_cy_struct_additional(t_cylinder *cylinder, char **s)
+{
+	char	**split;
+
+	split = ft_split(s[5], ',');
+	get_color(&(cylinder->color), split);
+	cylinder->cy_ang_offset.x = 0;
+	cylinder->cy_ang_offset.y = 0;
+	cylinder->cy_ang_offset.z = 0;
 }
 
 // Cylinder Parser
@@ -86,89 +99,12 @@ int	parse_cy(char **s, t_object **objects)
 	cylinder->center = get_vec(split);
 	split = ft_split(s[2], ',');
 	cylinder->normal_vec = get_vec(split);
-	cylinder->cy_ang_offset.x = 0;
-	cylinder->cy_ang_offset.y = 0;
 	if (!cylinder->center || !cylinder->normal_vec)
 		return (1);
 	cylinder->diameter = ft_atoi(s[3]);
 	cylinder->radius = cylinder->diameter / 2;
 	cylinder->height = ft_atoi(s[4]);
-	split = ft_split(s[5], ',');
-	get_color(&(cylinder->color), split);
+	set_cy_struct_additional(cylinder, s);
 	add_object(objects, cylinder, CYLINDER, s);
 	return (0);
-}
-
-// Inits new object
-t_object	*create_obj(void *object, t_type type, char **s)
-{
-	t_object	*new_object;
-
-	new_object = malloc(sizeof(t_object));
-	if (!new_object)
-		return (NULL);
-	new_object->object = object;
-	new_object->type = type;
-	new_object->ambient_coefficient = 0.2;
-	new_object->diffuse_coefficient = 0.9;
-	new_object->next = NULL;
-	new_object->distance = INFINITY;
-	new_object->mirror = false;
-	if (!s[4])
-	{
-		new_object->check = false;
-		new_object->mirror = false;
-	}
-	return (new_object);
-}
-
-// Object Creation
-void	add_object(t_object **obj_head, void *object, t_type type, char **s)
-{
-	t_object	*current;
-	t_object	*new_object;
-
-	new_object = create_obj(object, type, s);
-	if (!new_object)
-		return ;
-	if (s[4] && ft_atoi(s[4]) == 1)
-	{
-		new_object->check = true;
-		if (s[5] && ft_atoi(s[5]) == 1)
-				new_object->mirror = true;
-	}
-
-	if (!s[4])
-	{
-		new_object->check = false;
-		new_object->mirror = false;
-	}
-	else if (type == SPHERE && s[4])
-	{
-		if (ft_atoi(s[4]) == 1)
-			new_object->check = true;
-		if (s[5] && ft_atoi(s[5]) == 1)
-				{new_object->mirror = true;
-				printf("yesyesyes\n");
-				printf("%d\n", new_object->mirror);}
-	}
-	else if (type == CYLINDER && s[6])
-	{
-		if (ft_atoi(s[6]) == 1)
-			new_object->check = true;
-		if (s[7] && ft_atoi(s[7]) == 1)
-				{new_object->mirror = true;
-				printf("yesyesyes\n");
-				printf("%d\n", new_object->mirror);}
-	}
-	
-	if (*obj_head == NULL)
-			*obj_head = new_object;
-	else
-	{
-		current = *obj_head;
-		while (current->next != NULL)
-			current = current->next;
-		current->next = new_object;
-	}
 }
