@@ -40,17 +40,19 @@
 # define GUI_EL_MARGIN 10
 # define GUI_EL_PAR_HEIGHT 10
 # define GUI_EL_PAR_OFFSET 1
+// gui element data margin
+# define DM 40
 
 # define MOD_POS 0.2
 # define MOD_RADIUS 0.05
 # define MOD_FOV 1
+# define MOD_ANG 1
 
 # define COL_GREY_L 0x8A8A8A
 # define COL_GREY_D 0x6F6F6F
 # define COL_WHITE 0xFFFFFF
 
 #define EPSILON 1e-6
-
 
 typedef struct s_gui t_gui;
 

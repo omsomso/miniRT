@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 22:52:43 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/30 12:38:07 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/30 23:56:49 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,40 +92,37 @@ int	modify_plane_b(t_gui *gui, t_plane *plane, int button, int sel)
 {
 	if (sel == 5 && button == 5)
 	{
-		rotate_plane_x(plane, -1);
-		plane->pl_ang_offset.x += 1;
+		rotate_plane_x(plane, -MOD_ANG);
+		plane->pl_ang_offset.x += MOD_ANG;
 	}
 	else if (sel == 5 && button == 4)
 	{
-		rotate_plane_x(plane, 1);
-		plane->pl_ang_offset.x -= 1;
+		rotate_plane_x(plane, MOD_ANG);
+		plane->pl_ang_offset.x -= MOD_ANG;
 	}
 	else if (sel == 6 && button == 5)
 	{
-		rotate_plane_y(plane, -1);
-		plane->pl_ang_offset.y += 1;
+		rotate_plane_y(plane, -MOD_ANG);
+		plane->pl_ang_offset.y += MOD_ANG;
 	}
 	else if (sel == 6 && button == 4)
 	{
-		rotate_plane_y(plane, 1);
-		plane->pl_ang_offset.y -= 1;
+		rotate_plane_y(plane, MOD_ANG);
+		plane->pl_ang_offset.y -= MOD_ANG;
 	}
 	else if (sel == 7 && button == 5)
 	{
-		rotate_plane_z(plane, -1);
-		plane->pl_ang_offset.z += 1;
+		rotate_plane_z(plane, -MOD_ANG);
+		plane->pl_ang_offset.z += MOD_ANG;
 	}
 	else if (sel == 7 && button == 4)
 	{
-		rotate_plane_z(plane, 1);
-		plane->pl_ang_offset.z -= 1;
+		rotate_plane_z(plane, MOD_ANG);
+		plane->pl_ang_offset.z -= MOD_ANG;
 	}
 	*plane->normal_vec = normalize(*plane->normal_vec);
 	// if (sel_param)
 		// return (1);
-	// cut_values(&plane->normal_vec->x, 1, -1);
-	// cut_values(&plane->normal_vec->y, 1, -1);
-	// cut_values(&plane->normal_vec->z, 1, -1);
 	return (0);
 }
 
@@ -168,33 +165,33 @@ int	modify_cylinder_b(t_cylinder *cy, int button, int sel)
 {
 	if (sel == 5 && button == 5)
 	{
-		rotate_cylinder_x(cy, -1);
-		cy->cy_ang_offset.x += 1;
+		rotate_cylinder_x(cy, -MOD_ANG);
+		cy->cy_ang_offset.x += MOD_ANG;
 	}
 	else if (sel == 5 && button == 4)
 	{
-		rotate_cylinder_x(cy, 1);
-		cy->cy_ang_offset.x -= 1;
+		rotate_cylinder_x(cy, MOD_ANG);
+		cy->cy_ang_offset.x -= MOD_ANG;
 	}
 	else if (sel == 6 && button == 5)
 	{
-		rotate_cylinder_y(cy, -1);
-		cy->cy_ang_offset.y += 1;
+		rotate_cylinder_y(cy, -MOD_ANG);
+		cy->cy_ang_offset.y += MOD_ANG;
 	}
 	else if (sel == 6 && button == 4)
 	{
-		rotate_cylinder_y(cy, 1);
-		cy->cy_ang_offset.y -= 1;
+		rotate_cylinder_y(cy, MOD_ANG);
+		cy->cy_ang_offset.y -= MOD_ANG;
 	}
 	else if (sel == 7 && button == 5)
 	{
-		rotate_cylinder_z(cy, -1);
-		cy->cy_ang_offset.z += 1;
+		rotate_cylinder_z(cy, -MOD_ANG);
+		cy->cy_ang_offset.z += MOD_ANG;
 	}
 	else if (sel == 7 && button == 4)
 	{
-		rotate_cylinder_z(cy, 1);
-		cy->cy_ang_offset.z -= 1;
+		rotate_cylinder_z(cy, MOD_ANG);
+		cy->cy_ang_offset.z -= MOD_ANG;
 	}
 	if (sel == 8 && button == 4)
 		cy->height -= MOD_POS;
@@ -266,16 +263,6 @@ int	modify_camera_b(t_data *data, t_gui *gui, int button, int sel)
 		rotate_camera_y(data->camera, 1);
 		gui->cam_ang_offset.y -= 1;
 	}
-	// else if (sel == 7 && button == 5)
-	// {
-	// 	rotate_camera_z(data->camera, -1);
-	// 	gui->cam_ang_offset.z += 1;
-	// }
-	// else if (sel == 7 && button == 4)
-	// {
-	// 	rotate_camera_z(data->camera, 1);
-	// 	gui->cam_ang_offset.z -= 1;
-	// }
 	return (0);
 }
 
@@ -487,8 +474,8 @@ int	draw_rot_data_cam(t_gui * gui, t_mlx *m, t_pos obj_ang_offset)
 	ang_y = ft_itoa(obj_ang_offset.y);
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 70, COL_GREY_L, "ANG X");
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 80, COL_GREY_L, "ANG Y");
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 70, COL_GREY_D, ang_x);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 80, COL_GREY_D, ang_y);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 70, COL_GREY_D, ang_x);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 80, COL_GREY_D, ang_y);
 	free(ang_x);
 	free(ang_y);
 	return (0);
@@ -510,9 +497,9 @@ int	draw_rot_data(t_gui * gui, t_mlx *m, t_pos obj_ang_offset)
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 70, COL_GREY_L, "ANG X");
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 80, COL_GREY_L, "ANG Y");
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 90, COL_GREY_L, "ANG Z");
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 70, COL_GREY_D, ang_x);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 80, COL_GREY_D, ang_y);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 90, COL_GREY_D, ang_z);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 70, COL_GREY_D, ang_x);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 80, COL_GREY_D, ang_y);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 90, COL_GREY_D, ang_z);
 	free(ang_x);
 	free(ang_y);
 	free(ang_z);
@@ -534,9 +521,9 @@ int	draw_pos_data(t_gui *gui, t_mlx *m, t_v3 pos)
 	mlx_string_put(m->ptr, m->win_gui, x, y + 30, COL_GREY_L, "POS X");
 	mlx_string_put(m->ptr, m->win_gui, x, y + 40, COL_GREY_L, "POS Y");
 	mlx_string_put(m->ptr, m->win_gui, x, y + 50, COL_GREY_L, "POS Z");
-	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 30, COL_GREY_D, s[0]);
-	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 40, COL_GREY_D, s[1]);
-	mlx_string_put(m->ptr, m->win_gui, x + 50, y + 50, COL_GREY_D, s[2]);
+	mlx_string_put(m->ptr, m->win_gui, x + DM, y + 30, COL_GREY_D, s[0]);
+	mlx_string_put(m->ptr, m->win_gui, x + DM, y + 40, COL_GREY_D, s[1]);
+	mlx_string_put(m->ptr, m->win_gui, x + DM, y + 50, COL_GREY_D, s[2]);
 	free(s[0]);
 	free(s[1]);
 	free(s[2]);
@@ -553,7 +540,7 @@ int	draw_sp_radius(t_gui *gui, t_mlx *m, float radius)
 	p.x = gui->draw_pos.x;
 	p.y = gui->draw_pos.y + 50;
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 10, COL_GREY_L, "RAD");
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 10, COL_GREY_D, value);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 10, COL_GREY_D, value);
 	free(value);
 	return (0);
 }
@@ -576,9 +563,9 @@ int	draw_cy_ctrls(t_gui *gui, t_cylinder *cylinder, int id)
 	draw_pos_data(gui, gui->mlx, pos_cylinder);
 	draw_rot_data(gui, gui->mlx, cylinder->cy_ang_offset);
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 60, COL_GREY_L, "WIDTH");
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 60, COL_GREY_D, s[0]);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 60, COL_GREY_D, s[0]);
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 100, COL_GREY_L, "HGHT");
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 100, COL_GREY_D, s[1]);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 100, COL_GREY_D, s[1]);
 	free(s[0]);
 	free(s[1]);
 	return (0);
@@ -735,7 +722,7 @@ int	draw_camera_ctrls(t_camera *camera, t_gui *gui, t_mlx *m)
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 60, COL_GREY_L, "FOV");
 	mlx_string_put(m->ptr, m->win_gui, p.x, p.y + 16, COL_WHITE, "CAMERA");
 	fov_s = ft_itoa(camera->fov);
-	mlx_string_put(m->ptr, m->win_gui, p.x + 50, p.y + 60, COL_GREY_D, fov_s);
+	mlx_string_put(m->ptr, m->win_gui, p.x + DM, p.y + 60, COL_GREY_D, fov_s);
 	free(fov_s);
 	camera_pos = get_camera_pos(camera);
 	draw_pos_data(gui, gui->mlx, camera_pos);

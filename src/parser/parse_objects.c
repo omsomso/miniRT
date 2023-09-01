@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/30 12:38:29 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/30 18:36:30 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ int	parse_cy(char **s, t_object **objects)
 	cylinder->center = get_vec(split);
 	split = ft_split(s[2], ',');
 	cylinder->normal_vec = get_vec(split);
+	cylinder->cy_ang_offset.x = 0;
+	cylinder->cy_ang_offset.y = 0;
 	if (!cylinder->center || !cylinder->normal_vec)
 		return (1);
 	cylinder->diameter = ft_atoi(s[3]);

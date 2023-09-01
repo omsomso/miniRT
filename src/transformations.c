@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 15:28:40 by fcullen           #+#    #+#             */
-/*   Updated: 2023/08/30 12:39:10 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/08/30 20:54:42 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,47 +54,47 @@ void	rotate_camera_x(t_camera *camera, double angle_deg)
 void	rotate_plane_y(t_plane *pl, double ang_deg)
 {
 	double	ang_rad;
-	float	cos_theta;
-	float	sin_theta;
+	double	c;
+	double	s;
 	t_v3	new_orient;
 	
 	ang_rad = deg_to_rad(ang_deg);
-	cos_theta = cos(ang_rad);
-	sin_theta = sin(ang_rad);
-	new_orient.x = pl->normal_vec->x * cos_theta - pl->normal_vec->z * sin_theta;
+	c = cos(ang_rad);
+	s = sin(ang_rad);
+	new_orient.x = pl->normal_vec->x * c - pl->normal_vec->z * s;
 	new_orient.y = pl->normal_vec->y;
-	new_orient.z = pl->normal_vec->x * sin_theta + pl->normal_vec->z * cos_theta;
+	new_orient.z = pl->normal_vec->x * s + pl->normal_vec->z * c;
 	*pl->normal_vec = normalize(new_orient);
 }
 
 void 	rotate_plane_x(t_plane *pl, double ang_deg)
 {
 	double	ang_rad;
-	float	cos_theta;
-	float	sin_theta;
+	double	c;
+	double	s;
 	t_v3	new_orient;
 	
 	ang_rad = deg_to_rad(ang_deg);
-	cos_theta = cos(ang_rad);
-	sin_theta = sin(ang_rad);
+	c = cos(ang_rad);
+	s = sin(ang_rad);
 	new_orient.x = pl->normal_vec->x;
-	new_orient.y = pl->normal_vec->y * cos_theta - pl->normal_vec->z * sin_theta;
-	new_orient.z = pl->normal_vec->y * sin_theta + pl->normal_vec->z * cos_theta;
+	new_orient.y = pl->normal_vec->y * c - pl->normal_vec->z * s;
+	new_orient.z = pl->normal_vec->y * s + pl->normal_vec->z * c;
 	*pl->normal_vec = normalize(new_orient);
 }
 
 void	rotate_plane_z(t_plane *pl, double ang_deg)
 {
 	double	ang_rad;
-	float	cos_theta;
-	float	sin_theta;
+	double	c;
+	double	s;
 	t_v3	new_orient;
 	
 	ang_rad = deg_to_rad(ang_deg);
-	cos_theta = cos(ang_rad);
-	sin_theta = sin(ang_rad);
-	new_orient.x = pl->normal_vec->x * cos_theta - pl->normal_vec->y * sin_theta;
-	new_orient.y = pl->normal_vec->x * sin_theta + pl->normal_vec->y * cos_theta;
+	c = cos(ang_rad);
+	s = sin(ang_rad);
+	new_orient.x = pl->normal_vec->x * c - pl->normal_vec->y * s;
+	new_orient.y = pl->normal_vec->x * s + pl->normal_vec->y * c;
 	new_orient.z = pl->normal_vec->z;
 	*pl->normal_vec = normalize(new_orient);
 }
@@ -102,47 +102,47 @@ void	rotate_plane_z(t_plane *pl, double ang_deg)
 void	rotate_cylinder_y(t_cylinder *cy, double ang_deg)
 {
 	double	ang_rad;
-	float	cos_theta;
-	float	sin_theta;
+	double	c;
+	double	s;
 	t_v3	new_orient;
 	
 	ang_rad = deg_to_rad(ang_deg);
-	cos_theta = cos(ang_rad);
-	sin_theta = sin(ang_rad);
-	new_orient.x = cy->normal_vec->x * cos_theta - cy->normal_vec->z * sin_theta;
+	c = cos(ang_rad);
+	s = sin(ang_rad);
+	new_orient.x = cy->normal_vec->x * c - cy->normal_vec->z * s;
 	new_orient.y = cy->normal_vec->y;
-	new_orient.z = cy->normal_vec->x * sin_theta + cy->normal_vec->z * cos_theta;
+	new_orient.z = cy->normal_vec->x * s + cy->normal_vec->z * c;
 	*cy->normal_vec = normalize(new_orient);
 }
 
 void	rotate_cylinder_x(t_cylinder *cy, double ang_deg)
 {
 	double	ang_rad;
-	float	cos_theta;
-	float	sin_theta;
+	double	c;
+	double	s;
 	t_v3	new_orient;
 	
 	ang_rad = deg_to_rad(ang_deg);
-	cos_theta = cos(ang_rad);
-	sin_theta = sin(ang_rad);
+	c = cos(ang_rad);
+	s = sin(ang_rad);
 	new_orient.x = cy->normal_vec->x;
-	new_orient.y = cy->normal_vec->y * cos_theta - cy->normal_vec->z * sin_theta;
-	new_orient.z = cy->normal_vec->y * sin_theta + cy->normal_vec->z * cos_theta;
+	new_orient.y = cy->normal_vec->y * c - cy->normal_vec->z * s;
+	new_orient.z = cy->normal_vec->y * s + cy->normal_vec->z * c;
 	*cy->normal_vec = normalize(new_orient);
 }
 
 void	rotate_cylinder_z(t_cylinder *cy, double ang_deg)
 {
 	double	ang_rad;
-	float	cos_theta;
-	float	sin_theta;
+	double	c;
+	double	s;
 	t_v3	new_orient;
 	
 	ang_rad = deg_to_rad(ang_deg);
-	cos_theta = cos(ang_rad);
-	sin_theta = sin(ang_rad);
-	new_orient.x = cy->normal_vec->x * cos_theta - cy->normal_vec->y * sin_theta;
-	new_orient.y = cy->normal_vec->x * sin_theta + cy->normal_vec->y * cos_theta;
+	c = cos(ang_rad);
+	s = sin(ang_rad);
+	new_orient.x = cy->normal_vec->x * c - cy->normal_vec->y * s;
+	new_orient.y = cy->normal_vec->x * s + cy->normal_vec->y * c;
 	new_orient.z = cy->normal_vec->z;
 	*cy->normal_vec = normalize(new_orient);
 }
