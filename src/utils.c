@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/08/30                              ###   ########.fr       */
+/*   Updated: 2023/09/01                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,22 @@ char	*ft_ftoa(float f)
 		dec *= -1;
 	tmp2 = ft_itoa(dec);
 	return (ft_strjoin_fb(tmp1, tmp2));
+}
+
+int	cut_values_int(int *a, int max_a, int min_a)
+{
+	if (*a > max_a)
+		*a = max_a;
+	if (*a < min_a)
+		*a = min_a;
+	return (*a);
+}
+
+float	cut_values(float *a, float max_a, float min_a)
+{
+	if (*a > max_a)
+		*a = max_a;
+	if (*a < min_a)
+		*a = min_a;
+	return (*a);
 }

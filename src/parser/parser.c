@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/08/28                              ###   ########.fr       */
+/*   Updated: 2023/09/01                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ int	parse_loop(int fd, t_object **objects, t_data *data)
 	}
 	while (line)
 	{
-		// printf("line = %s\n", line);
 		line = line_fixspace(line);
 		if (parse_line(line, objects, data))
 		{
