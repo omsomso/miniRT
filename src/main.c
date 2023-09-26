@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*                                                  +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17                               #+#    #+#             */
-/*   Updated: 2023/09/01                              ###   ########.fr       */
+/*   Updated: 2023/09/25 by fcullen                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	quit(t_data *data)
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win);
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win_gui);
 	free(data->mlx);
-	// free(data->gui);
 	exit(0);
 }
 

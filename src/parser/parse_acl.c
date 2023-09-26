@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_acl.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*                                                  +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/08/23                              ###   ########.fr       */
+/*   Updated: 2023/09/26 by fcullen                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	parse_c(char **s, t_data **data)
 	split = ft_split(s[1], ',');
 	camera->pos = get_vec(split);
 	split = ft_split(s[2], ',');
-	camera->normal_vec = get_vec(split);
+	camera->normal = get_vec(split);
 	camera->fov = ft_atoi(s[3]);
 	(*data)->camera = camera;
 	ft_ptrfree(s);
