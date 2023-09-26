@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mod_objects_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 21:13:12 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/01 22:06:24 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/26 13:19:47 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	modify_plane_c(t_gui *gui, t_plane *plane, int button, int sel)
 		rotate_plane_z(plane, MOD_ANG);
 		plane->pl_ang_offset.z -= MOD_ANG;
 	}
-	*plane->normal_vec = normalize(*plane->normal_vec);
+	*plane->normal = normalize(*plane->normal);
 }
 
 void	modify_plane_b(t_gui *gui, t_plane *plane, int button, int sel)

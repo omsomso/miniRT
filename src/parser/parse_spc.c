@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_spc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/01 19:57:31 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/26 14:45:46 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,15 @@ int	parse_pl(char **s, t_object **objects)
 {
 	t_plane		*plane;
 	t_v3		*point;
-	t_v3		*normal_vec;
+	t_v3		*normal;
 	char		**split;
 
 	if (check_pl(s))
 		return (1);
 	plane = malloc(sizeof(t_plane));
 	point = malloc(sizeof(t_v3));
-	normal_vec = malloc(sizeof(t_v3));
-	if (!plane || !point || !normal_vec)
+	normal = malloc(sizeof(t_v3));
+	if (!plane || !point || !normal)
 		return (1);
 	plane->pl_ang_offset.x = 0;
 	plane->pl_ang_offset.y = 0;
@@ -59,8 +59,8 @@ int	parse_pl(char **s, t_object **objects)
 	split = ft_split(s[1], ',');
 	plane->point = get_vec(split);
 	split = ft_split(s[2], ',');
-	plane->normal_vec = get_vec(split);
-	if (!plane->point || !plane->normal_vec)
+	plane->normal = get_vec(split);
+	if (!plane->point || !plane->normal)
 		return (1);
 	split = ft_split(s[3], ',');
 	get_color(&(plane->color), split);
@@ -80,30 +80,38 @@ void	set_cy_struct_additional(t_cylinder *cylinder, char **s)
 	cylinder->cy_ang_offset.z = 0;
 }
 
+// Init some cylinder values
+void	initialize_cylinder(t_cylinder *cylinder)
+{
+	cylinder->cap_offsets[0] = -cylinder->height / 2;
+	cylinder->cap_offsets[1] = cylinder->height / 2;
+}
+
 // Cylinder Parser
 int	parse_cy(char **s, t_object **objects)
 {
 	t_cylinder	*cylinder;
 	t_v3		*center;
-	t_v3		*normal_vec;
+	t_v3		*normal;
 	char		**split;
 
 	if (check_cy(s))
 		return (1);
 	cylinder = malloc(sizeof(t_cylinder));
 	center = malloc(sizeof(t_v3));
-	normal_vec = malloc(sizeof(t_v3));
-	if (!cylinder || !center || !normal_vec)
+	normal = malloc(sizeof(t_v3));
+	if (!cylinder || !center || !normal)
 		return (1);
 	split = ft_split(s[1], ',');
 	cylinder->center = get_vec(split);
 	split = ft_split(s[2], ',');
-	cylinder->normal_vec = get_vec(split);
-	if (!cylinder->center || !cylinder->normal_vec)
+	cylinder->normal = get_vec(split);
+	if (!cylinder->center || !cylinder->normal)
 		return (1);
 	cylinder->diameter = ft_atoi(s[3]);
 	cylinder->radius = cylinder->diameter / 2;
 	cylinder->height = ft_atoi(s[4]);
+	initialize_cylinder(cylinder);
 	set_cy_struct_additional(cylinder, s);
 	add_object(objects, cylinder, CYLINDER, s);
 	return (0);

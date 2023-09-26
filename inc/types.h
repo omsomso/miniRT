@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 22:28:11 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/01 22:29:25 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:09:53 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ typedef struct s_sphere
 typedef struct s_plane
 {
 	t_v3		*point;
-	t_v3		*normal_vec;
+	t_v3		*normal;
 	t_color		color;
 	t_pos		pl_ang_offset;
 }				t_plane;
@@ -83,13 +83,21 @@ typedef struct s_plane
 typedef struct s_cylinder
 {
 	t_v3		*center;
-	t_v3		*normal_vec;
+	t_v3		*normal;
 	float		diameter;
 	float		radius;
 	float		height;
 	t_color		color;
 	t_pos		cy_ang_offset;
+	float		cap_offsets[2];
 }				t_cylinder;
+
+typedef struct s_coeffs
+{
+	float	a;
+	float	b;
+	float	c;
+}			t_coeff;
 
 typedef enum e_type
 {
@@ -106,17 +114,16 @@ typedef struct s_object
 	double			diffuse_coefficient;
 	struct s_object	*next;
 	double			distance;
-	bool			check;
-	bool			mirror;
 }				t_object;
 
+// Intersection type
 typedef struct s_intersection
 {
-	t_v3		point;      // Intersection point in 3D space
-	t_v3		normal;     // Surface normal at the intersection point
-	t_object	*object;      // Object that was intersected
-	double		t;             // Parameter value along the ray where the intersection occurs
-}				t_intersection;
+	t_v3		point;
+	t_v3		normal;
+	t_object	*object;
+	double		t;
+}				t_int;
 
 typedef struct s_amb
 {
@@ -124,13 +131,13 @@ typedef struct s_amb
 	t_color	color;
 }			t_amb;
 
-typedef struct	s_camera
+typedef struct s_camera
 {
-	t_v3	*pos;			//position
-	t_v3	*normal_vec;	//orientation
+	t_v3	*pos;
+	t_v3	*normal;
 	t_v3	*up;
 	t_v3	*right;
-	int		fov;			//field of view
+	int		fov;
 }			t_camera;
 
 typedef struct s_light
@@ -183,5 +190,17 @@ typedef struct s_gui
 	int			sel_par;
 	int			obj_count;
 }		t_gui;
+
+typedef struct s_cy_params
+{
+	t_ray		ray;
+	t_cylinder	*cylinder;
+	float		t_body;
+	float		t_caps;
+	t_int		*intersection;
+	float		oc_dot_n;
+	t_v3		oc;
+	float		dir_dot_n;
+}				t_cy_params;
 
 #endif

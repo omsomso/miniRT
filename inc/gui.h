@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gui.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 21:22:41 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/01 22:08:28 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:05:39 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int			compute_gui_height(int obj_count);
 int			compute_gui_width(int obj_count);
 t_gui		*update_gui_struct(t_data *data, t_gui *gui, t_pos mouse_pos);
 t_gui		*init_gui_struct(t_data *data);
-
 
 void		modify_camera_b(t_data *data, t_gui *gui, int button, int sel);
 void		modify_camera(t_data *data, t_gui *gui, int button, int sel);
@@ -64,7 +63,6 @@ int			draw_rot_data(t_gui *gui, t_mlx *m, t_pos obj_ang_offset);
 int			draw_pos_data(t_gui *gui, t_mlx *m, t_v3 pos);
 int			draw_object_name(t_gui *gui, char *name, int id);
 int			draw_rot_data_cam(t_gui *gui, t_mlx *m, t_pos obj_ang_offset);
-
 
 int			handle_mouse(int button, int x, int y, t_data *data);
 int			handle_mouse_gui(int button, int x, int y, t_data *data);

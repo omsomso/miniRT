@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/01 22:42:30 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/25 13:59:56 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	quit(t_data *data)
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win);
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win_gui);
 	free(data->mlx);
-	// free(data->gui);
 	exit(0);
 }
 

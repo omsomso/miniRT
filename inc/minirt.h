@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minirt.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/26 14:43:45 by fcullen           #+#    #+#             */
+/*   Updated: 2023/09/26 16:06:56 by fcullen          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINIRT_H
 # define MINIRT_H
 
@@ -14,12 +26,13 @@
 # include "types.h"
 # include "parser.h"
 # include "gui.h"
+# include "math.h"
+# include "color.h"
 
 # define WIN_HEIGHT 480
 # define WIN_WIDTH 640
 # define MAX_RECURSION_DEPTH 3
 # define NUM_SAMPLES 2
-
 
 # define EVENT_KEYPRESS 2
 # define EVENT_KEYRELEASE 3
@@ -65,6 +78,29 @@ int		check_main_args(int argc, char **argv);
 int		generate_rays(t_data *data);
 void	set_pixel_color(t_data *data, int x, int y, int color);
 t_color	trace_ray(t_ray ray, t_data *data, int depth);
+int		intersect_cylinder(t_ray ray, t_cylinder *cylinder,
+			t_int *intersection);
+float	check_body(t_ray ray, t_cylinder *cylinder,
+			t_coeff coeffs, float discriminant);
+int		intersect_plane(t_ray ray, t_plane *plane, t_int *intersection);
+int		find_closest_int(t_ray ray, t_object *objects, t_int *closest_int);
+
+// Shader
+t_color	calculate_shading(t_int *intersection, t_data *data,
+			t_v3 camera_position, double specular_exponent);
+t_color	calculate_background_color(t_amb amb_light);
+t_color	normalize_color(t_color color);
+t_color	get_object_color(t_int *intersection);
+int		is_point_in_shadow(t_v3 point, t_v3 light_dir,
+			double light_dist, t_data *data);
+t_color	calculate_diffuse_color(t_color dc, t_light *light,
+			t_color obj, double di);
+
+// Intersection Functions
+void	update_intersection(t_int *intersection,
+			t_ray ray, float t, t_v3 *center);
+int		intersect_sphere(t_ray ray, t_sphere *sphere, t_int *intersection);
+int		intersect(t_ray ray, void *object, t_type type, t_int *intersection);
 
 // Mlx Functions
 int		quit(t_data *data);
@@ -78,22 +114,6 @@ float	ft_atof(const char *s);
 char	*ft_ftoa(float f);
 int		cut_values_int(int *a, int max_a, int min_a);
 float	cut_values(float *a, float max_a, float min_a);
-
-// Math Functions
-t_v3	add_vectors(t_v3 a, t_v3 b);
-t_v3	subtract_vectors(t_v3 a, t_v3 b);
-t_v3	multiply_vector_scalar(t_v3 a, double s);
-t_v3	normalize(t_v3	a);
-float	distance_to_point(t_v3 a, t_v3 b);
-float	vector_length(t_v3	a);
-t_v3	cross_product(t_v3 a, t_v3 b);
-float	dot_product(t_v3 a, t_v3 b);
-float	deg_to_rad(float deg);
-t_v3	new_v3(float x, float y, float z);
-int		v3_equal(t_v3 v1, t_v3 v2);
-t_v3	get_orthogonal(t_v3 v);
-t_v3	multiply_matrix_vector(const t_matrix4 matrix, const t_v3 vector);
-t_v3	calculate_sphere_normal(t_v3 sphere_center, t_v3 point_on_surface);
 
 // Object transform
 void	rotate_camera_x(t_camera *camera, double angle_deg);

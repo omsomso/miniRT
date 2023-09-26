@@ -3,53 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:02:44 by fcullen           #+#    #+#             */
-/*   Updated: 2023/09/01 21:47:12 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:24:43 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minirt.h"
-
-float	ft_atof(const char *s)
-{
-	float	res;
-	float	sign;
-	float	decimal;
-	int		i;
-
-	res = 0;
-	sign = 1;
-	i = 0;
-	decimal = 0.1;
-	while (s[i] && ft_isspace(s[i]) == 1)
-		i++;
-	if (s[i] == '+' && ft_isdigit(s[i + 1]) == 0)
-		return (0);
-	if (s[i] == '+' || s[i] == '-')
-	{
-		if (s[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (s[i] && ft_isdigit(s[i]))
-	{
-		res = res * 10 + (s[i] - '0');
-		i++;
-	}
-	if (s[i] == '.')  // handle fractional part
-	{
-		i++;
-		while (s[i] && ft_isdigit(s[i]) == 1)
-		{
-			res += (s[i] - '0') * decimal;
-			decimal *= 0.1;
-			i++;
-		}
-	}
-	return (res * sign);
-}
 
 char	*ft_ftoa(float f)
 {
@@ -82,4 +43,18 @@ float	cut_values(float *a, float max_a, float min_a)
 	if (*a < min_a)
 		*a = min_a;
 	return (*a);
+}
+
+// Maps the x, y, and z components of the normal to the RGB values
+// to visualize normals
+t_color	visualize_normals(t_int *intersection)
+{
+	t_color	color;
+	t_v3	normal;
+
+	normal = normalize(intersection->normal);
+	color.r = (unsigned char)((normal.x + 1.0) * 127.5);
+	color.g = (unsigned char)((normal.y + 1.0) * 127.5);
+	color.b = (unsigned char)((normal.z + 1.0) * 127.5);
+	return (color);
 }

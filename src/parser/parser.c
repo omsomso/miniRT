@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/09/01 22:49:14 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/26 15:07:16 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,5 @@ int	parser(char *filename, t_object **objects, t_data *data)
 	if (check_scene(data))
 		return (-1);
 	sort_objects_by_distance(*data->camera->pos, &(*objects));
-	// dbg_parser(data);
 	return (0);
 }

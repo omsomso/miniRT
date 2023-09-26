@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_free.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/21 18:58:03 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/09/26 13:19:47 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	free_pl(void *object)
 	t_plane	*plane;
 
 	plane = (t_plane *)object;
-	free(plane->normal_vec);
+	free(plane->normal);
 	free(plane->point);
 	free(plane);
 }
@@ -39,7 +39,7 @@ void	free_cy(void *object)
 	t_cylinder	*cylinder;
 
 	cylinder = (t_cylinder *)object;
-	free(cylinder->normal_vec);
+	free(cylinder->normal);
 	free(cylinder->center);
 	free(cylinder);
 }
