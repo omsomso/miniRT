@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 21:36:41 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/01 22:01:16 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/07 14:10:06 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ int	draw_background(t_gui *gui, t_mlx *m, int obj_id)
 // Fills background of empty ui space
 void	fill_background(t_gui *gui, t_mlx *m)
 {
-	int		el_per_row;
 	t_pos	p;
 
 	p.y = gui->draw_pos.y;

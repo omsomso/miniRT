@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_objects.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/26 15:16:20 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/10/07 14:09:42 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_object	*create_obj(void *object, t_type type, char **s)
 {
 	t_object	*new_object;
 
+	(void) s;
 	new_object = malloc(sizeof(t_object));
 	if (!new_object)
 		return (NULL);
