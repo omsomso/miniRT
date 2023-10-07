@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/08/25                              ###   ########.fr       */
+/*   Updated: 2023/10/07                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,10 @@ int	check_color(char *color)
 	if (err == 1)
 	{
 		write(2, "Error: Color parameters must be nbs between 0 & 255\n", 52);
-		free(col);
+		ft_ptrfree(col);
 		return (1);
 	}
-	free(col);
+	ft_ptrfree(col);
 	return (0);
 }
 

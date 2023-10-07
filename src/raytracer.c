@@ -116,5 +116,7 @@ int	generate_rays(t_data *data)
 	}
 	mlx_put_image_to_window(data->mlx->ptr,
 		data->mlx->win, data->mlxdata->img, 0, 0);
+	free(data->camera->right);
+	free(data->camera->up);
 	return (0);
 }
