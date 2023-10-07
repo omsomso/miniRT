@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01                               #+#    #+#             */
-/*   Updated: 2023/09/01                              ###   ########.fr       */
+/*   Updated: 2023/10/07                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ int	draw_rot_data_cam(t_gui *gui, t_mlx *m, t_pos obj_ang_offset)
 {
 	char	*ang_x;
 	char	*ang_y;
-	char	*ang_z;
 	t_pos	p;
 
 	p.x = gui->draw_pos.x;

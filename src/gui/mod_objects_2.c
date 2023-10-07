@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mod_objects_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01                               #+#    #+#             */
-/*   Updated: 2023/09/26 by fcullen                   ###   ########.fr       */
+/*   Updated: 2023/10/07                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	modify_plane_c(t_gui *gui, t_plane *plane, int button, int sel)
 {
+	(void) gui;
 	if (sel == 7 && button == 5)
 	{
 		rotate_plane_z(plane, -MOD_ANG);

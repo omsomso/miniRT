@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01                               #+#    #+#             */
-/*   Updated: 2023/09/01                              ###   ########.fr       */
+/*   Updated: 2023/10/07                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ int	draw_background(t_gui *gui, t_mlx *m, int obj_id)
 // Fills background of empty ui space
 void	fill_background(t_gui *gui, t_mlx *m)
 {
-	int		el_per_row;
 	t_pos	p;
 
 	p.y = gui->draw_pos.y;
