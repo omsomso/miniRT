@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/25 22:06:29 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/07 20:24:32 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,10 @@ int	check_color(char *color)
 	if (err == 1)
 	{
 		write(2, "Error: Color parameters must be nbs between 0 & 255\n", 52);
-		free(col);
+		ft_ptrfree(col);
 		return (1);
 	}
-	free(col);
+	ft_ptrfree(col);
 	return (0);
 }
 

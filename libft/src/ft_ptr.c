@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 18:17:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/05/27 18:31:04 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/07 20:23:02 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_ptrfree(char **s)
 	int	i;
 
 	i = 0;
-	if (!s)
+	if (!s || !s[0])
 		return ;
 	while (s[i])
 	{

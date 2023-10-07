@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 10:52:17 by fcullen           #+#    #+#             */
-/*   Updated: 2023/10/07 14:09:20 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/07 21:52:26 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,5 +116,7 @@ int	generate_rays(t_data *data)
 	}
 	mlx_put_image_to_window(data->mlx->ptr,
 		data->mlx->win, data->mlxdata->img, 0, 0);
+	free(data->camera->right);
+	free(data->camera->up);
 	return (0);
 }

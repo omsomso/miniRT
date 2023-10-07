@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/09/26 15:07:16 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/10/07 21:50:47 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,9 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 		ft_putendl_fd(split[0], 2);
 		return (ft_ptrfree(split), 1);
 	}
-	if (parse_spc(split, objects) || parse_acl(split, data))
+	else if (parse_spc(split, objects) || parse_acl(split, data))
 		return (ft_ptrfree(split), 1);
+	ft_ptrfree(split);
 	return (0);
 }
 
@@ -80,6 +81,7 @@ int	parse_loop(int fd, t_object **objects, t_data *data)
 	char	*line;
 
 	line = get_next_line(fd);
+	free(*objects);
 	*objects = NULL;
 	if (!line)
 	{
@@ -91,7 +93,7 @@ int	parse_loop(int fd, t_object **objects, t_data *data)
 		line = line_fixspace(line);
 		if (parse_line(line, objects, data))
 		{
-			write(1, "Parsing error\n", 14);
+			write(2, "Parsing error\n", 14);
 			free(line);
 			return (1);
 		}
@@ -114,6 +116,6 @@ int	parser(char *filename, t_object **objects, t_data *data)
 		return (-1);
 	if (check_scene(data))
 		return (-1);
-	sort_objects_by_distance(*data->camera->pos, &(*objects));
+	sort_objects_by_distance(*data->camera->pos, objects);
 	return (0);
 }

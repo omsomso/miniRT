@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 23:02:27 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/08/30 12:38:04 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/07 21:46:28 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void		fix_last_whitespace(char **s);
 int			check_spaces(char *line);
 
 int			parse_loop(int fd, t_object **objects, t_data *data);
-int			parser(char *filename, t_object **objects, t_data *data);
 
 int			init_scene(t_data *data);
 int			check_scene(t_data *data);

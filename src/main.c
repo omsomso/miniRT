@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/25 13:59:56 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/10/07 21:50:15 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,12 @@
 void	free_data(t_data *data)
 {
 	free_objects(data->objects);
+	// free(data->objects);
 	free_acl(data->ambient_light, data->camera, data->light);
+	free(data->pics);
+	free(data->mlxdata);
+	free(data->mlx);
+	free(data);
 }
 
 int	quit(t_data *data)
@@ -28,7 +33,8 @@ int	quit(t_data *data)
 	mlx_destroy_image(data->mlx->ptr, data->pics->empty);
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win);
 	mlx_destroy_window(data->mlx->ptr, data->mlx->win_gui);
-	free(data->mlx);
+	free(data->gui);
+	free_data(data);
 	exit(0);
 }
 
@@ -37,9 +43,6 @@ t_data	*init_data(void)
 	t_data	*data;
 
 	data = malloc(sizeof(t_data));
-	data->mlx = malloc(sizeof(t_mlx));
-	if (!data->mlx)
-		return (NULL);
 	data->win_height = WIN_HEIGHT;
 	data->win_width = WIN_WIDTH;
 	data->objects = malloc(sizeof(t_object));
@@ -78,6 +81,6 @@ int	main(int argc, char **argv)
 	init_window(data);
 	generate_rays(data);
 	start_loop(data);
-	free_data(data);
+	// free_data(data);
 	return (0);
 }

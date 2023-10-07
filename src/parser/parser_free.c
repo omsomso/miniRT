@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_free.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/26 13:19:47 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/10/07 21:22:42 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,33 @@ void	free_cy(void *object)
 	t_cylinder	*cylinder;
 
 	cylinder = (t_cylinder *)object;
+	printf("freeing cylinder\n");
 	free(cylinder->normal);
+	printf("freed cy normal\n");
 	free(cylinder->center);
+	printf("freed cy center\n");
 	free(cylinder);
+	printf("freed cy\n");
 }
 
 // Object Deletion
 void	free_objects(t_object *objects_head)
 {
 	t_object	*current;
+	t_object	*tofree;
 
 	current = objects_head;
 	while (current)
 	{
-		current = objects_head->next;
-		if (objects_head->type == SPHERE)
-			free_sp(objects_head);
-		if (objects_head->type == PLANE)
-			free_pl(objects_head);
-		if (objects_head->type == CYLINDER)
-			free_cy(objects_head);
+		if (current->type == SPHERE)
+			free_sp(current->object);
+		if (current->type == PLANE)
+			free_pl(current->object);
+		if (current->type == CYLINDER)
+			free_cy(current->object);
+		tofree = current;
+		current = current->next;
+		free(tofree);
 	}
 	free(current);
 }
@@ -67,6 +74,10 @@ void	free_objects(t_object *objects_head)
 void	free_acl(t_amb *ambient_light, t_camera *camera, t_light *light)
 {
 	free(ambient_light);
+	free(camera->normal);
+	free(camera->up);
+	free(camera->pos);
 	free(camera);
+	free(light->pos);
 	free(light);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_spc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/26 14:45:46 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/10/07 22:11:46 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,13 @@
 int	parse_sp(char **s, t_object **objects)
 {
 	t_sphere	*sphere;
-	t_v3		*center;
 	char		**split;
 
 	if (check_sp(s))
 		return (1);
 	sphere = malloc(sizeof(t_sphere));
-	center = malloc(sizeof(t_v3));
-	if (!sphere || !center)
+	if (!sphere)
 		return (1);
-	sphere->center = center;
 	split = ft_split(s[1], ',');
 	sphere->center = get_vec(split);
 	if (!sphere->center)
@@ -42,16 +39,12 @@ int	parse_sp(char **s, t_object **objects)
 int	parse_pl(char **s, t_object **objects)
 {
 	t_plane		*plane;
-	t_v3		*point;
-	t_v3		*normal;
 	char		**split;
 
 	if (check_pl(s))
 		return (1);
 	plane = malloc(sizeof(t_plane));
-	point = malloc(sizeof(t_v3));
-	normal = malloc(sizeof(t_v3));
-	if (!plane || !point || !normal)
+	if (!plane)
 		return (1);
 	plane->pl_ang_offset.x = 0;
 	plane->pl_ang_offset.y = 0;
@@ -91,16 +84,12 @@ void	initialize_cylinder(t_cylinder *cylinder)
 int	parse_cy(char **s, t_object **objects)
 {
 	t_cylinder	*cylinder;
-	t_v3		*center;
-	t_v3		*normal;
 	char		**split;
 
 	if (check_cy(s))
 		return (1);
 	cylinder = malloc(sizeof(t_cylinder));
-	center = malloc(sizeof(t_v3));
-	normal = malloc(sizeof(t_v3));
-	if (!cylinder || !center || !normal)
+	if (!cylinder)
 		return (1);
 	split = ft_split(s[1], ',');
 	cylinder->center = get_vec(split);
@@ -114,5 +103,6 @@ int	parse_cy(char **s, t_object **objects)
 	initialize_cylinder(cylinder);
 	set_cy_struct_additional(cylinder, s);
 	add_object(objects, cylinder, CYLINDER, s);
+	ft_ptrfree(split);
 	return (0);
 }
