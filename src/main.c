@@ -15,7 +15,6 @@
 void	free_data(t_data *data)
 {
 	free_objects(data->objects);
-	// free(data->objects);
 	free_acl(data->ambient_light, data->camera, data->light);
 	free(data->pics);
 	free(data->mlxdata);
@@ -81,6 +80,5 @@ int	main(int argc, char **argv)
 	init_window(data);
 	generate_rays(data);
 	start_loop(data);
-	// free_data(data);
 	return (0);
 }
