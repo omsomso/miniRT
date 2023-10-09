@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01 22:42:18 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/01 22:47:16 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/09 23:05:43 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	init_gui_window(t_data *data, t_mlx *m, int x, int y)
 	pics = malloc(sizeof(t_pics));
 	if (!pics)
 		return ;
-	m = data->mlx;
 	pos.x = 0;
 	pos.y = 0;
 	pics->bckg = mlx_xpm_file_to_image(m->ptr, "assets/bckg.xpm", &x, &y);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:02:44 by fcullen           #+#    #+#             */
-/*   Updated: 2023/09/26 16:24:43 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/10/10 00:04:20 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,12 @@ t_color	visualize_normals(t_int *intersection)
 	color.g = (unsigned char)((normal.y + 1.0) * 127.5);
 	color.b = (unsigned char)((normal.z + 1.0) * 127.5);
 	return (color);
+}
+
+void	free_camera_basis(t_data *data)
+{
+	if (data->camera->right)
+		free(data->camera->right);
+	if (data->camera->up)
+		free(data->camera->up);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_acl.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/09/26 13:19:47 by fcullen          ###   ########.fr       */
+/*   Updated: 2023/10/09 23:56:26 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	parse_a(char **s, t_data **data)
 	colors = ft_split(s[2], ',');
 	get_color(&(ambient_light->color), colors);
 	(*data)->ambient_light = ambient_light;
-	ft_ptrfree(s);
 	return (0);
 }
 
@@ -48,7 +47,6 @@ int	parse_c(char **s, t_data **data)
 	camera->normal = get_vec(split);
 	camera->fov = ft_atoi(s[3]);
 	(*data)->camera = camera;
-	ft_ptrfree(s);
 	return (0);
 }
 
@@ -71,6 +69,5 @@ int	parse_l(char **s, t_data **data)
 	split = ft_split(s[3], ',');
 	get_color(&(light->color), split);
 	(*data)->light = light;
-	ft_ptrfree(s);
 	return (0);
 }

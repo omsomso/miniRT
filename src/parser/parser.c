@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 12:31:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/10/07 21:50:47 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/10 00:02:51 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 {
 	char	**split;
 
+	split = NULL;
 	split = ft_split(line, ' ');
-	if (!split[0])
+	if (!split || !split[0])
 		return (ft_ptrfree(split), 1);
 	fix_last_whitespace(split);
 	if (check_line(line, split[0]))
@@ -85,7 +86,7 @@ int	parse_loop(int fd, t_object **objects, t_data *data)
 	*objects = NULL;
 	if (!line)
 	{
-		write(1, "Scene file empty\n", 17);
+		write(2, "Scene file empty\n", 17);
 		return (1);
 	}
 	while (line)

@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/07 22:27:35 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/10 00:03:03 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,5 @@ int	parse_cy(char **s, t_object **objects)
 	initialize_cylinder(cylinder);
 	set_cy_struct_additional(cylinder, s);
 	add_object(objects, cylinder, CYLINDER, s);
-	ft_ptrfree(split);
 	return (0);
 }
