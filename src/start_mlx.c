@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01                               #+#    #+#             */
-/*   Updated: 2023/09/01                              ###   ########.fr       */
+/*   Updated: 2023/10/09                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	init_gui_window(t_data *data, t_mlx *m, int x, int y)
 	pics = malloc(sizeof(t_pics));
 	if (!pics)
 		return ;
-	m = data->mlx;
 	pos.x = 0;
 	pos.y = 0;
 	pics->bckg = mlx_xpm_file_to_image(m->ptr, "assets/bckg.xpm", &x, &y);

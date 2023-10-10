@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/10/07                              ###   ########.fr       */
+/*   Updated: 2023/10/10                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,5 @@ int	parse_cy(char **s, t_object **objects)
 	initialize_cylinder(cylinder);
 	set_cy_struct_additional(cylinder, s);
 	add_object(objects, cylinder, CYLINDER, s);
-	ft_ptrfree(split);
 	return (0);
 }

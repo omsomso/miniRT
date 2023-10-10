@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/10/07                              ###   ########.fr       */
+/*   Updated: 2023/10/10                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,6 @@ int	generate_rays(t_data *data)
 	}
 	mlx_put_image_to_window(data->mlx->ptr,
 		data->mlx->win, data->mlxdata->img, 0, 0);
-	free(data->camera->right);
-	free(data->camera->up);
+	free_camera_basis(data);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/10/07                              ###   ########.fr       */
+/*   Updated: 2023/10/09                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,9 @@ void	free_cy(void *object)
 	t_cylinder	*cylinder;
 
 	cylinder = (t_cylinder *)object;
-	printf("freeing cylinder\n");
 	free(cylinder->normal);
-	printf("freed cy normal\n");
 	free(cylinder->center);
-	printf("freed cy center\n");
 	free(cylinder);
-	printf("freed cy\n");
 }
 
 // Object Deletion

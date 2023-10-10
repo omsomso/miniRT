@@ -1,6 +1,6 @@
 NAME		:= minirt
 CC			:= gcc 
-FLAGS		:= -g  -Wall -Wextra -Werror #-fsanitize=address
+FLAGS		:= -g3 -Wall -Wextra -Werror #-fsanitize=address
 RM			:= rm -rf
 
 SRCDIR		:= src
