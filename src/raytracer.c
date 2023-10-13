@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raytracer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*                                                  +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/10/13                              ###   ########.fr       */
+/*   Updated: 2023/10/13 by fcullen                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_color	trace_ray(t_ray ray, t_data *data, int depth)
 	if (find_closest_int(ray, data->objects, &intersection))
 	{
 		pixel_color = calculate_shading(&intersection, data,
-				*data->camera->pos, 50);
+				*data->camera->pos, 1000000);
 	}
 	else
 		pixel_color = calculate_background_color(*data->ambient_light);
