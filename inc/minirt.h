@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:43:45 by fcullen           #+#    #+#             */
-/*   Updated: 2023/10/10 00:04:59 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/13 17:27:49 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ int		is_point_in_shadow(t_v3 point, t_v3 light_dir,
 			double light_dist, t_data *data);
 t_color	calculate_diffuse_color(t_color dc, t_light *light,
 			t_color obj, double di);
-void	free_camera_basis(t_data *data);
 
 // Intersection Functions
 void	update_intersection(t_int *intersection,
@@ -115,7 +114,7 @@ float	ft_atof(const char *s);
 char	*ft_ftoa(float f);
 int		cut_values_int(int *a, int max_a, int min_a);
 float	cut_values(float *a, float max_a, float min_a);
-
+void	free_camera_basis(t_data *data);
 // Object transform
 void	rotate_camera_x(t_camera *camera, double angle_deg);
 void	rotate_camera_y(t_camera *camera, double angle_deg);

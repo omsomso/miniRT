@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_spc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/10 00:03:03 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/13 17:35:39 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
