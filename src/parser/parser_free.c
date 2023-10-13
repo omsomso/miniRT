@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/10/09                              ###   ########.fr       */
+/*   Updated: 2023/10/13                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void	free_acl(t_amb *ambient_light, t_camera *camera, t_light *light)
 {
 	free(ambient_light);
 	free(camera->normal);
-	free(camera->up);
 	free(camera->pos);
 	free(camera);
 	free(light->pos);
