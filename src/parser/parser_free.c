@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_free.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/09 23:59:44 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/13 16:24:10 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void	free_acl(t_amb *ambient_light, t_camera *camera, t_light *light)
 {
 	free(ambient_light);
 	free(camera->normal);
-	free(camera->up);
 	free(camera->pos);
 	free(camera);
 	free(light->pos);
