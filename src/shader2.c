@@ -92,7 +92,7 @@ int	is_point_in_shadow(t_v3 point, t_v3 light_dir,
 	t_v3		epsilon_offset;
 
 	light_dir = mvs(light_dir, -1);
-	epsilon_offset = mvs(light_dir, 0.0001);
+	epsilon_offset = mvs(light_dir, 0.001);
 	shadow_ray.origin = add_v(point, epsilon_offset);
 	shadow_ray.direction = normalize(light_dir);
 	if (is_light_obstructed(shadow_ray, data->objects,

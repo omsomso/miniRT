@@ -51,7 +51,8 @@ void	init_window(t_data *data)
 	data->mlxdata = malloc(sizeof(t_mlxdata));
 	if (!data->mlxdata)
 		return ;
-	data->mlxdata->img = mlx_new_image(m->ptr, 1080, 720);
+	data->mlxdata->img = mlx_new_image(m->ptr, data->win_width,
+			data->win_height);
 	data->mlxdata->addr = mlx_get_data_addr(data->mlxdata->img,
 			&data->mlxdata->bits_per_pixel, &data->mlxdata->line_length,
 			&data->mlxdata->endian);

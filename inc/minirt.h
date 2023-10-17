@@ -33,6 +33,7 @@
 # define WIN_WIDTH 640
 # define MAX_RECURSION_DEPTH 3
 # define NUM_SAMPLES 2
+# define SPECULAR_EXP 100
 
 # define EVENT_KEYPRESS 2
 # define EVENT_KEYRELEASE 3
