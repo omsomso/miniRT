@@ -37,7 +37,7 @@ t_color	trace_ray(t_ray ray, t_data *data, int depth)
 	if (find_closest_int(ray, data->objects, &intersection))
 	{
 		pixel_color = calculate_shading(&intersection, data,
-				*data->camera->pos, 1000000);
+				*data->camera->pos, SPECULAR_EXP);
 	}
 	else
 		pixel_color = calculate_background_color(*data->ambient_light);
