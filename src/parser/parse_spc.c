@@ -80,6 +80,21 @@ void	initialize_cylinder(t_cylinder *cylinder)
 	cylinder->cap_offsets[1] = cylinder->height / 2;
 }
 
+t_v3	*normalize_ptr(t_v3	*a)
+{
+	double	length;
+
+	length = sqrt((*a).x * (*a).x + (*a).y
+			* (*a).y + (*a).z * (*a).z);
+	if (length != 0.0)
+	{
+		(*a).x /= length;
+		(*a).y /= length;
+		(*a).z /= length;
+	}
+	return (a);
+}
+
 // Cylinder Parser
 int	parse_cy(char **s, t_object **objects)
 {
@@ -94,7 +109,7 @@ int	parse_cy(char **s, t_object **objects)
 	split = ft_split(s[1], ',');
 	cylinder->center = get_vec(split);
 	split = ft_split(s[2], ',');
-	cylinder->normal = get_vec(split);
+	cylinder->normal = normalize_ptr(get_vec(split));
 	if (!cylinder->center || !cylinder->normal)
 		return (1);
 	cylinder->diameter = ft_atoi(s[3]);
