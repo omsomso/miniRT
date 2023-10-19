@@ -102,6 +102,7 @@ int	intersect_cylinder(t_ray ray, t_cylinder *cylinder, t_int *intersection)
 	params.oc = sub_v(*(cylinder->center), ray.origin);
 	params.dir_dot_n = dot_p(ray.direction, *(cylinder->normal));
 	params.oc_dot_n = dot_p(params.oc, *(cylinder->normal));
+	initialize_cylinder(cylinder);
 	t_caps = check_caps(ray, cylinder, params.oc_dot_n, params.dir_dot_n);
 	params.ray = ray;
 	params.cylinder = cylinder;

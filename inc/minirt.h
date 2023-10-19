@@ -29,16 +29,16 @@
 # include "math.h"
 # include "color.h"
 
-# define WIN_HEIGHT 480
-# define WIN_WIDTH 640
-# define MAX_RECURSION_DEPTH 3
-# define NUM_SAMPLES 2
 # ifdef BONUS
 # define SPECULAR_EXP 10000000
 # else
 # define SPECULAR_EXP 10
 # endif 
 
+# define WIN_HEIGHT 480
+# define WIN_WIDTH 640
+# define MAX_RECURSION_DEPTH 3
+# define NUM_SAMPLES 2
 
 # define EVENT_KEYPRESS 2
 # define EVENT_KEYRELEASE 3
