@@ -27,6 +27,7 @@ t_object	*sorted_merge(t_object *a, t_object *b);
 
 int			get_color(t_color *color, char **s);
 t_v3		*get_vec(char **s);
+t_v3		*normalize_ptr(t_v3	*a);
 
 int			parser(char *filename, t_object **objects, t_data *data);
 int			parse_spc(char **s, t_object **objects);

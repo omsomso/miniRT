@@ -70,3 +70,18 @@ void	fix_last_whitespace(char **s)
 		s[i - 1] = NULL;
 	}
 }
+
+t_v3	*normalize_ptr(t_v3	*a)
+{
+	double	length;
+
+	length = sqrt((*a).x * (*a).x + (*a).y
+			* (*a).y + (*a).z * (*a).z);
+	if (length != 0.0)
+	{
+		(*a).x /= length;
+		(*a).y /= length;
+		(*a).z /= length;
+	}
+	return (a);
+}
