@@ -9,8 +9,14 @@ OBJDIR		:= obj
 LIBMLXDIR	:= mlx
 LIBDIR		:= libft/
 LIBFT		:= libft.a
-SRC			:= $(shell find $(SRCDIR) -name '*.c')
-OBJ			:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
+SRC 		:= $(shell find $(SRCDIR) -name '*.c' ! -name '*_bonus.c')
+OBJ 		:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
+BONUS_SRC 	:= $(filter-out src/parser/parse_spc.c src/transformations_2.c,$(SRC)) \
+             src/parser/parse_spc_bonus.c \
+             src/transformations_2_bonus.c
+BONUS_OBJ 	:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(BONUS_SRC))
+
+
 
 define HEADER
                                      __      
@@ -33,10 +39,15 @@ all:		$(NAME)
 $(NAME): 	$(OBJ)
 			@$(CC) $(FLAGS) -o $@ $^ -L$(LIBDIR) -lft -I$(INCDIR) -I$(LIBMLXDIR) -L$(LIBMLXDIR) -lmlx -framework OpenGL -framework AppKit
 			@echo "$$HEADER"
-			
-run:		all
-			@echo "$$HEADER"
-			@./minirt scenes/cylinder.rt
+
+bonus: 		fclean
+			@$(MAKE) all FLAGS="$(FLAGS) -DBONUS" SRC="$(BONUS_SRC)" OBJ="$(BONUS_OBJ)"
+			@echo "Compiled with bonus files"
+			./miniRT scenes/cone.rt
+
+
+run:		re
+			@./minirt scenes/test06-complex.rt
 
 clean:
 			@$(RM) $(OBJDIR)
