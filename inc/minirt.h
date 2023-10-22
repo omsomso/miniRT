@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/10/13 by fcullen                   ###   ########.fr       */
+/*   Updated: 2023/10/22                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@
 # include "color.h"
 
 # ifdef BONUS
-# define SPECULAR_EXP 10000000
+#  define SPECULAR_EXP 10000000
 # else
-# define SPECULAR_EXP 10
+#  define SPECULAR_EXP 10
 # endif 
 
 # define WIN_HEIGHT 480

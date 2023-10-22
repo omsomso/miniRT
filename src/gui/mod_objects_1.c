@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01                               #+#    #+#             */
-/*   Updated: 2023/09/01                              ###   ########.fr       */
+/*   Updated: 2023/10/22                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ void	modify_cylinder_c(t_cylinder *cy, int button, int sel)
 		cy->height -= MOD_POS;
 	else if (sel == 8 && button == 5)
 		cy->height += MOD_POS;
-	cut_values(&cy->diameter, 100000, 0.01);
-	cut_values(&cy->height, 100000, 0.01);
+	cut_values(&cy->diameter, 2147483647, 0.01);
+	cut_values(&cy->height, 2147483647, 0.01);
 }
 
 void	modify_cylinder_b(t_cylinder *cy, int button, int sel)
