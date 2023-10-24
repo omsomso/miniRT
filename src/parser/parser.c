@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/10/10                              ###   ########.fr       */
+/*   Updated: 2023/10/24                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 	fix_last_whitespace(split);
 	if (check_line(line, split[0]))
 	{
-		write(2, "Error: Invalid identifier : ", 28);
+		write(2, "Error\nInvalid identifier : ", 28);
 		ft_putendl_fd(split[0], 2);
 		return (ft_ptrfree(split), 1);
 	}
@@ -86,7 +86,7 @@ int	parse_loop(int fd, t_object **objects, t_data *data)
 	*objects = NULL;
 	if (!line)
 	{
-		write(2, "Scene file empty\n", 17);
+		write(2, "Error\nScene file empty\n", 23);
 		return (1);
 	}
 	while (line)
@@ -94,7 +94,7 @@ int	parse_loop(int fd, t_object **objects, t_data *data)
 		line = line_fixspace(line);
 		if (parse_line(line, objects, data))
 		{
-			write(2, "Parsing error\n", 14);
+			write(2, "Error\nParsing error\n", 20);
 			free(line);
 			return (1);
 		}
