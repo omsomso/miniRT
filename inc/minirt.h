@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*                                                  +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/10/22                              ###   ########.fr       */
+/*   Updated: 2023/10/24 by fcullen                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
+
+# ifdef BONUS
+
+#  define SPECULAR_EXP 10000000
+# else
+#  define SPECULAR_EXP 10
+# endif
 
 # include <stdio.h>
 # include <unistd.h>
@@ -28,12 +35,6 @@
 # include "gui.h"
 # include "math.h"
 # include "color.h"
-
-# ifdef BONUS
-#  define SPECULAR_EXP 10000000
-# else
-#  define SPECULAR_EXP 10
-# endif 
 
 # define WIN_HEIGHT 480
 # define WIN_WIDTH 640
