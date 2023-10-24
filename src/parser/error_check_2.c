@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/07 20:24:32 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/24 14:51:57 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,17 @@ int	check_cy(char **s)
 {
 	if (ft_ptrcount(s) != 6)
 	{
-		write(2, "Error: Cylinder parameters invalid\n", 35);
+		write(2, "Error\n Cylinder parameters invalid\n", 35);
 		return (1);
 	}
 	if (ch_nb(s[3]) || ft_atof(s[3]) <= 0)
 	{
-		write(2, "Error: Cylinder diameter must be a positive number\n", 51);
+		write(2, "Error\n Cylinder diameter must be a positive number\n", 51);
 		return (1);
 	}
 	if (ch_nb(s[4]) || ft_atof(s[4]) <= 0)
 	{
-		write(2, "Error: Cylinder height must be a positive number\n", 49);
+		write(2, "Error\n Cylinder height must be a positive number\n", 49);
 		return (1);
 	}
 	if (check_pos(s[1]))
@@ -47,13 +47,13 @@ int	check_pos(char *position)
 	pos = ft_split(position, ',');
 	if (!pos || !pos[0] || !pos[1] || !pos[2] || ft_ptrcount(pos) != 3)
 	{
-		write(2, "Error: Object position coordinates invalid\n", 43);
+		write(2, "Error\n Object position coordinates invalid\n", 43);
 		ft_ptrfree(pos);
 		return (1);
 	}
 	else if (ch_nb(pos[0]) || ch_nb(pos[1]) || ch_nb(pos[2]))
 	{
-		write(2, "Error: Object position coordinates must be numbers\n", 51);
+		write(2, "Error\n Object position coordinates must be numbers\n", 51);
 		ft_ptrfree(pos);
 		return (1);
 	}
@@ -71,7 +71,7 @@ int	check_color(char *color)
 	err = 0;
 	if (!col || !col[0] || !col[1] || !col[2] || ft_ptrcount(col) != 3)
 	{
-		write(2, "Error: Color parameters invalid\n", 32);
+		write(2, "Error\n Color parameters invalid\n", 32);
 		return (1);
 	}
 	else if (ch_nb(col[0]) || ft_atoi(col[0]) < 0 || ft_atoi(col[0]) > 255)
@@ -82,7 +82,7 @@ int	check_color(char *color)
 		err = 1;
 	if (err == 1)
 	{
-		write(2, "Error: Color parameters must be nbs between 0 & 255\n", 52);
+		write(2, "Error\n Color parameters must be nbs between 0 & 255\n", 52);
 		ft_ptrfree(col);
 		return (1);
 	}

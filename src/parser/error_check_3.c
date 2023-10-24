@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/09 23:55:47 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/24 14:54:22 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,17 +61,17 @@ int	check_scene(t_data *data)
 {
 	if (!data->ambient_light)
 	{
-		write(2, "Error: No ambient light\n", 25);
+		write(2, "Error\nNo ambient light\n", 25);
 		return (1);
 	}
 	if (!data->camera)
 	{
-		write(2, "Error: No camera\n", 17);
+		write(2, "Error\nNo camera\n", 17);
 		return (1);
 	}
 	if (!data->light)
 	{
-		write(2, "Error: No light\n", 16);
+		write(2, "Error\nNo light\n", 16);
 		return (1);
 	}
 	return (0);
