@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   transformations_1.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: zaphod <zaphod@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/10 15:28:40 by fcullen           #+#    #+#             */
-/*   Updated: 2023/09/26 13:19:47 by fcullen          ###   ########.fr       */
+/*   Created: 2023/08/10 15:28:40 by zaphod           #+#    #+#             */
+/*   Updated: 2023/09/26 13:19:47 by zaphod          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

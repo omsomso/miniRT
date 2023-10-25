@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shader2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: zaphod <zaphod@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/26 15:03:12 by fcullen           #+#    #+#             */
-/*   Updated: 2023/09/26 16:04:51 by fcullen          ###   ########.fr       */
+/*   Created: 2023/09/26 15:03:12 by zaphod           #+#    #+#             */
+/*   Updated: 2023/09/26 16:04:51 by zaphod          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,6 @@ t_color	calculate_background_color(t_amb amb_light)
 	bg_color.g = fmin(bg_color.g * 255.0f, 255.0f);
 	bg_color.b = fmin(bg_color.b * 255.0f, 255.0f);
 	return (bg_color);
-}
-
-// Calls intersection function depending on object type
-int	intersect(t_ray ray, void *object, t_type type, t_int *intersection)
-{
-	if (type == SPHERE)
-		return (intersect_sphere(ray, (t_sphere *)object, intersection));
-	else if (type == PLANE)
-		return (intersect_plane(ray, (t_plane *)object, intersection));
-	else if (type == CYLINDER)
-		return (intersect_cylinder(ray, (t_cylinder *)object, intersection));
-	else
-		return (0);
 }
 
 // Checks if light is obstructed by another object

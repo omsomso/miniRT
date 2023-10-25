@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   intersections2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: zaphod <zaphod@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/26 10:24:35 by fcullen           #+#    #+#             */
-/*   Updated: 2023/10/13 17:39:42 by fcullen          ###   ########.fr       */
+/*   Created: 2023/09/26 10:24:35 by zaphod           #+#    #+#             */
+/*   Updated: 2023/10/13 17:39:42 by zaphod          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,27 +110,4 @@ int	intersect_cylinder(t_ray ray, t_cylinder *cylinder, t_int *intersection)
 	params.t_caps = t_caps;
 	params.intersection = intersection;
 	return (compute_final(&params));
-}
-
-// Get ray->plane intersection
-int	intersect_plane(t_ray ray, t_plane *plane, t_int *intersection)
-{
-	t_v3	oc;
-	float	denominator;
-	float	t;
-
-	denominator = dot_p(ray.direction, *(plane->normal));
-	if (fabs(denominator) > 0.0001f)
-	{
-		oc = sub_v(ray.origin, *(plane->point));
-		t = dot_p(oc, *(plane->normal)) / denominator;
-		if (t >= 0.0f)
-		{
-			intersection->point = add_v(ray.origin, mvs(ray.direction, t));
-			intersection->normal = mvs(*(plane->normal), -1);
-			intersection->t = t;
-			return (1);
-		}
-	}
-	return (0);
 }

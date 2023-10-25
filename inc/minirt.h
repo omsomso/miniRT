@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: zaphod <zaphod@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/26 14:43:45 by fcullen           #+#    #+#             */
-/*   Updated: 2023/10/24 11:51:55 by fcullen          ###   ########.fr       */
+/*   Created: 2023/09/26 14:43:45 by zaphod           #+#    #+#             */
+/*   Updated: 2023/10/24 11:51:55 by zaphod          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	update_intersection(t_int *intersection,
 			t_ray ray, float t, t_v3 *center);
 int		intersect_sphere(t_ray ray, t_sphere *sphere, t_int *intersection);
 int		intersect(t_ray ray, void *object, t_type type, t_int *intersection);
+float	calculate_t(float a, float b, float discriminant);
 
 // Mlx Functions
 int		quit(t_data *data);
