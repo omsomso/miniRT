@@ -109,8 +109,13 @@ t_color	calculate_shading(t_int *intersection, t_data *data,
 
 	amb = get_amb(intersection, data);
 	diffuse_color = get_diff(intersection, data->light, data);
-	specular_color = get_spec(intersection, data->light,
-			camera_position, specular_exponent);
+	if (!is_point_in_shadow(intersection->point,
+			normalize(sub_v(*data->light->pos, intersection->point)),
+			distance_to_point(*data->light->pos, intersection->point), data))
+		specular_color = get_spec(intersection, data->light,
+				camera_position, specular_exponent);
+	else
+		specular_color = (t_color){0, 0, 0};
 	total_color = add_colors(add_colors(amb, diffuse_color), specular_color);
 	total_color.r = fmin(fmax(total_color.r, 0.0), 255.0);
 	total_color.g = fmin(fmax(total_color.g, 0.0), 255.0);
