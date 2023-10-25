@@ -6,7 +6,7 @@
 /*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 20:02:24 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/26 01:16:38 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/26 01:20:25 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,10 @@ int	check_main_args(int argc, char **argv)
 	}
 	fd = open(argv[1], O_RDONLY);
 	if (fd < 0)
-		return (fd);
+	{
+		write(2, "Error\nScene file doesn't exist\n", 32);
+		return (1);
+	}
 	return (0);
 }
 
