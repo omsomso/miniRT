@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 07:23:27 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/03/02 02:39:33 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/25 11:29:31 by fcullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ int	ft_intcharnb(int n)
 
 void	ft_sign(char *s, int *sign, int *n)
 {
-		s[0] = '-';
-		*n *= -1;
-		*sign = 1;
+	s[0] = '-';
+	*n *= -1;
+	*sign = 1;
 }
 
 char	*ft_min(char *s)
