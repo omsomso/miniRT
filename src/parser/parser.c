@@ -64,6 +64,8 @@ int	parse_line(char *line, t_object **objects, t_data *data)
 	if (!split || !split[0])
 		return (ft_ptrfree(split), 1);
 	fix_last_whitespace(split);
+	// printf("yo\n");
+	// printf("lne :")
 	if (check_line(line, split[0]))
 	{
 		write(2, "Error\nInvalid identifier : ", 28);
