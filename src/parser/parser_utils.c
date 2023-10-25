@@ -16,7 +16,12 @@
 int	get_color(t_color *color, char **s)
 {
 	if (!s[0] || !s[1] || !s[2])
-		return (1);
+		exit(1);
+	if (ch_nb(s[0]) || ch_nb(s[1]) || ch_nb(s[2]))
+	{
+		write(2, "Error\nVectors must consist of digits only\n", 42);
+		exit(1);
+	}
 	color->r = ft_atoi(s[0]);
 	color->g = ft_atoi(s[1]);
 	color->b = ft_atoi(s[2]);
@@ -30,10 +35,19 @@ t_v3	*get_vec(char **s)
 	t_v3	*vector;
 
 	if (!s[0] || !s[1] || !s[2])
-		return (NULL);
+	{
+		write(2, "Error\nVectors must have 3 digits\n", 34);
+		exit(1);
+	}
+	if (ch_nb(s[0]) || ch_nb(s[1]) || ch_nb(s[2]))
+	{
+		write(2, "Error\nVectors must consist of digits only\n", 42);
+		exit(1);
+	}
 	vector = malloc(sizeof(t_v3));
 	if (!vector)
-		return (NULL);
+		exit(1);
+		// return (NULL);
 	vector->x = ft_atof(s[0]);
 	vector->y = ft_atof(s[1]);
 	vector->z = ft_atof(s[2]);

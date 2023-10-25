@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_check_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/24 14:51:57 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/25 20:08:21 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,25 @@ int	check_cy(char **s)
 {
 	if (ft_ptrcount(s) != 6)
 	{
-		write(2, "Error\n Cylinder parameters invalid\n", 35);
-		return (1);
+		write(2, "Error\nCylinder parameters invalid\n", 35);
+		exit(1);
 	}
 	if (ch_nb(s[3]) || ft_atof(s[3]) <= 0)
 	{
-		write(2, "Error\n Cylinder diameter must be a positive number\n", 51);
-		return (1);
+		write(2, "Error\nCylinder diameter must be a positive number\n", 51);
+		exit(1);
 	}
 	if (ch_nb(s[4]) || ft_atof(s[4]) <= 0)
 	{
-		write(2, "Error\n Cylinder height must be a positive number\n", 49);
-		return (1);
+		write(2, "Error\nCylinder height must be a positive number\n", 49);
+		exit(1);
 	}
 	if (check_pos(s[1]))
-		return (1);
+		exit(1);
 	if (check_normal(s[2]))
-		return (1);
+		exit(1);
 	if (check_color(s[5]))
-		return (1);
+		exit(1);
 	return (0);
 }
 
@@ -47,15 +47,15 @@ int	check_pos(char *position)
 	pos = ft_split(position, ',');
 	if (!pos || !pos[0] || !pos[1] || !pos[2] || ft_ptrcount(pos) != 3)
 	{
-		write(2, "Error\n Object position coordinates invalid\n", 43);
+		write(2, "Error\nObject position coordinates invalid\n", 43);
 		ft_ptrfree(pos);
-		return (1);
+		exit(1);
 	}
 	else if (ch_nb(pos[0]) || ch_nb(pos[1]) || ch_nb(pos[2]))
 	{
-		write(2, "Error\n Object position coordinates must be numbers\n", 51);
+		write(2, "Error\nObject position coordinates must be numbers\n", 51);
 		ft_ptrfree(pos);
-		return (1);
+		exit(1);
 	}
 	ft_ptrfree(pos);
 	return (0);
@@ -67,12 +67,16 @@ int	check_color(char *color)
 	int		err;
 	char	**col;
 
+	// printf("color = %s\n", color);
+	// color = line_rm_isspace(color);
+	// printf("color rms = %s\n", color);
 	col = ft_split(color, ',');
+	printf("%s,%s,%s.\n", col[0], col[1], col[2]);
 	err = 0;
 	if (!col || !col[0] || !col[1] || !col[2] || ft_ptrcount(col) != 3)
 	{
-		write(2, "Error\n Color parameters invalid\n", 32);
-		return (1);
+		write(2, "Error\nColor parameters invalid\n", 32);
+		exit(1);
 	}
 	else if (ch_nb(col[0]) || ft_atoi(col[0]) < 0 || ft_atoi(col[0]) > 255)
 		err = 1;
@@ -82,10 +86,13 @@ int	check_color(char *color)
 		err = 1;
 	if (err == 1)
 	{
-		write(2, "Error\n Color parameters must be nbs between 0 & 255\n", 52);
+		write(2, "Error\nColor parameters must be nbs between 0 & 255\n", 52);
 		ft_ptrfree(col);
-		return (1);
+		exit(1);
 	}
+	// printf("col[2] = %s\n", col[2]);
+	// printf("ch_nb col[2] = %d\n", ch_nb(col[2]));
+	// printf("col[2] = %d\n", ft_atoi(col[2]));
 	ft_ptrfree(col);
 	return (0);
 }
@@ -107,7 +114,7 @@ int	check_normal(char *s)
 	free(norm);
 	if (err == 1)
 	{
-		write(2, "Error: Normal vectors must be between -1 & 1\n", 45);
+		write(2, "Error\nNormal vectors must be between -1 & 1\n", 45);
 		return (1);
 	}
 	return (0);
@@ -130,5 +137,5 @@ int	check_line(char *line, char *name)
 		return (0);
 	else if (!ft_strncmp("cy", name, ft_strlen(name)))
 		return (0);
-	return (1);
+	exit(1);
 }

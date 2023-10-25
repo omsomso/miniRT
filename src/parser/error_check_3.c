@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_check_3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/24 14:54:22 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/25 19:11:13 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*line_fixspace(char *line)
 	i = 0;
 	newline = malloc(sizeof(char) * ft_strlen(line) + 1);
 	if (!newline)
-		return (NULL);
+		exit(1);
 	while (line[i])
 	{
 		if (line[i] == '\n')
@@ -62,17 +62,17 @@ int	check_scene(t_data *data)
 	if (!data->ambient_light)
 	{
 		write(2, "Error\nNo ambient light\n", 25);
-		return (1);
+		exit(1);
 	}
 	if (!data->camera)
 	{
 		write(2, "Error\nNo camera\n", 17);
-		return (1);
+		exit(1);
 	}
 	if (!data->light)
 	{
 		write(2, "Error\nNo light\n", 16);
-		return (1);
+		exit(1);
 	}
 	return (0);
 }
@@ -100,6 +100,36 @@ int	ch_nb(char *s)
 				return (1);
 		}
 		i++;
+		// if (ft_isspace(s[i]))
+		// {
+		// 	printf("ohnannna un espaaaceee\n");
+		// 	return (0);
+		// }
 	}
 	return (0);
+}
+
+char	*line_rm_isspace(char *s)
+{
+	int		i;
+	int		j;
+	char	*out;
+
+	out = malloc(sizeof(char) * ft_strlen(s));
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		if (!ft_isspace(s[i]))
+		{
+			out[j] = s[i];
+			j++;
+			i++;
+		}
+		else
+			i++;
+	}
+	out[j] = 0x00;
+	free(s);
+	return (out);
 }
