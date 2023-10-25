@@ -1,0 +1,5 @@
+- check number in get_vec
+- check multiple arguments
+- check leaks invalid scene
+- replace return by exit for parser
+- test leaks
