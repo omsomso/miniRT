@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 23:02:27 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/25 19:02:10 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/26 00:51:00 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ int			line_isspace(char *line);
 char		*line_fixspace(char *line);
 void		fix_last_whitespace(char **s);
 int			check_spaces(char *line);
-char		*line_rm_isspace(char *s);
 
 int			parse_loop(int fd, t_object **objects, t_data *data);
 

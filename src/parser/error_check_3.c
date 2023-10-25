@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_check_3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/25 19:11:13 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/26 00:48:33 by kpawlows         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,36 +100,6 @@ int	ch_nb(char *s)
 				return (1);
 		}
 		i++;
-		// if (ft_isspace(s[i]))
-		// {
-		// 	printf("ohnannna un espaaaceee\n");
-		// 	return (0);
-		// }
 	}
 	return (0);
-}
-
-char	*line_rm_isspace(char *s)
-{
-	int		i;
-	int		j;
-	char	*out;
-
-	out = malloc(sizeof(char) * ft_strlen(s));
-	i = 0;
-	j = 0;
-	while (s[i])
-	{
-		if (!ft_isspace(s[i]))
-		{
-			out[j] = s[i];
-			j++;
-			i++;
-		}
-		else
-			i++;
-	}
-	out[j] = 0x00;
-	free(s);
-	return (out);
 }
