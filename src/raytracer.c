@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raytracer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: zaphod <zaphod@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/31 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/10/13 by fcullen                   ###   ########.fr       */
+/*   Created: 2023/05/31 by zaphod                    #+#    #+#             */
+/*   Updated: 2023/10/13 by zaphod                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

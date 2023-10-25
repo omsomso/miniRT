@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   math.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
+/*   By: zaphod <zaphod@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/07 by fcullen                    #+#    #+#             */
-/*   Updated: 2023/09/26 by fcullen                   ###   ########.fr       */
+/*   Created: 2023/08/07 by zaphod                    #+#    #+#             */
+/*   Updated: 2023/09/26 by zaphod                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
