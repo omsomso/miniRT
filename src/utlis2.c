@@ -12,6 +12,16 @@
 
 #include "../inc/minirt.h"
 
+int	check_res(float res)
+{
+	if (res > FLT_MAX / 10)
+	{
+		write(2, "Error\nNumber out of range\n", 26);
+		exit(1);
+	}
+	return (0);
+}
+
 float	process_decimal(const char *s, int i)
 {
 	float	decimal;
@@ -46,8 +56,10 @@ float	ft_atof(const char *s)
 			sign = -1;
 		i++;
 	}
-	while (s[i] && ft_isdigit(s[i]))
+	while (s[i] && ft_isdigit(s[i]) && !check_res(res))
+	{
 		res = res * 10 + (s[i++] - '0');
+	}
 	if (s[i] == '.')
 		res += process_decimal(s, i);
 	return (res * sign);

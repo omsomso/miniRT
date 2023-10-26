@@ -71,6 +71,8 @@
 # define COL_WHITE 0xFFFFFF
 
 # define EPSILON 1e-6
+# define FLT_MAX 3.4e38
+# define FLT_MIN -3.4e38
 
 // miniRT Functions
 void	free_data(t_data *data);
