@@ -45,6 +45,8 @@ float	ft_atof(const char *s)
 	float	sign;
 	int		i;
 
+	if (ft_strlen(s) == 1 && (!ft_strncmp(s, "-", 1) || !ft_strncmp(s, "+", 1)))
+		exit(write(1, "Error\nInput is not a number\n", 28));
 	res = 0;
 	sign = 1;
 	i = 0;
