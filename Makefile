@@ -43,7 +43,7 @@ $(NAME): 	$(OBJ)
 bonus: 		fclean
 			@$(MAKE) all FLAGS="$(FLAGS) -DBONUS" SRC="$(BONUS_SRC)" OBJ="$(BONUS_OBJ)"
 			@echo "Compiled with bonus files"
-			./miniRT scenes/cone.rt
+			@./miniRT scenes/bonus.rt
 
 
 run:		re

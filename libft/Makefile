@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+         #
+#    By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/12 06:13:39 by kpawlows          #+#    #+#              #
-#    Updated: 2023/08/28 20:39:11 by kpawlows         ###   ########.fr        #
+#    Updated: 2023/10/26 13:20:49 by fcullen          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,13 +27,13 @@ BLUE=\033[0;34m
 END=\033[0m
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-			mkdir -p '$(@D)'
-			$(CC) -c $(CFLAGS) $< -o $@
+			@mkdir -p '$(@D)'
+			@$(CC) -c $(CFLAGS) $< -o $@
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(AR) $(NAME) $(OBJ)
+	@$(AR) $(NAME) $(OBJ)
 
 clean:
 	$(RM) $(OBJDIR)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_check_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpawlows <kpawlows@student.42lausanne.c    +#+  +:+       +#+        */
+/*   By: zaphod <zaphod@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 18:44:28 by kpawlows          #+#    #+#             */
-/*   Updated: 2023/10/26 00:49:19 by kpawlows         ###   ########.fr       */
+/*   Updated: 2023/10/26 12:39:57 by zaphod          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,5 +131,9 @@ int	check_line(char *line, char *name)
 		return (0);
 	else if (!ft_strncmp("cy", name, ft_strlen(name)))
 		return (0);
-	exit(1);
+	else
+	{
+		write(2, "Error\nInvalid identifier\n", 25);
+		exit(1);
+	}
 }
