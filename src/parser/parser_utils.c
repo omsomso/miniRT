@@ -47,7 +47,6 @@ t_v3	*get_vec(char **s)
 	vector = malloc(sizeof(t_v3));
 	if (!vector)
 		exit(1);
-		// return (NULL);
 	vector->x = ft_atof(s[0]);
 	vector->y = ft_atof(s[1]);
 	vector->z = ft_atof(s[2]);

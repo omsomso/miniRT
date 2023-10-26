@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/10/25                              ###   ########.fr       */
+/*   Updated: 2023/10/26                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,36 +100,6 @@ int	ch_nb(char *s)
 				return (1);
 		}
 		i++;
-		// if (ft_isspace(s[i]))
-		// {
-		// 	printf("ohnannna un espaaaceee\n");
-		// 	return (0);
-		// }
 	}
 	return (0);
-}
-
-char	*line_rm_isspace(char *s)
-{
-	int		i;
-	int		j;
-	char	*out;
-
-	out = malloc(sizeof(char) * ft_strlen(s));
-	i = 0;
-	j = 0;
-	while (s[i])
-	{
-		if (!ft_isspace(s[i]))
-		{
-			out[j] = s[i];
-			j++;
-			i++;
-		}
-		else
-			i++;
-	}
-	out[j] = 0x00;
-	free(s);
-	return (out);
 }

@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/10/25                              ###   ########.fr       */
+/*   Updated: 2023/10/26                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,10 @@ int	check_color(char *color)
 	int		err;
 	char	**col;
 
-	// printf("color = %s\n", color);
-	// color = line_rm_isspace(color);
-	// printf("color rms = %s\n", color);
 	col = ft_split(color, ',');
-	printf("%s,%s,%s.\n", col[0], col[1], col[2]);
 	err = 0;
-	if (!col || !col[0] || !col[1] || !col[2] || ft_ptrcount(col) != 3)
+	if (!col || !col[0] || !col[1] || !col[2] || ft_ptrcount(col) != 3
+		|| col[2][0] == '\n')
 	{
 		write(2, "Error\nColor parameters invalid\n", 32);
 		exit(1);
@@ -90,9 +87,6 @@ int	check_color(char *color)
 		ft_ptrfree(col);
 		exit(1);
 	}
-	// printf("col[2] = %s\n", col[2]);
-	// printf("ch_nb col[2] = %d\n", ch_nb(col[2]));
-	// printf("col[2] = %d\n", ft_atoi(col[2]));
 	ft_ptrfree(col);
 	return (0);
 }

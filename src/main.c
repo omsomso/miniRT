@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17                               #+#    #+#             */
-/*   Updated: 2023/10/13                              ###   ########.fr       */
+/*   Updated: 2023/10/26                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,21 @@ t_data	*init_data(void)
 
 int	check_main_args(int argc, char **argv)
 {
-	if (argc < 2)
+	int	fd;
+
+	if (argc != 2)
 	{
-		write(1, "Please provide a scene file (.rt).\n", 35);
+		write(1, "Please provide one valid scene file (.rt).\n", 44);
 		return (1);
 	}
 	if (ft_strncmp(argv[1] + ft_strlen(argv[1]) - 3, ".rt", 3))
 	{
-		write(1, "Please provide a scene file (.rt).\n", 35);
+		write(1, "Please provide a valid scene file (.rt).\n", 42);
 		return (1);
 	}
+	fd = open(argv[1], O_RDONLY);
+	if (fd < 0)
+		return (fd);
 	return (0);
 }
 
