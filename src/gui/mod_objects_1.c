@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mod_objects_1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*                                                  +#+  +:+       +#+        */
+/*   By: fcullen <fcullen@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/01                               #+#    #+#             */
-/*   Updated: 2023/10/22                              ###   ########.fr       */
+/*   Updated: 2023/10/26 by fcullen                   ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	modify_camera(t_data *data, t_gui *gui, int button, int sel)
 		data->camera->fov -= MOD_FOV;
 	else if (sel == 4 && button == 5)
 		data->camera->fov += MOD_FOV;
-	cut_values_int(&data->camera->fov, 180, 0);
+	cut_values_int(&data->camera->fov, 179, 1);
 	modify_camera_b(data, gui, button, sel);
 }
 
