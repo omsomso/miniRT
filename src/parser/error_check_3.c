@@ -6,7 +6,7 @@
 /*                                                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21                               #+#    #+#             */
-/*   Updated: 2023/10/26                              ###   ########.fr       */
+/*   Updated: 2023/10/30                              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	check_scene(t_data *data)
 {
 	if (!data->ambient_light)
 	{
-		write(2, "Error\nNo ambient light\n", 25);
+		write(2, "Error\nNo ambient light\n", 24);
 		exit(1);
 	}
 	if (!data->camera)
